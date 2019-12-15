@@ -228,6 +228,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/15/K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/15/K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work/" itemprop="url">K8s-Kube-apiserver-工作流程-How-does-api-flow-work</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-15T11:40:24+08:00">
+                2019-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="K8s-Kube-apiserver-工作流程-How-does-api-flow-work"><a href="#K8s-Kube-apiserver-工作流程-How-does-api-flow-work" class="headerlink" title="[K8s] Kube-apiserver 工作流程 | How does api-flow work?"></a>[K8s] Kube-apiserver 工作流程 | How does api-flow work?</h1><p>Status: in 75%</p>
+<h2 id="什麼是-Kube-apiserver？"><a href="#什麼是-Kube-apiserver？" class="headerlink" title="什麼是 Kube-apiserver？"></a>什麼是 Kube-apiserver？</h2><p><img src="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled.png" alt="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled.png"></p>
+<p>Core Components of K8s</p>
+<p>kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面</p>
+<p>主要功能就是提供cluster管理</p>
+<ul>
+<li><p><strong>REST API ：</strong>包括<code>認證授權</code>、<code>數據校驗</code>以及<code>集群狀態變</code>更等</p>
+</li>
+<li><p><strong>通信樞紐   ：</strong>提供其他Components之間的資料交互和通信的樞紐</p>
+<ul>
+<li><p>樞紐指的是：其他Components，包括worker kublet, kube-proxy 與 master node等等，可以通過 API Server 查詢或修改數據</p>
+</li>
+<li><p>這邊要注意一個重點就是，只有 API Server 才<code>直接操作 etcd</code><br>有沒有注意到只有kube-apiserver有畫線到etcd</p>
+<p>  <img src="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%201.png" alt="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%201.png"></p>
+<p>  以Client Certificates 檢視</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="實例說明：以建立一個nginx為例"><a href="#實例說明：以建立一個nginx為例" class="headerlink" title="實例說明：以建立一個nginx為例"></a>實例說明：以建立一個nginx為例</h2><p><img src="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%202.png" alt="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%202.png"></p>
+<ol>
+<li><p>APIServer: 是專門負責接收kubectl送出來的命令，<br>比如：我們通過kubectl 通過APIServe r告訴它，我們要創建一個service/pod </p>
+<pre><code>$kubectl apply -f ngnix-service.yml</code></pre></li>
+<li><p>APIServer 接收到命令後，會把<code>指令</code>和<code>參數</code>存在etcd裡面</p>
+<ul>
+<li>kubelet 是管理 pod，也就是管理container創建跟刪除</li>
+<li>kube-proxy 主要是用來管理網路，它會透過iptables(灰色)去創立policy<br>來確保service可以向外溝通</li>
+</ul>
+</li>
+<li><p>完整的過程即是kubelet 和 kube-proxy會一直<code>監聽</code>etcd裡面有什麼改變， 若發現有新的指令(指上面kubectl apply)，它就知道有新的service/pod 要創建，就會在相應的node上建立service/pod -</p>
+<ul>
+<li>k8s-node1 長出<code>pod</code> (紫色)</li>
+<li>同時也因應網路的需求建立 <code>iptables</code> (灰色)</li>
+</ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/05/1205-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -631,7 +786,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
