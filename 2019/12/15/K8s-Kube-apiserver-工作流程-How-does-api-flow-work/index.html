@@ -79,16 +79,17 @@
 
 
 
-<meta name="description" content="[K8s] Kube-apiserver 工作流程 | How does api-flow work?Status: in 75% 什麼是 Kube-apiserver？ Core Components of K8s kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面 主要功能就是提供cluster管理  REST API ：包括認證">
+<meta name="description" content="[K8s] Kube-apiserver 工作流程 | How does api-flow work?Status: in 75% 什麼是 Kube-apiserver？ kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面 主要功能就是提供cluster管理  REST API ：包括認證授權、數據校驗以及集群狀態變更等  通信樞紐">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s-Kube-apiserver-工作流程-How-does-api-flow-work">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="[K8s] Kube-apiserver 工作流程 | How does api-flow work?Status: in 75% 什麼是 Kube-apiserver？ Core Components of K8s kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面 主要功能就是提供cluster管理  REST API ：包括認證">
+<meta property="og:description" content="[K8s] Kube-apiserver 工作流程 | How does api-flow work?Status: in 75% 什麼是 Kube-apiserver？ kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面 主要功能就是提供cluster管理  REST API ：包括認證授權、數據校驗以及集群狀態變更等  通信樞紐">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;1.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work&#x2F;Untitled%202.png">
-<meta property="og:updated_time" content="2019-12-15T16:14:24.742Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;2.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;3.png">
+<meta property="og:updated_time" content="2019-12-16T07:14:20.790Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;K8s-Kube-apiserver-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-How-does-api-flow-work&#x2F;1.png">
 
@@ -301,8 +302,7 @@
 
       
         <h1 id="K8s-Kube-apiserver-工作流程-How-does-api-flow-work"><a href="#K8s-Kube-apiserver-工作流程-How-does-api-flow-work" class="headerlink" title="[K8s] Kube-apiserver 工作流程 | How does api-flow work?"></a>[K8s] Kube-apiserver 工作流程 | How does api-flow work?</h1><p>Status: in 75%</p>
-<h2 id="什麼是-Kube-apiserver？"><a href="#什麼是-Kube-apiserver？" class="headerlink" title="什麼是 Kube-apiserver？"></a>什麼是 Kube-apiserver？</h2><p><img src="1.png" alt=""></p>
-<p>Core Components of K8s</p>
+<h2 id="什麼是-Kube-apiserver？"><a href="#什麼是-Kube-apiserver？" class="headerlink" title="什麼是 Kube-apiserver？"></a>什麼是 Kube-apiserver？</h2><p><img src="1.png" alt="Core Components of K8s"></p>
 <p>kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面</p>
 <p>主要功能就是提供cluster管理</p>
 <ul>
@@ -313,13 +313,13 @@
 <li><p>樞紐指的是：其他Components，包括worker kublet, kube-proxy 與 master node等等，可以通過 API Server 查詢或修改數據</p>
 </li>
 <li><p>這邊要注意一個重點就是，只有 API Server 才<code>直接操作 etcd</code><br>有沒有注意到只有kube-apiserver有畫線到etcd</p>
-<p> ![](Untitled 2.png)</p>
+<p> <img src="2.png" alt="desription2"></p>
 <p>  以Client Certificates 檢視</p>
 </li>
 </ul>
 </li>
 </ul>
-<h2 id="實例說明：以建立一個nginx為例"><a href="#實例說明：以建立一個nginx為例" class="headerlink" title="實例說明：以建立一個nginx為例"></a>實例說明：以建立一個nginx為例</h2><p><img src="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%202.png" alt="K8s%20Kube%20apiserver%20How%20does%20api%20flow%20work/Untitled%202.png"></p>
+<h2 id="實例說明：以建立一個nginx為例"><a href="#實例說明：以建立一個nginx為例" class="headerlink" title="實例說明：以建立一個nginx為例"></a>實例說明：以建立一個nginx為例</h2><p><img src="3.png" alt="description3.png"></p>
 <ol>
 <li><p>APIServer: 是專門負責接收kubectl送出來的命令，<br>比如：我們通過kubectl 通過APIServe r告訴它，我們要創建一個service/pod </p>
 <pre><code>$kubectl apply -f ngnix-service.yml</code></pre></li>
