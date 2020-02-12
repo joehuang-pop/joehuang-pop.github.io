@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,API,Google Apps Scripts,BigQuery," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[GCP]Google Apps Scripts 串接 GCP BigQueryGoogle Apps Scripts 串接 GCP BigQueryGoogle Apps ScriptsApps Script Apps Script是Google開發的腳本平台，用於在G Suite平台中進行輕量級應用程序開發。可以簡單的後端功能也就能輕鬆實現了，這篇將會介紹如何使用 Google Apps Sc">
+<meta name="keywords" content="GCP,API,Google Apps Scripts,BigQuery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP]Google Apps Scripts 串接 GCP BigQuery">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[GCP]Google Apps Scripts 串接 GCP BigQueryGoogle Apps Scripts 串接 GCP BigQueryGoogle Apps ScriptsApps Script Apps Script是Google開發的腳本平台，用於在G Suite平台中進行輕量級應用程序開發。可以簡單的後端功能也就能輕鬆實現了，這篇將會介紹如何使用 Google Apps Sc">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled%201.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled%209.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled11.png">
+<meta property="og:updated_time" content="2020-02-12T07:10:26.694Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/2020/02/12/GCP-Google-Apps-Scripts-串接-GCP-BigQuery/"/>
+
+
+
+
+
+  <title>[GCP]Google Apps Scripts 串接 GCP BigQuery | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP]Google Apps Scripts 串接 GCP BigQuery</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T15:05:03+08:00">
+                2020-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GCP-Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#GCP-Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="[GCP]Google Apps Scripts 串接 GCP BigQuery"></a>[GCP]Google Apps Scripts 串接 GCP BigQuery</h1><h2 id="Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="Google Apps Scripts 串接 GCP BigQuery"></a>Google Apps Scripts 串接 GCP BigQuery</h2><h3 id="Google-Apps-Scripts"><a href="#Google-Apps-Scripts" class="headerlink" title="Google Apps Scripts"></a>Google Apps Scripts</h3><p><a href="https://script.google.com/u/0/home" target="_blank" rel="noopener">Apps Script</a></p>
+<p>Apps Script是Google開發的腳本平台，用於在G Suite平台中進行輕量級應用程序開發。可以簡單的後端功能也就能輕鬆實現了，這篇將會介紹如何使用 Google Apps Script，實現串接Cloud BigQuery</p>
+<blockquote>
+<p><code>&quot;Apps Script is a serverless JavaScript runtime for G suite automation, extension, and integration.&quot;</code><br>It is server-side JavaScript, similar to Node.js, but focuses on tight integration with G Suite and other Google services rather than fast asynchronous event-driven application hosting. It also features a development environment that may be completely different from what you’re used to. With Apps Script, you:</p>
+</blockquote>
+<ul>
+<li>Develop in a browser-based code editor but can choose to develop locally if using <a href="http://developers.google.com/apps-script/guides/clasp" target="_blank" rel="noopener">clasp</a>, the command-line deployment tool for Apps Script</li>
+<li>Code in a specialized version of JavaScript customized to access G Suite, and other Google or external services (via the Apps Script <a href="https://developers.google.com/apps-script/reference/url-fetch/" target="_blank" rel="noopener">URLfetch</a> or <a href="https://developers.google.com/apps-script/reference/jdbc/" target="_blank" rel="noopener">Jdbc</a> services)</li>
+<li>Avoid writing authorization code because Apps Script handles it for you</li>
+<li>Do not have to host your app—it lives and runs on Google servers in the cloud</li>
+</ul>
+<h3 id="▌實作步驟"><a href="#▌實作步驟" class="headerlink" title="▌實作步驟"></a>▌實作步驟</h3><ol>
+<li>登入Google Apps Scripts，建立一個新的App scripts</li>
+<li>啟用 GCP BigQuery API</li>
+<li>編寫script：BigQuery code</li>
+<li>驗證內容 Apps Scripts</li>
+</ol>
+<hr>
+<h3 id="1-登入Google-Apps-Scripts，建立一個新的App-scripts"><a href="#1-登入Google-Apps-Scripts，建立一個新的App-scripts" class="headerlink" title="1. 登入Google Apps Scripts，建立一個新的App scripts"></a>1. 登入Google Apps Scripts，建立一個新的App scripts</h3><ul>
+<li><p>開啟一開新專案</p>
+<p>  <img src="Untitled.png" alt=" Untitled.png"></p>
+</li>
+<li><p>建立一個為為first-appscript project</p>
+<p>  <img src="Untitled%201.png" alt=" Untitled%201.png"></p>
+</li>
+</ul>
+<h3 id="2-啟用-GCP-BigQuery-API"><a href="#2-啟用-GCP-BigQuery-API" class="headerlink" title="2. 啟用 GCP BigQuery API"></a>2. 啟用 GCP BigQuery API</h3><p>啟用API設定有二個地方，第一是GCP API &amp; Service</p>
+<p>第二是App Script中的 Advanced Google service</p>
+<ul>
+<li><p>設定 App Script  “Advanced Google service”</p>
+<p>  <img src="Untitled2.png" alt=" Untitled%202.png"></p>
+</li>
+<li><p>BigQuery API → <code>on</code></p>
+<p>  <img src="Untitled3.png" alt=" Untitled%203.png"></p>
+</li>
+<li><p>GCP API &amp; Service → <code>API enabled</code></p>
+<p>  <img src="Untitled4.png" alt=" Untitled%204.png"></p>
+</li>
+</ul>
+<h3 id="3-編寫Script：BigQuery-code"><a href="#3-編寫Script：BigQuery-code" class="headerlink" title="3. 編寫Script：BigQuery code"></a>3. 編寫Script：BigQuery code</h3><p>這個是Google提供的範本，我們僅需要修改二個部份</p>
+<ol>
+<li><p>GCP Project ID： <code>var PROJECT_ID = &#39;&lt;YOUR_PROJECT_ID&gt;&#39;</code></p>
+</li>
+<li><p>實際跑BigQuery code：<code>function runQuery()</code> </p>
+<p> /**</p>
+<ul>
+<li><p>Copyright 2018 Google LLC</p>
+</li>
+<li></li>
+<li><p>Licensed under the Apache License, Version 2.0 (the “License”);</p>
+</li>
+<li><p>you may not use this file except in compliance with the License.</p>
+</li>
+<li><p>You may obtain a copy of the License at apache.org/licenses/LICENSE-2.0.</p>
+</li>
+<li></li>
+<li><p>Unless required by applicable law or agreed to in writing, software</p>
+</li>
+<li><p>distributed under the License is distributed on an “AS IS” BASIS,</p>
+</li>
+<li><p>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</p>
+</li>
+<li><p>See the License for the specific language governing permissions and</p>
+</li>
+<li><p>limitations under the License.</p>
+</li>
+<li><p>/</p>
+<p>// Filename for data results<br>var QUERY_NAME = “Most common words in all of Shakespeare’s works”;<br>// Replace this value with your Google Cloud API project ID<br>var PROJECT_ID = ‘<YOUR_PROJECT_ID>‘;<br>if (!PROJECT_ID) throw Error(‘Project ID is required in setup’);</p>
+<p>/**</p>
+</li>
+<li><p>Runs a BigQuery query; puts results into Sheet. You must enable</p>
+</li>
+<li><p>the BigQuery advanced service before you can run this code.</p>
+</li>
+<li><p>@see <a href="http://developers.google.com/apps-script/advanced/bigquery#run_query" target="_blank" rel="noopener">http://developers.google.com/apps-script/advanced/bigquery#run_query</a></p>
+</li>
+<li><p>@see <a href="http://github.com/gsuitedevs/apps-script-samples/blob/master/advanced/bigquery.gs" target="_blank" rel="noopener">http://github.com/gsuitedevs/apps-script-samples/blob/master/advanced/bigquery.gs</a></p>
+</li>
+<li></li>
+<li><p>@returns {Spreadsheet} Returns a spreadsheet with BigQuery results</p>
+</li>
+<li><p>@see <a href="http://developers.google.com/apps-script/reference/spreadsheet/spreadsheet" target="_blank" rel="noopener">http://developers.google.com/apps-script/reference/spreadsheet/spreadsheet</a></p>
+</li>
+<li><p>/<br>function runQuery() {<br>// Replace sample with your own BigQuery query.<br>var request = {<br>  query:</p>
+<pre><code>&apos;SELECT &apos; +
+    &apos;LOWER(word) AS word, &apos; +
+    &apos;SUM(word_count) AS count &apos; +
+&apos;FROM [bigquery-public-data:samples.shakespeare] &apos; +
+&apos;GROUP BY word &apos; +
+&apos;ORDER BY count &apos; +
+&apos;DESC LIMIT 10&apos;</code></pre><p>};<br>var queryResults = BigQuery.Jobs.query(request, PROJECT_ID);<br>var jobId = queryResults.jobReference.jobId;</p>
+<p>// Wait for BQ job completion (with exponential backoff).<br>var sleepTimeMs = 500;<br>while (!queryResults.jobComplete) {<br>  Utilities.sleep(sleepTimeMs);<br>  sleepTimeMs *= 2;<br>  queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId);<br>}</p>
+<p>// Get all results from BigQuery.<br>var rows = queryResults.rows;<br>while (queryResults.pageToken) {<br>  queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, {</p>
+<pre><code>pageToken: queryResults.pageToken</code></pre><p>  });<br>  rows = rows.concat(queryResults.rows);<br>}</p>
+<p>// Return null if no data returned.<br>if (!rows) {<br>  return Logger.log(‘No rows returned.’);<br>}</p>
+<p>// Create the new results spreadsheet.<br>var spreadsheet = SpreadsheetApp.create(QUERY_NAME);<br>var sheet = spreadsheet.getActiveSheet();</p>
+<p>// Add headers to Sheet.<br>var headers = queryResults.schema.fields.map(function(field) {<br>  return field.name.toUpperCase();<br>});<br>sheet.appendRow(headers);</p>
+<p>// Append the results.<br>var data = new Array(rows.length);<br>for (var i = 0; i &lt; rows.length; i++) {<br>  var cols = rows[i].f;<br>  data[i] = new Array(cols.length);<br>  for (var j = 0; j &lt; cols.length; j++) {</p>
+<pre><code>data[i][j] = cols[j].v;</code></pre><p>  }<br>}</p>
+<p>// Start storing data in row 2, col 1<br>var START_ROW = 2;      // skip header row<br>var START_COL = 1;<br>sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);</p>
+<p>Logger.log(‘Results spreadsheet created: %s’, spreadsheet.getUrl());<br>}</p>
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p>貼上script，編輯BigQuery query code</p>
+</li>
+<li><p>命名為<a href="http://bq-sheets-slides.gs/" target="_blank" rel="noopener"><code>bq-sheets-slides.gs</code></a></p>
+<p>  <img src="Untitled5.png" alt=" Untitled%205.png"></p>
+</li>
+<li><p>主要BigQuery query cod內容</p>
+<p>  往public-data拿資料samples.shakespeare(莎士比亞作品)<br>  擷取作品中出现频率最高的10個單字，並依歡迎程度降冪排序</p>
+<p>  SELECT</p>
+<pre><code>LOWER(word) AS word,
+SUM(word_count) AS count</code></pre><p>  FROM [bigquery-public-data:samples.shakespeare]<br>  GROUP BY word<br>  ORDER BY count<br>  DESC LIMIT 10</p>
+</li>
+</ul>
+<h3 id="4-驗證內容-Apps-Scripts"><a href="#4-驗證內容-Apps-Scripts" class="headerlink" title="4. 驗證內容 Apps Scripts"></a>4. 驗證內容 Apps Scripts</h3><ul>
+<li>第一次 run<ul>
+<li>review permissions 系統會再驗證一次user/pwd</li>
+<li>執行完會產出Google sheet</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled6.png" alt=" Untitled%206.png"></p>
+<h3 id="Google-Drive"><a href="#Google-Drive" class="headerlink" title="Google Drive"></a>Google Drive</h3><ul>
+<li><p>去看看產出名為 <code>Most common words in all of Shakespeare&#39;s works</code> 的sheet</p>
+<p>  <img src="Untitled7.png" alt=" Untitled%207.png"></p>
+</li>
+<li><p>檢視一下檔案內容，看到計算出的結果</p>
+<p>  <img src="Untitled8.png" alt=" Untitled%208.png"></p>
+</li>
+</ul>
+<h3 id="驗證從原本的bq-也有一樣的結果"><a href="#驗證從原本的bq-也有一樣的結果" class="headerlink" title="驗證從原本的bq 也有一樣的結果"></a>驗證從原本的bq 也有一樣的結果</h3><ul>
+<li>同樣的Query，直接在BigQuery執行</li>
+</ul>
+<p><img src="Untitled%209.png" alt=" Untitled%209.png"></p>
+<h3 id="Query-history"><a href="#Query-history" class="headerlink" title="Query history"></a>Query history</h3><ul>
+<li><p>從query history可以看到剛剛的執行結果</p>
+<p>  <img src="Untitled10.png" alt=" Untitled%2010.png"></p>
+</li>
+<li><p>第二次直接使用BigQuery的執行結果也出現在history中</p>
+<p>  <img src="Untitled11.png" alt=" Untitled%2011.png"></p>
+</li>
+</ul>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>[1] <a href="https://www.qwiklabs.com/focuses/3565?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/3565?parent=catalog</a></p>
+<p>[2] <a href="https://script.google.com/u/0/home" target="_blank" rel="noopener">https://script.google.com/u/0/home</a></p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/API/" rel="tag"># API</a>
+          
+            <a href="/tags/Google-Apps-Scripts/" rel="tag"># Google Apps Scripts</a>
+          
+            <a href="/tags/BigQuery/" rel="tag"># BigQuery</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/" rel="next" title="[啟發] 偽工作者 | Pseudo Worker">
+                <i class="fa fa-chevron-left"></i> [啟發] 偽工作者 | Pseudo Worker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-Google-Apps-Scripts-串接-GCP-BigQuery"><span class="nav-number">1.</span> <span class="nav-text">[GCP]Google Apps Scripts 串接 GCP BigQuery</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Google-Apps-Scripts-串接-GCP-BigQuery"><span class="nav-number">1.1.</span> <span class="nav-text">Google Apps Scripts 串接 GCP BigQuery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Google-Apps-Scripts"><span class="nav-number">1.1.1.</span> <span class="nav-text">Google Apps Scripts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#▌實作步驟"><span class="nav-number">1.1.2.</span> <span class="nav-text">▌實作步驟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-登入Google-Apps-Scripts，建立一個新的App-scripts"><span class="nav-number">1.1.3.</span> <span class="nav-text">1. 登入Google Apps Scripts，建立一個新的App scripts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-啟用-GCP-BigQuery-API"><span class="nav-number">1.1.4.</span> <span class="nav-text">2. 啟用 GCP BigQuery API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-編寫Script：BigQuery-code"><span class="nav-number">1.1.5.</span> <span class="nav-text">3. 編寫Script：BigQuery code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-驗證內容-Apps-Scripts"><span class="nav-number">1.1.6.</span> <span class="nav-text">4. 驗證內容 Apps Scripts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Google-Drive"><span class="nav-number">1.1.7.</span> <span class="nav-text">Google Drive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#驗證從原本的bq-也有一樣的結果"><span class="nav-number">1.1.8.</span> <span class="nav-text">驗證從原本的bq 也有一樣的結果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Query-history"><span class="nav-number">1.1.9.</span> <span class="nav-text">Query history</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">1.2.</span> <span class="nav-text">Reference:</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

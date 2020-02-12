@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,Cloud Scheduler,Google Pubsub," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP CostAgenda 前題要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機  不過用不同的關機指令或方法，有不同的關機速度像是OS">
+<meta name="keywords" content="GCP,Cloud Scheduler,Google Pubsub">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP CostAgenda 前題要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機  不過用不同的關機指令或方法，有不同的關機速度像是OS">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;cloud.google.com&#x2F;scheduler&#x2F;docs&#x2F;images&#x2F;schedule-fields.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled14.png">
+<meta property="og:updated_time" content="2020-02-12T07:12:05.749Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/2020/02/12/GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost/"/>
+
+
+
+
+
+  <title>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:24:54+08:00">
+                2020-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost"><a href="#GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost" class="headerlink" title="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost"></a>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</h1><h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><hr>
+<h2 id="前題"><a href="#前題" class="headerlink" title="前題"></a>前題</h2><p>要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機</p>
+<blockquote>
+<p>不過用不同的關機指令或方法，有不同的關機速度像是OS level、Instance console，因為每台VM Instances內服務不同，關閉的速度當然也不同<br>因此本實作透過console level 著手達成<em>統一關機的動作</em></p>
+</blockquote>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>說明instance對於各種action的反應時間(by: GCP VM instance Modules)</p>
+<h3 id="Console-Stop-關機方式"><a href="#Console-Stop-關機方式" class="headerlink" title="Console Stop 關機方式"></a>Console Stop 關機方式</h3><p>今天要使用的是Console Stop方式，停止執行個體會導致 Compute Engine 將 <code>ACPI</code> 關機訊號傳送至執行個體。現行訪客作業系統都設定為在關機之前執行乾淨關機作業以回應關機訊號。 Compute Engine 會等待一小段時間，讓訪客完成關機，然後將執行個體轉換至 <code>TERMINATED</code> 狀態</p>
+<h3 id="OS-層級Shutdown-VM-instance"><a href="#OS-層級Shutdown-VM-instance" class="headerlink" title="OS 層級Shutdown VM instance"></a>OS 層級Shutdown VM instance</h3><pre><code>sudo shutdown -h now</code></pre><h3 id="使用Cloud-Scheduler來協助關機"><a href="#使用Cloud-Scheduler來協助關機" class="headerlink" title="使用Cloud Scheduler來協助關機"></a>使用Cloud Scheduler來協助關機</h3><p>簡單說它就是在GCP上的crontab，對instance來說是外部的<strong>鬧鐘</strong>。它的好處是你可以統一對GCP上所有的instance做一次性的操作。要完成這個實作，我們還需要結合<strong>Cloud Pub/Sub、Cloud Function</strong>來完整自動化開機/關機的程序</p>
+<hr>
+<h2 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h2><ol>
+<li>指定VM Instance 設定<code>label</code>，設定Cloud  Pub/Sub topic</li>
+<li>部署Cloud Function，使用<code>Nodo.js</code> code 去控制你的VM Instances</li>
+<li>透過Cloud Scheduler建立一個時間表，使VM Instances按時間開關機</li>
+</ol>
+<h3 id="架構圖說明"><a href="#架構圖說明" class="headerlink" title="架構圖說明"></a>架構圖說明</h3><ul>
+<li><p><a href="https://cloud.google.com/compute/docs/instances/" target="_blank" rel="noopener">Compute Engine Instance</a>：最右邊是接受控管VM Instances</p>
+</li>
+<li><p><a href="https://cloud.google.com/functions/docs/concepts/overview" target="_blank" rel="noopener">Cloud Functions functions</a>：承載一個簡單函式，執行開/關機程式</p>
+</li>
+<li><p><a href="https://cloud.google.com/pubsub/docs/overview" target="_blank" rel="noopener">Pub/Sub messages</a>：訊息傳送的角色，把VM上的label 傳送給Cloud function</p>
+</li>
+<li><p><a href="https://cloud.google.com/scheduler/docs/" target="_blank" rel="noopener">Cloud Scheduler jobs</a>：GCP上的定時器，時間一到會執行目標上的Cloud function</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+</ul>
+<hr>
+<h2 id="啟用Cloud-Scheduler-API-amp-Cloud-Function-API"><a href="#啟用Cloud-Scheduler-API-amp-Cloud-Function-API" class="headerlink" title="啟用Cloud Scheduler API &amp; Cloud Function API"></a>啟用Cloud Scheduler API &amp; Cloud Function API</h2><p>首先，要使用之前我們要先產出<code>credential</code> 給Cloud function API 和Cloud Scheduler API做使用</p>
+<pre><code># Enable API
+$gcloud services enable &lt;SERVICE_NAME&gt;
+- cloudfunctions.googleapis.com
+- cloudscheduler.googleapis.com
+
+$gcloud services enable cloudfunctions.googleapis.com
+$gcloud services enable cloudscheduler.googleapis.com
+
+# Check Enabled Current API
+$ gcloud services list --available | grep -E &apos;Scheduler | Functions&apos;
+cloudfunctions.googleapis.com                         Cloud Functions API
+cloudscheduler.googleapis.com                         Cloud Scheduler API</code></pre><p>執行結果看到 Scheduler, Functions都是<code>available</code></p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>你可以到GCP Console 進行設定<br>路徑如下： IAM → APIs &amp; Services → Credentials</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h2 id="怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels"><a href="#怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels" class="headerlink" title="怎麼樣讓Cloud Function認得你的機器呢？ →  Labels"></a>怎麼樣讓Cloud Function認得你的機器呢？ →  Labels</h2><p>這裡使用的方法是在指定的VM Instances，加上<code>labels</code>，它是一個<code>**key:value**</code>格式<br>我的要控制的cluster是kubernetes cluster，因此使用 <code>env:k8s</code> 當作labels</p>
+<ul>
+<li><p>使用cloud shell 新增labels，並篩選機器 label 為 <code>env:k8s</code></p>
+</li>
+<li><p>Kubernetes一共有3台instance，記得都要上<code>labels</code></p>
+</li>
+<li><p>補充一下<code>labels</code>和<code>metadata</code>是不一樣的東西喔</p>
+<h1 id="Sample"><a href="#Sample" class="headerlink" title="Sample"></a>Sample</h1><h1 id="Labels-can-be-used-to-identify-the-instance-and-to-filter-them"><a href="#Labels-can-be-used-to-identify-the-instance-and-to-filter-them" class="headerlink" title="Labels can be used to identify the instance and to filter them."></a>Labels can be used to identify the instance and to filter them.</h1><h1 id="To-find-a-instance-labeled-with-key-value-pair-k1-v2"><a href="#To-find-a-instance-labeled-with-key-value-pair-k1-v2" class="headerlink" title="To find a instance labeled with key-value pair k1, v2"></a>To find a instance labeled with key-value pair k1, v2</h1><h1 id="可以先讀一下範例說明"><a href="#可以先讀一下範例說明" class="headerlink" title="可以先讀一下範例說明"></a>可以先讀一下範例說明</h1><p>  $gcloud beta compute instances add-labels example-instance \</p>
+<pre><code>--labels=k0=v0,k1=v1</code></pre><p>  $gcloud compute instances list –filter=’labels.k1:v2’</p>
+<h1 id="Label-env-k8s"><a href="#Label-env-k8s" class="headerlink" title="Label env=k8s"></a>Label env=k8s</h1><h1 id="label套用到我的環境"><a href="#label套用到我的環境" class="headerlink" title="label套用到我的環境"></a>label套用到我的環境</h1><p>  $gcloud beta compute instances add-labels k8s-master \</p>
+<pre><code>--zone=us-central1-a \
+--labels=env=k8s</code></pre><p>  $gcloud compute instances list –filter=’labels.env:k8s’</p>
+</li>
+</ul>
+<p>執行結果看到<br>透過<code>labels.env:k8s</code>篩選出我們要看的VM Instance</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p>你可以到GCP Console 進行檢查<code>Labels</code></p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h2 id="建立-Pub-Sub-topics"><a href="#建立-Pub-Sub-topics" class="headerlink" title="建立  Pub/Sub topics"></a>建立  Pub/Sub topics</h2><p>建立二筆topic，一個給開機用另一則是關機用，名字分別為<code>start-instance-event</code>、<code>stop-instance-event</code></p>
+<pre><code># 建立二個 topics: start &amp; stop
+$gcloud pubsub topics create start-instance-event
+$gcloud pubsub topics create stop-instance-event
+
+# 檢視現有的topic
+$gcloud pubsub topics list
+---
+name: projects/tw-rd-ca-joe-huang/topics/start-instance-event
+---
+name: projects/tw-rd-ca-joe-huang/topics/stop-instance-event</code></pre><p>建好之後，檢視Pub/Sub發現有二筆<code>topic</code></p>
+<p>代表建立成功</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h2 id="建立Start-and-Stop-Cloud-Functions"><a href="#建立Start-and-Stop-Cloud-Functions" class="headerlink" title="建立Start and Stop Cloud Functions"></a>建立Start and Stop Cloud Functions</h2><ul>
+<li><p>先下載Git，看他的程式碼邏輯跟剛才測試的<code>labels</code>是一樣的</p>
+</li>
+<li><p>用預寫好的node.js 部署<code>Cloud Function</code></p>
+<h1 id="下載-node-js-code"><a href="#下載-node-js-code" class="headerlink" title="下載 node.js code"></a>下載 node.js code</h1><h1 id="裡面有控制function-可以對instance開關機"><a href="#裡面有控制function-可以對instance開關機" class="headerlink" title="裡面有控制function 可以對instance開關機"></a>裡面有控制function 可以對instance開關機</h1><p>  git clone <a href="https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git</a></p>
+</li>
+</ul>
+<pre><code># 切換正確目錄
+cd nodejs-docs-samples/functions/scheduleinstance/
+
+# 部署Cloud Function
+gcloud functions deploy startInstancePubSub \
+    --trigger-topic start-instance-event \
+    --runtime nodejs8</code></pre><p><code>node.js</code> 部份功能</p>
+<pre><code>exports.startInstancePubSub = async (event, context, callback) =&gt; {
+  try {
+    const payload = _validatePayload(
+      JSON.parse(Buffer.from(event.data, &apos;base64&apos;).toString())
+    );
+    const options = {filter: `labels.${payload.label}`}; # 用label篩選指定的vm
+    const [vms] = await compute.getVMs(options);
+    await Promise.all(
+      vms.map(async instance =&gt; {
+        if (payload.zone === instance.zone.id) {
+          const [operation] = await compute
+            .zone(payload.zone)
+            .vm(instance.name)
+            .start();                                    # start()函數來啟動vm
+
+          // Operation pending
+          return operation.promise();
+        }
+      })
+    );</code></pre><ul>
+<li><h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><h3 id="Multi-Payload"><a href="#Multi-Payload" class="headerlink" title="Multi Payload"></a>Multi Payload</h3><p>  看看能不能管理多個lael，意思就是可以管理不多的instances</p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+<h2 id="node-js-6-BUG"><a href="#node-js-6-BUG" class="headerlink" title="node.js 6 BUG"></a>node.js 6 BUG</h2><p>  <strong>Error message: Code in file index.js can’t be loaded</strong></p>
+<p>  <a href="https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m" target="_blank" rel="noopener">https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m</a></p>
+<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
+</li>
+</ul>
+<h2 id="設定Cloud-Scheduler"><a href="#設定Cloud-Scheduler" class="headerlink" title="設定Cloud Scheduler"></a>設定Cloud Scheduler</h2><p>如何定義一個排程時間，設定日期的規則很像<a href="http://linux.vbird.org/linux_basic/0430cron.php" target="_blank" rel="noopener">Linux crontab</a></p>
+<p><a href="https://cloud.google.com/scheduler/index" target="_blank" rel="noopener">Cloud Schedule</a>列出5個欄位「分」、「時」、「天」、「月」、「週」</p>
+<p><img src="https://cloud.google.com/scheduler/docs/images/schedule-fields.png" alt="https://cloud.google.com/scheduler/docs/images/schedule-fields.png"></p>
+<h3 id="Cloud-Scheduler-設定例子"><a href="#Cloud-Scheduler-設定例子" class="headerlink" title="Cloud Scheduler 設定例子"></a>Cloud Scheduler 設定<strong>例子</strong></h3><ul>
+<li>每分鐘執行：<code>* * * * *</code></li>
+<li>每週一早上九點執行：<code>0 9 * * 1</code></li>
+<li>每週早上九點執行：<code>0 9 * *</code></li>
+<li>每3小時執行：<code>0 */3 * * *</code></li>
+<li>每週一早上十點40分執行：<code>40 10 * * 1</code></li>
+<li>每週早上十點40分執行：<code>40 10 * * *</code></li>
+<li>上班工作日開機，下班時間請執行： <code>0 7,18 * * 1-5</code></li>
+</ul>
+<h3 id="手動測試"><a href="#手動測試" class="headerlink" title="手動測試"></a>手動測試</h3><p>建議在使用Cloud Scheduler之前，可以先手動觸發Cloud function<br>如此可以減少Scheduler設定錯誤，而造成時間等待的浪費</p>
+<ul>
+<li><p>注意這邊傳入function的值需要經過加密，因此使用<code>base64</code></p>
+</li>
+<li><p>把加密過的值帶入 —data{<code>encrpted data</code>}</p>
+<h1 id="因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub"><a href="#因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub" class="headerlink" title="因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub"></a>因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub</h1><p>  $echo ‘{“zone”:”us-central1-a”, “label”:”env=k8s”}’ | base64<br>  eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=</p>
+<h1 id="直接手動觸發-開機"><a href="#直接手動觸發-開機" class="headerlink" title="直接手動觸發(開機)"></a>直接手動觸發(開機)</h1><p>  $gcloud functions call startInstancePubSub \</p>
+<pre><code>--data &apos;{&quot;data&quot;:&quot;eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=&quot;}&apos;</code></pre><p>  executionId: e7o6dafufthu</p>
+<h1 id="執行function成功，幫我們開機"><a href="#執行function成功，幫我們開機" class="headerlink" title="執行function成功，幫我們開機"></a>執行function成功，幫我們開機</h1><p>  result: Successfully started instance(s)</p>
+<h1 id="檢視機器狀態"><a href="#檢視機器狀態" class="headerlink" title="檢視機器狀態"></a>檢視機器狀態</h1><p>  $for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \</p>
+<pre><code>--zone us-central1-a \
+| grep status; done</code></pre><p>  status: RUNNING<br>  status: RUNNING<br>  status: RUNNING</p>
+</li>
+</ul>
+<p>執行結果看到，三台VM Instance有正常運行中</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<ul>
+<li><p>先看現況VM的狀態(關機)</p>
+<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:29:39] C:1
+$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
+    --zone us-central1-a \
+    | grep status; done
+status: RUNNING
+status: RUNNING
+status: RUNNING</code></pre><p>  <img src="Untitled10.png" alt="Untitled10.png"></p>
+<p>  <img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ul>
+<h3 id="正式測試"><a href="#正式測試" class="headerlink" title="正式測試"></a>正式測試</h3><ul>
+<li>透過Cloud Scheduler 自動觸發 stop-dev-instances</li>
+<li>方才我們驗證了Cloud function 可以正常工作， 與辨識VM Instance label: <code>env:k8s</code></li>
+<li>再來就是要驗證Scheduler + Cloud function，把時間設定為<code>期望的時間</code></li>
+</ul>
+<blockquote>
+<p>注意：<br>現在時間是<code>10:37</code>且VM處於開機狀態，我們要設定10:48 <code>關機</code></p>
+</blockquote>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<p>Cloud Shell 範本</p>
+<pre><code># Sample
+gcloud beta scheduler jobs create pubsub startup-dev-instances \
+    --schedule &apos;0 9 * * 1-5&apos; \
+    --topic start-instance-event \
+    --message-body &apos;{&quot;zone&quot;:&quot;us-west1-b&quot;, &quot;label&quot;:&quot;env=dev&quot;}&apos; \
+    --time-zone &apos;America/Los_Angeles&apos;
+
+# 設定 10點48分鐘關機
+gcloud beta scheduler jobs create pubsub stop-dev-instances \
+    --schedule &apos;48 10 * * *&apos; \
+    --topic start-instance-event \
+    --message-body &apos;{&quot;zone&quot;:&quot;us-central1-a&quot;, &quot;label&quot;:&quot;env=k8s&quot;}&apos; \
+    --time-zone &apos;Asia/Taipei&apos;</code></pre><p>確實執行完task喔</p>
+<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:47:20]
+$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
+    --zone us-central1-a \
+    | grep status; done
+status: TERMINATED
+status: TERMINATED
+status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已被終止運行</p>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<h2 id="查看Cloud-Scheduler-Job-Log"><a href="#查看Cloud-Scheduler-Job-Log" class="headerlink" title="查看Cloud Scheduler Job Log"></a>查看Cloud Scheduler Job Log</h2><p>最後我們查看log，看看他的執行的過程</p>
+<p>我們可以看到10:48香港時間，執行了<strong>stop-dev-instances</strong></p>
+<ul>
+<li>type: “type.googleapis.com/google.cloud.scheduler.logging.AttemptFinished”</li>
+<li>jobName: “projects/tw-rd-ca-joe-huang/locations/asia-east2/jobs/start-stop-vm”</li>
+<li>pubsubTopic: “projects/tw-rd-ca-joe-huang/topics/<code>stop-instance-event</code>“</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
+<li><strong><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-ushttps://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">Cloud scheduler</a></strong><br><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us</a></li>
+<li><strong><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labelshttps://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">Instances add-labels</a></strong><br><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/Cloud-Scheduler/" rel="tag"># Cloud Scheduler</a>
+          
+            <a href="/tags/Google-Pubsub/" rel="tag"># Google Pubsub</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/11/K8s-Kube-apiserver-How-does-api-flow-work/" rel="next" title="K8s Kube apiserver How does api flow work">
+                <i class="fa fa-chevron-left"></i> K8s Kube apiserver How does api flow work
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/12/Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/" rel="prev" title="Google Apps Scripts 串接 GCP BigQuery">
+                Google Apps Scripts 串接 GCP BigQuery <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost"><span class="nav-number">1.</span> <span class="nav-text">[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agenda"><span class="nav-number">1.1.</span> <span class="nav-text">Agenda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前題"><span class="nav-number">1.2.</span> <span class="nav-text">前題</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Console-Stop-關機方式"><span class="nav-number">1.2.1.</span> <span class="nav-text">Console Stop 關機方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OS-層級Shutdown-VM-instance"><span class="nav-number">1.2.2.</span> <span class="nav-text">OS 層級Shutdown VM instance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Cloud-Scheduler來協助關機"><span class="nav-number">1.2.3.</span> <span class="nav-text">使用Cloud Scheduler來協助關機</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目標"><span class="nav-number">1.3.</span> <span class="nav-text">目標</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架構圖說明"><span class="nav-number">1.3.1.</span> <span class="nav-text">架構圖說明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#啟用Cloud-Scheduler-API-amp-Cloud-Function-API"><span class="nav-number">1.4.</span> <span class="nav-text">啟用Cloud Scheduler API &amp; Cloud Function API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels"><span class="nav-number">1.5.</span> <span class="nav-text">怎麼樣讓Cloud Function認得你的機器呢？ →  Labels</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sample"><span class="nav-number">2.</span> <span class="nav-text">Sample</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Labels-can-be-used-to-identify-the-instance-and-to-filter-them"><span class="nav-number">3.</span> <span class="nav-text">Labels can be used to identify the instance and to filter them.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To-find-a-instance-labeled-with-key-value-pair-k1-v2"><span class="nav-number">4.</span> <span class="nav-text">To find a instance labeled with key-value pair k1, v2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可以先讀一下範例說明"><span class="nav-number">5.</span> <span class="nav-text">可以先讀一下範例說明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Label-env-k8s"><span class="nav-number">6.</span> <span class="nav-text">Label env=k8s</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#label套用到我的環境"><span class="nav-number">7.</span> <span class="nav-text">label套用到我的環境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#建立-Pub-Sub-topics"><span class="nav-number">7.1.</span> <span class="nav-text">建立  Pub/Sub topics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立Start-and-Stop-Cloud-Functions"><span class="nav-number">7.2.</span> <span class="nav-text">建立Start and Stop Cloud Functions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下載-node-js-code"><span class="nav-number">8.</span> <span class="nav-text">下載 node.js code</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#裡面有控制function-可以對instance開關機"><span class="nav-number">9.</span> <span class="nav-text">裡面有控制function 可以對instance開關機</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Payload"><span class="nav-number">9.0.1.</span> <span class="nav-text">Payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Payload"><span class="nav-number">9.0.2.</span> <span class="nav-text">Multi Payload</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node-js-6-BUG"><span class="nav-number">9.1.</span> <span class="nav-text">node.js 6 BUG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#設定Cloud-Scheduler"><span class="nav-number">9.2.</span> <span class="nav-text">設定Cloud Scheduler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloud-Scheduler-設定例子"><span class="nav-number">9.2.1.</span> <span class="nav-text">Cloud Scheduler 設定例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手動測試"><span class="nav-number">9.2.2.</span> <span class="nav-text">手動測試</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub"><span class="nav-number">10.</span> <span class="nav-text">因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#直接手動觸發-開機"><span class="nav-number">11.</span> <span class="nav-text">直接手動觸發(開機)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#執行function成功，幫我們開機"><span class="nav-number">12.</span> <span class="nav-text">執行function成功，幫我們開機</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#檢視機器狀態"><span class="nav-number">13.</span> <span class="nav-text">檢視機器狀態</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正式測試"><span class="nav-number">13.0.1.</span> <span class="nav-text">正式測試</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看Cloud-Scheduler-Job-Log"><span class="nav-number">13.1.</span> <span class="nav-text">查看Cloud Scheduler Job Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">13.2.</span> <span class="nav-text">References:</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
