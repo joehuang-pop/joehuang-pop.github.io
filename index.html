@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.">
+<meta name="description" content="雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |           Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.">
 <meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黃大仙的雲端修行室">
 <meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
-<meta property="og:description" content="Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.">
+<meta property="og:description" content="雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |           Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 
@@ -365,83 +365,11 @@
 </ul>
 <h3 id="3-編寫Script：BigQuery-code"><a href="#3-編寫Script：BigQuery-code" class="headerlink" title="3. 編寫Script：BigQuery code"></a>3. 編寫Script：BigQuery code</h3><p>這個是Google提供的範本，我們僅需要修改二個部份</p>
 <ol>
-<li><p>GCP Project ID： <code>var PROJECT_ID = &#39;&lt;YOUR_PROJECT_ID&gt;&#39;</code></p>
-</li>
-<li><p>實際跑BigQuery code：<code>function runQuery()</code> </p>
-<p> /**</p>
-<ul>
-<li><p>Copyright 2018 Google LLC</p>
-</li>
-<li></li>
-<li><p>Licensed under the Apache License, Version 2.0 (the “License”);</p>
-</li>
-<li><p>you may not use this file except in compliance with the License.</p>
-</li>
-<li><p>You may obtain a copy of the License at apache.org/licenses/LICENSE-2.0.</p>
-</li>
-<li></li>
-<li><p>Unless required by applicable law or agreed to in writing, software</p>
-</li>
-<li><p>distributed under the License is distributed on an “AS IS” BASIS,</p>
-</li>
-<li><p>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</p>
-</li>
-<li><p>See the License for the specific language governing permissions and</p>
-</li>
-<li><p>limitations under the License.</p>
-</li>
-<li><p>/</p>
-<p>// Filename for data results<br>var QUERY_NAME = “Most common words in all of Shakespeare’s works”;<br>// Replace this value with your Google Cloud API project ID<br>var PROJECT_ID = ‘<YOUR_PROJECT_ID>‘;<br>if (!PROJECT_ID) throw Error(‘Project ID is required in setup’);</p>
-<p>/**</p>
-</li>
-<li><p>Runs a BigQuery query; puts results into Sheet. You must enable</p>
-</li>
-<li><p>the BigQuery advanced service before you can run this code.</p>
-</li>
-<li><p>@see <a href="http://developers.google.com/apps-script/advanced/bigquery#run_query" target="_blank" rel="noopener">http://developers.google.com/apps-script/advanced/bigquery#run_query</a></p>
-</li>
-<li><p>@see <a href="http://github.com/gsuitedevs/apps-script-samples/blob/master/advanced/bigquery.gs" target="_blank" rel="noopener">http://github.com/gsuitedevs/apps-script-samples/blob/master/advanced/bigquery.gs</a></p>
-</li>
-<li></li>
-<li><p>@returns {Spreadsheet} Returns a spreadsheet with BigQuery results</p>
-</li>
-<li><p>@see <a href="http://developers.google.com/apps-script/reference/spreadsheet/spreadsheet" target="_blank" rel="noopener">http://developers.google.com/apps-script/reference/spreadsheet/spreadsheet</a></p>
-</li>
-<li><p>/<br>function runQuery() {<br>// Replace sample with your own BigQuery query.<br>var request = {<br>  query:</p>
-<pre><code>&apos;SELECT &apos; +
-    &apos;LOWER(word) AS word, &apos; +
-    &apos;SUM(word_count) AS count &apos; +
-&apos;FROM [bigquery-public-data:samples.shakespeare] &apos; +
-&apos;GROUP BY word &apos; +
-&apos;ORDER BY count &apos; +
-&apos;DESC LIMIT 10&apos;</code></pre><p>};<br>var queryResults = BigQuery.Jobs.query(request, PROJECT_ID);<br>var jobId = queryResults.jobReference.jobId;</p>
-<p>// Wait for BQ job completion (with exponential backoff).<br>var sleepTimeMs = 500;<br>while (!queryResults.jobComplete) {<br>  Utilities.sleep(sleepTimeMs);<br>  sleepTimeMs *= 2;<br>  queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId);<br>}</p>
-<p>// Get all results from BigQuery.<br>var rows = queryResults.rows;<br>while (queryResults.pageToken) {<br>  queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, {</p>
-<pre><code>pageToken: queryResults.pageToken</code></pre><p>  });<br>  rows = rows.concat(queryResults.rows);<br>}</p>
-<p>// Return null if no data returned.<br>if (!rows) {<br>  return Logger.log(‘No rows returned.’);<br>}</p>
-<p>// Create the new results spreadsheet.<br>var spreadsheet = SpreadsheetApp.create(QUERY_NAME);<br>var sheet = spreadsheet.getActiveSheet();</p>
-<p>// Add headers to Sheet.<br>var headers = queryResults.schema.fields.map(function(field) {<br>  return field.name.toUpperCase();<br>});<br>sheet.appendRow(headers);</p>
-<p>// Append the results.<br>var data = new Array(rows.length);<br>for (var i = 0; i &lt; rows.length; i++) {<br>  var cols = rows[i].f;<br>  data[i] = new Array(cols.length);<br>  for (var j = 0; j &lt; cols.length; j++) {</p>
-<pre><code>data[i][j] = cols[j].v;</code></pre><p>  }<br>}</p>
-<p>// Start storing data in row 2, col 1<br>var START_ROW = 2;      // skip header row<br>var START_COL = 1;<br>sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);</p>
-<p>Logger.log(‘Results spreadsheet created: %s’, spreadsheet.getUrl());<br>}</p>
-</li>
-</ul>
-</li>
+<li>GCP Project ID： <code>var PROJECT_ID = &#39;&lt;YOUR_PROJECT_ID&gt;&#39;</code></li>
+<li>實際跑BigQuery code：<code>function runQuery()</code> </li>
 </ol>
-<ul>
-<li><p>貼上script，編輯BigQuery query code</p>
-</li>
-<li><p>命名為<a href="http://bq-sheets-slides.gs/" target="_blank" rel="noopener"><code>bq-sheets-slides.gs</code></a></p>
-<p>  <img src="Untitled5.png" alt=" Untitled%205.png"></p>
-</li>
-<li><p>主要BigQuery query cod內容</p>
-<p>  往public-data拿資料samples.shakespeare(莎士比亞作品)<br>  擷取作品中出现频率最高的10個單字，並依歡迎程度降冪排序</p>
-<p>  SELECT</p>
-<pre><code>LOWER(word) AS word,
-SUM(word_count) AS count</code></pre><p>  FROM [bigquery-public-data:samples.shakespeare]<br>  GROUP BY word<br>  ORDER BY count<br>  DESC LIMIT 10</p>
-</li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">     * Copyright 2018 Google LLC</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">     * you may not use this file except in compliance with the License.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">     * You may obtain a copy of the License at apache.org&#x2F;licenses&#x2F;LICENSE-2.0.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">     * Unless required by applicable law or agreed to in writing, software</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">     * See the License for the specific language governing permissions and</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">     * limitations under the License.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">     *&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; Filename for data results</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    var QUERY_NAME &#x3D; &quot;Most common words in all of Shakespeare&#39;s works&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; Replace this value with your Google Cloud API project ID</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    var PROJECT_ID &#x3D; &#39;&lt;YOUR_PROJECT_ID&gt;&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    if (!PROJECT_ID) throw Error(&#39;Project ID is required in setup&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">     * Runs a BigQuery query; puts results into Sheet. You must enable</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">     * the BigQuery advanced service before you can run this code.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;developers.google.com&#x2F;apps-script&#x2F;advanced&#x2F;bigquery#run_query</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;github.com&#x2F;gsuitedevs&#x2F;apps-script-samples&#x2F;blob&#x2F;master&#x2F;advanced&#x2F;bigquery.gs</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">     * @returns &#123;Spreadsheet&#125; Returns a spreadsheet with BigQuery results</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;developers.google.com&#x2F;apps-script&#x2F;reference&#x2F;spreadsheet&#x2F;spreadsheet</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">     *&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">    function runQuery() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Replace sample with your own BigQuery query.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">      var request &#x3D; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">        query:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">            &#39;SELECT &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">                &#39;LOWER(word) AS word, &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">                &#39;SUM(word_count) AS count &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">            &#39;FROM [bigquery-public-data:samples.shakespeare] &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">            &#39;GROUP BY word &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">            &#39;ORDER BY count &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">            &#39;DESC LIMIT 10&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line">      &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line">      var queryResults &#x3D; BigQuery.Jobs.query(request, PROJECT_ID);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">      var jobId &#x3D; queryResults.jobReference.jobId;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Wait for BQ job completion (with exponential backoff).</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">46</span></pre></td><td class="code"><pre><span class="line">      var sleepTimeMs &#x3D; 500;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">47</span></pre></td><td class="code"><pre><span class="line">      while (!queryResults.jobComplete) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">48</span></pre></td><td class="code"><pre><span class="line">        Utilities.sleep(sleepTimeMs);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">49</span></pre></td><td class="code"><pre><span class="line">        sleepTimeMs *&#x3D; 2;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">50</span></pre></td><td class="code"><pre><span class="line">        queryResults &#x3D; BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">51</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">52</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">53</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Get all results from BigQuery.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">54</span></pre></td><td class="code"><pre><span class="line">      var rows &#x3D; queryResults.rows;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">55</span></pre></td><td class="code"><pre><span class="line">      while (queryResults.pageToken) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">56</span></pre></td><td class="code"><pre><span class="line">        queryResults &#x3D; BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">57</span></pre></td><td class="code"><pre><span class="line">          pageToken: queryResults.pageToken</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">58</span></pre></td><td class="code"><pre><span class="line">        &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">59</span></pre></td><td class="code"><pre><span class="line">        rows &#x3D; rows.concat(queryResults.rows);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">60</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">61</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">62</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Return null if no data returned.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">63</span></pre></td><td class="code"><pre><span class="line">      if (!rows) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">64</span></pre></td><td class="code"><pre><span class="line">        return Logger.log(&#39;No rows returned.&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">65</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">66</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">67</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Create the new results spreadsheet.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">68</span></pre></td><td class="code"><pre><span class="line">      var spreadsheet &#x3D; SpreadsheetApp.create(QUERY_NAME);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">69</span></pre></td><td class="code"><pre><span class="line">      var sheet &#x3D; spreadsheet.getActiveSheet();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">70</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">71</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Add headers to Sheet.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">72</span></pre></td><td class="code"><pre><span class="line">      var headers &#x3D; queryResults.schema.fields.map(function(field) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">73</span></pre></td><td class="code"><pre><span class="line">        return field.name.toUpperCase();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">74</span></pre></td><td class="code"><pre><span class="line">      &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">75</span></pre></td><td class="code"><pre><span class="line">      sheet.appendRow(headers);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">76</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">77</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Append the results.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">78</span></pre></td><td class="code"><pre><span class="line">      var data &#x3D; new Array(rows.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">79</span></pre></td><td class="code"><pre><span class="line">      for (var i &#x3D; 0; i &lt; rows.length; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">80</span></pre></td><td class="code"><pre><span class="line">        var cols &#x3D; rows[i].f;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">81</span></pre></td><td class="code"><pre><span class="line">        data[i] &#x3D; new Array(cols.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">82</span></pre></td><td class="code"><pre><span class="line">        for (var j &#x3D; 0; j &lt; cols.length; j++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">83</span></pre></td><td class="code"><pre><span class="line">          data[i][j] &#x3D; cols[j].v;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">84</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">85</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">86</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">87</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Start storing data in row 2, col 1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">88</span></pre></td><td class="code"><pre><span class="line">      var START_ROW &#x3D; 2;      &#x2F;&#x2F; skip header row</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">89</span></pre></td><td class="code"><pre><span class="line">      var START_COL &#x3D; 1;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">90</span></pre></td><td class="code"><pre><span class="line">      sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">91</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">92</span></pre></td><td class="code"><pre><span class="line">      Logger.log(&#39;Results spreadsheet created: %s&#39;, spreadsheet.getUrl());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">93</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">94</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">95</span></pre></td><td class="code"><pre><span class="line">- 貼上script，編輯BigQuery query code</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">96</span></pre></td><td class="code"><pre><span class="line">- 命名為[&#96;bq-sheets-slides.gs&#96;](http:&#x2F;&#x2F;bq-sheets-slides.gs&#x2F;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">97</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">98</span></pre></td><td class="code"><pre><span class="line">    ![ Untitled%205.png](Untitled5.png)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">99</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">100</span></pre></td><td class="code"><pre><span class="line">- 主要BigQuery query cod內容</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">101</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">102</span></pre></td><td class="code"><pre><span class="line">    往public-data拿資料samples.shakespeare(莎士比亞作品)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">103</span></pre></td><td class="code"><pre><span class="line">    擷取作品中出现频率最高的10個單字，並依歡迎程度降冪排序</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">104</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">105</span></pre></td><td class="code"><pre><span class="line">    SELECT</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">106</span></pre></td><td class="code"><pre><span class="line">        LOWER(word) AS word,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">107</span></pre></td><td class="code"><pre><span class="line">        SUM(word_count) AS count</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">108</span></pre></td><td class="code"><pre><span class="line">    FROM [bigquery-public-data:samples.shakespeare]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">109</span></pre></td><td class="code"><pre><span class="line">    GROUP BY word</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">110</span></pre></td><td class="code"><pre><span class="line">    ORDER BY count</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">111</span></pre></td><td class="code"><pre><span class="line">    DESC LIMIT 10</span></pre></td></tr></table></figure>
+
 <h3 id="4-驗證內容-Apps-Scripts"><a href="#4-驗證內容-Apps-Scripts" class="headerlink" title="4. 驗證內容 Apps Scripts"></a>4. 驗證內容 Apps Scripts</h3><ul>
 <li>第一次 run<ul>
 <li>review permissions 系統會再驗證一次user/pwd</li>
@@ -830,36 +758,7 @@ SUM(word_count) AS count</code></pre><p>  FROM [bigquery-public-data:samples.sha
 <h2 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h2><ul>
 <li>經濟日報 <a href="https://money.udn.com/money/story/6709/3784258" target="_blank" rel="noopener">https://money.udn.com/money/story/6709/3784258</a></li>
 <li>Who first said it? <a href="https://www.entrepreneur.com/article/249676" target="_blank" rel="noopener">(Don’t Let the Perfect Be the Enemy of the Good)</a></li>
-<li></li>
 </ul>
-<hr>
-<h2 id="Captures"><a href="#Captures" class="headerlink" title="Captures:"></a>Captures:</h2><ul>
-<li><p>  <a href="https://www.notion.so/305b15cd9f1b4bb8b8f529cf9b177b1e" target="_blank" rel="noopener">test</a></p>
-</li>
-</ul>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<p>突然懂了什麼</p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<p>信息時代的節奏</p>
-<p><img src="Untitled7.png" alt="Untitled7.png"></p>
-<p>用成本說明速節奏是合理的</p>
-<p>目標 與 行動 是不一樣的</p>
-<p>同樣的Google有個基礎服務，這個服務每星期要更新一次，每一次更新雖然會事先規劃好需要更新的全部的功能，但到了升級前，總有別的項目不能如期交付，以至于它的不完美。</p>
-<p>那怎麼辨呢？是否再等一兩天？Google的做法是不能等，因為永遠沒有完美的時候！將一個比原來更好的一點的版本按時提供給user，總比為了追求一個完美的版本，最後什麼都提供不了好得多。</p>
-<p>用數學來說明<br>打個比方，一個更好的改進可以讓我們獲得20%的收益，2次這樣的改進就能獲得40%，而我們自以為的完美最好的改進，不過是30%。</p>
-<p>因為我們隨著時間的進步，我們發現過去所認為的完美，其實並不完美了</p>
-<p>2 + 2 &gt; 3 的道理誰都懂，做事情不怕慢，就怕停</p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
-<p>目標 與 行動 是不一樣的</p>
-<p>雖然我們的目標是追求卓越，但是行動的步驟必須是延著時間推動的</p>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
-<p><img src="Untitled10.png" alt="Untitled10.png"></p>
-<p>結論：</p>
-<p><img src="Untitled11.png" alt="Untitled11.png"></p>
-<hr>
-<p><img src="Untitled12.png" alt="Untitled12.png"></p>
-<p><img src="Untitled13.png" alt="Untitled13.png"></p>
 
           
         
@@ -2396,7 +2295,7 @@ SUM(word_count) AS count</code></pre><p>  FROM [bigquery-public-data:samples.sha
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Joe Huang</p>
-              <p class="site-description motion-element" itemprop="description">Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |           Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
           </div>
 
           <nav class="site-state motion-element">
