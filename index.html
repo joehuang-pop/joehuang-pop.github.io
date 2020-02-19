@@ -83,7 +83,7 @@
 <meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黃大仙的雲端修行室">
-<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
 <meta property="og:description" content="雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.">
 <meta property="og:locale" content="en">
@@ -117,7 +117,7 @@
 
 
 
-  <link rel="canonical" href="https://joehuang-pop.github.io/"/>
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/"/>
 
 
 
@@ -231,7 +231,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -273,6 +273,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -302,208 +324,17 @@
       
         
           
-            <h1 id="GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on"><a href="#GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on" class="headerlink" title="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on"></a>[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</h1><hr>
-<h2 id="Getting-Started-with-BQML"><a href="#Getting-Started-with-BQML" class="headerlink" title="Getting Started with BQML"></a>Getting Started with BQML</h2><p><a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">Getting Started with BQML | Qwiklabs</a></p>
-<h2 id="▌只要會SQL就能做Machine-Learning？"><a href="#▌只要會SQL就能做Machine-Learning？" class="headerlink" title="▌只要會SQL就能做Machine Learning？"></a>▌只要會SQL就能做Machine Learning？</h2><p>是的！沒錯，BigQuery ML是bases BigQuery，它的運作是提取BigQuery 內的data提供ML訓練模型。使用上80%的語法都是原本的Query的語法，使用ML時儘需加入<code>model_type</code>，如此即可建立從Data Warehouse打造出來的專屬情境模型</p>
-<blockquote>
-<p><a href="https://cloud.google.com/bigquery/" target="_blank" rel="noopener">BigQuery Machine Learning</a> (BQML, product in beta) enables users to create and execute machine learning models in BigQuery using SQL queries. The goal is to democratise machine learning by enabling SQL practitioners to build models using their existing tools and to increase development speed by eliminating the need for data movement.</p>
-</blockquote>
-<h2 id="▌機器學習的原理-x-天文軌道"><a href="#▌機器學習的原理-x-天文軌道" class="headerlink" title="▌機器學習的原理 x 天文軌道"></a>▌機器學習的原理 x 天文軌道</h2><p>先用一個例子來解釋什麼是機器學習？機器學習(ML)實際上是尋找一種<code>數學模型</code>，讓這種模型符合它所要描述的對象。比如說我們要尋找一種描述天體運動的模型，讓它符合太陽系行星的運動情況，今天這個模型就是開普勒-牛頓的橢圓形模型:太陽系中所有的行星和彗星圍繞著太陽系的重心(和太陽的位置很接近但是有所差別)，做橢圓運動。當然，這個模型內不同物體的運動速度和周期不同，這些數據被稱為模型的<code>參數</code>。</p>
-<p>有了這樣一個模型，就可以知道今後太陽系中行星和彗星的運行規律了，哈雷就用它成功地預測了哈雷彗星未來回到人們視野的時間。</p>
-<blockquote>
-<p>因此在模型中，要得到模型的參數(比如每一個星體運動的長軸半徑，運動一圈的周期)，就要根據觀察到的歷史資料計算</p>
-</blockquote>
-<h2 id="▌Mobile-x-預測交易機率"><a href="#▌Mobile-x-預測交易機率" class="headerlink" title="▌Mobile x 預測交易機率"></a>▌Mobile x 預測交易機率</h2><p>換一個例子，我們想透過mobile裝置的歷史資料包括device.operatingSystem、device.isMobile、使用者的國家、以及總瀏覽次數，共四項指標去預測客戶<code>再次交易的機率</code></p>
-<pre><code>#standardSQL
-CREATE OR REPLACE MODEL `bqml_lab.sample_model`
-OPTIONS(model_type=&apos;logistic_reg&apos;) AS
-SELECT
-  IF(totals.transactions IS NULL, 0, 1) AS label,
-  IFNULL(device.operatingSystem, &quot;&quot;) AS os,
-  device.isMobile AS is_mobile,
-  IFNULL(geoNetwork.country, &quot;&quot;) AS country,
-  IFNULL(totals.pageviews, 0) AS pageviews
-FROM
-  `bigquery-public-data.google_analytics_sample.ga_sessions_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN &apos;20160801&apos; AND &apos;20170631&apos;
-LIMIT 100000;</code></pre><h3 id="其中"><a href="#其中" class="headerlink" title="其中"></a>其中</h3><ol>
-<li><p>一開始我們使用 <strong><code>[CREATE MODEL](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create?hl=zh-tw)</code></strong> 子句來建立及訓練名為 <strong><code>bqml_tutorial.sample_model</code></strong> 的模型。</p>
-<p> <strong><code>OPTIONS(model_type=&#39;logistic_reg&#39;)</code></strong> 子句代表您在建立<a href="https://en.wikipedia.org/wiki/Logistic_regression" target="_blank" rel="noopener">邏輯迴歸</a>模型。 邏輯迴歸模型會嘗試將輸入資料拆分成兩個類別，並且給予各類別資料一個機率。</p>
-<p> 這邊有用 <code>0</code>,<code>1</code> 的 label<code>標示</code>有沒有交易，像這樣有標記的就是supervised learning，訓練出的模型可以對一個新的使用者行為資料預測他”會不會交易”</p>
-<blockquote>
-<p>以辨識電子郵件是否屬於垃圾郵件為例，其屬於您有意偵測的事件；這類事件通常會用 1 表示，而不在此類的他種事件，則以 0 代表。若邏輯迴歸模型輸出 0.9，則表示有 90% 的機率為輸入資料是您想偵測的事件 (電子郵件屬於垃圾郵件)。</p>
-</blockquote>
-</li>
-<li><p>這個查詢的 <strong><code>SELECT</code></strong> 語法提取下列欄位，而這些欄位可被模型用來預測顧客完成交易的機率:</p>
-<ul>
-<li><strong><code>totals.transactions</code></strong> — 訪客於當次工作階段內所達成的電子商務交易總數，若交易次數是 <strong><code>NULL</code></strong>，<strong><code>label</code></strong> 欄位的值就會被設為 <strong><code>0</code></strong>，否則該欄位就會被設定為 <strong><code>1</code></strong>，這些值皆可用來表示可能的結果。若要在 <strong><code>CREATE MODEL</code></strong> 陳述式中設定 <strong><code>input_label_cols=</code></strong> 選項，那麼建立一個名為 <strong><code>label</code></strong> 的別名是可行的替代方案。<ul>
-<li><strong><code>device.operatingSystem</code></strong> — 訪客裝置的作業系統。</li>
-<li><strong><code>device.isMobile</code></strong> — 用來表示訪客的裝置是否為行動裝置。</li>
-<li><strong><code>geoNetwork.country</code></strong> — 以 IP 位置來表示該次工作階段的流量來源國家。</li>
-<li><strong><code>totals.pageviews</code></strong> — 當次工作階段的總檢視頁數。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong><code>FROM</code></strong> 子句 — <strong><code>bigquery-public-data.google_analytics_sample.ga_sessions_*</code></strong> </p>
-<ul>
-<li>表示正在查詢 Google Analytics 樣本資料集此資料集位在 <strong><code>bigquery-public-data</code></strong> 專案中，以日期為分類查詢一組資料表。這可用資料表名稱中的萬用字元來表示：<strong><code>google_analytics_sample.ga_sessions_*</code></strong></li>
-</ul>
-</li>
-<li><p><strong><code>WHERE</code></strong> 子句 — <strong><code>_TABLE_SUFFIX BETWEEN &#39;20160801&#39; AND &#39;20170630&#39;</code></strong> — 限制了查詢所能夠掃描的資料表數量，而所掃描的日期區間則是從 2016.08.01 年 8 月 1 - 2017.06.30</p>
-</li>
-</ol>
-<h2 id="▌模型有那些呢-Supported-models-in-BigQuery-ML"><a href="#▌模型有那些呢-Supported-models-in-BigQuery-ML" class="headerlink" title="▌模型有那些呢 | Supported models in BigQuery ML"></a>▌模型有那些呢 | Supported models in BigQuery ML</h2><p>看完上面的例子，還算簡單吧？因為除了既有的SQL語法之外，其實就只一條code 是在建立模型 → “OPTIONS(model_type=’logistic_reg’)”，那麼到底有幾種呢？</p>
-<p><a href="https://cloud.google.com/bigquery-ml/docs/bigqueryml-intro" target="_blank" rel="noopener">Introduction to BigQuery ML | Google Cloud</a></p>
-<p>目前有三大類forecasting、classification、 data segmentation，包含客製model共五種：</p>
-<ol>
-<li>Linear regression for forecasting</li>
-<li>Binary logistic for classification</li>
-<li>Multiclass logistic regression for classification</li>
-<li>K-means clustering for data segmentation</li>
-<li>TensorFlow model importing | 客製用</li>
-</ol>
-<p>以下簡單說明模型使用的場景：</p>
-<h3 id="1-Binary-logistic-二元分類模型"><a href="#1-Binary-logistic-二元分類模型" class="headerlink" title="1. Binary logistic | 二元分類模型"></a>1. Binary logistic | 二元分類模型</h3><p>簡單說就是用來做二分法，非A及B，就是兩個可能的類別之中，選其中一個當作結果</p>
-<ul>
-<li><strong>二元分類問題範例</strong><ul>
-<li>是否問題 → 「這個電子郵件是否為垃圾郵件？」</li>
-<li>會不會問題 → 「客戶會不會購買此產品？」</li>
-<li>是A還是B → 「這個產品是書籍還是電子產品？」</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-Multiclass-logistic-多類別分類模型"><a href="#2-Multiclass-logistic-多類別分類模型" class="headerlink" title="2. Multiclass logistic | 多類別分類模型"></a>2. Multiclass logistic | 多類別分類模型</h3><p>Multiclass logistic ML 模型可讓您為多類別產生預測，簡單說就是預測兩個以上結果的其中一個。</p>
-<ul>
-<li><strong>多類別問題範例</strong><ul>
-<li>「這個產品是書籍、電影還是衣服？」</li>
-<li>「這個電影是浪漫喜劇片、紀錄片還是驚悚片？」</li>
-<li>「這個客戶最感興趣的產品類別為何？」</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-Linear-regressio-線性回歸模型"><a href="#3-Linear-regressio-線性回歸模型" class="headerlink" title="3. Linear regressio | 線性回歸模型"></a>3. Linear regressio | 線性回歸模型</h3><p>回歸問題的 ML 模型預測未來可能發生問題，使用數值做為結果基礎。</p>
-<ul>
-<li><strong>回歸問題範例</strong><ul>
-<li>「西雅圖明天的溫度為何？」</li>
-<li>「這個產品會售出多少單位？」</li>
-<li>「這棟房屋的售價為何？」</li>
-</ul>
-</li>
-</ul>
-<h2 id="▌實戰BigQuery"><a href="#▌實戰BigQuery" class="headerlink" title="▌實戰BigQuery"></a>▌實戰BigQuery</h2><h3 id="1-訓練模型"><a href="#1-訓練模型" class="headerlink" title="#1. 訓練模型"></a>#1. 訓練模型</h3><p>訓練模型之前有個前提是帶你的dataset，因屬於BigQuery工作這邊先不多述。看我們的例子使用的模型類型是二元邏輯回歸。在這種情況下，標籤就是你試圖適應的東西</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<ul>
-<li><p>訓練結果| Execution details<br>產出有三個criteria可以參考：loss、Duration、Learn rate。我們可以發現<code>iteration</code>(迭代)經過了八次，確實有助了<code>loss</code>的下降，代表模型有很高的正確率</p>
-<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
-</li>
-<li><p><strong>什麼是學習率(learn rate)</strong><br>這個參數是掌握模型的學習進度，如何調learn rate是訓練出好模型的關鍵要素。比如說learn rate對梯度下降的影響，如果learn rate太小，代表對神經網絡進行非常小的權重更新，會使其訓練變非常緩慢；另外learn rate太大，可能導致無法收斂。</p>
-</li>
-<li><p><strong>什麼遺失值(loss)</strong></p>
-<p>  ML演算法是透過若干已知預測結果的範例 (像是使用者購買次數的歷史資料) 以及藉由迭代法來不斷調整模型中的各式權重，使得模型預測得以與真實數值吻合。最後能達到這個目標，是因為機器學習演算法透過「遺失」指標降低模型的錯誤預測。</p>
-<p>  預期目標是每次迭代，遺失值越來越低 (理想狀況是降低到 0)。遺失值 0，代表模型具有 100% 的正確率。</p>
-</li>
-</ul>
-<blockquote>
-<p>「訓練資料遺失率」(Training Data Loss) 資料欄代表在訓練資料集上指定迭代後計算出來的損失指標。由於您執行了邏輯迴歸，因此該資料欄是<a href="https://en.wikipedia.org/wiki/Cross_entropy#Cross-entropy_error_function_and_logistic_regression" target="_blank" rel="noopener">對數損失</a>， 「評估資料遺失率」(Evaluation Data Loss) 資料欄是在保留資料集上計算的相同損失指標 (從訓練資料收回以驗證模型的資料)。</p>
-</blockquote>
-<h3 id="2-使用Model-預測"><a href="#2-使用Model-預測" class="headerlink" title="#2. 使用Model 預測"></a>#2. 使用Model 預測</h3><p>剛訓練完的模型，可以再經過一次資料評估但這邊先省略，直帶入做預測，我們要做的是用此模型來預測結果，您使用模型預測來自於每<code>一個國家的網站訪客所進行的交易次數</code>。</p>
-<ul>
-<li>FROM ml.EVALUATE(MODEL <code>bqml_lab.sample_model</code>：選擇方才建立的模型</li>
-<li>SELECT：選擇進入的變數</li>
-<li>FROM：選擇進入的table</li>
-<li>WHERE：指定table 的日期</li>
-</ul>
-<p>選用的資料集為</p>
-<ul>
-<li><p>ml.EVALUATE(MODEL `bqml_lab.sample_model</p>
-</li>
-<li><p>選用每個國家的網站訪客所進行的交易次數 → 故SELECT country</p>
-</li>
-<li><p>使用的資料期間為<code>20170701 - 20170801</code> → 注意這次帶入的資料就是用不同區間的資料</p>
-<p>  #standardSQL<br>  SELECT</p>
-<pre><code>country,
-SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
-<pre><code>ML.PREDICT(MODEL `bqml_tutorial.sample_model`, (</code></pre><p>  SELECT</p>
-<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
-device.isMobile AS is_mobile,
-IFNULL(totals.pageviews, 0) AS pageviews,
-IFNULL(geoNetwork.country, &quot;&quot;) AS country</code></pre><p>  FROM</p>
-<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
-<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY country<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10</p>
-</li>
-</ul>
-<p>通過這個查詢，預測每個國家的訪問者進行的交易數量，對結果進行排序，並根據購買情況選擇前10個國家：</p>
-<h3 id="其中-1"><a href="#其中-1" class="headerlink" title="其中"></a>其中</h3><ul>
-<li><p><code>[ML.PREDICT](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-predict?hl=zh_tw)</code> 函式可運用您的 <code>bqml_tutorial.sample_model</code> 模型來預測結果。</p>
-<p>  這個查詢的巢狀 <code>SELECT</code> 陳述式及 <code>FROM</code> 子句與 <code>CREATE MODEL</code> 查詢中的相同。</p>
-</li>
-<li><p><code>WHERE</code> 子句 — <code>_TABLE_SUFFIX BETWEEN &#39;20170701&#39; AND &#39;20170801&#39;</code> — 它限定查詢掃描的資料表數量，日期區間提定在 2017.07.01 - 2017.08.01 ，</p>
-</li>
-<li><p><code>GROUP BY</code> 與 <code>ORDER BY</code> 子句藉由國家名稱分組結果，並以遞減方式將預測到的交易次數加總後進行遞減排序。</p>
-</li>
-<li><p><code>LIMIT</code> 子句在此處的用途是僅顯示前 10 筆查詢結果。</p>
-</li>
-<li><p>Job info</p>
-<ul>
-<li><code>duration</code>：可以看到執行的時間花了1.7 sec</li>
-<li><code>bytes processed</code>：這次Query，是以量計價的模式(on-demand )，BigQuery 會根據「bytes processed處理的位元組數」，白話說也就是系統讀取的bytes，這項指標來收取執行查詢作業的費用</li>
-</ul>
-</li>
-</ul>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<ul>
-<li><p>work timing<br>完整從SQL篩選資料給ML訓練使用</p>
-<p>  Input → Join → Aggregate → Compute(S03)平行運算 → Compute(S04)平行運算 → Output</p>
-<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
-</li>
-</ul>
-<h3 id="3-預測結果說明"><a href="#3-預測結果說明" class="headerlink" title="3. 預測結果說明"></a>3. 預測結果說明</h3><ul>
-<li><p><strong>預測1：</strong></p>
-<p>  執行 ML.PREDICT 查詢，可以看到表格是預測各國的消費預測如下表</p>
-<ul>
-<li><p>預估1：美國會有209次的購買</p>
-</li>
-<li><p>預估2：台灣會有006次的購買</p>
-</li>
-<li><p>預估3：加國會有004次的購買</p>
-<p>  <img src="Untitled4.png" alt="Untitled4.png"></p>
-</li>
-</ul>
-</li>
-<li><p><strong>預測2：</strong></p>
-<p>  另外也可以修改Query，變成是預測每位使用者的購買量，我們把f<code>ullVisitorId</code> 加入到<code>SELECT</code></p>
-<ul>
-<li><p>預估1：客戶ID: 2537542…910，未來會有4次的購買</p>
-</li>
-<li><p>預估2：客戶ID: 9681060…629，未來會有3次的購買</p>
-</li>
-<li><p>預估3：客戶ID: 7102244…635，未來會有3次的購買</p>
-<p>  #standardSQL<br>  SELECT</p>
-<pre><code>fullVisitorId,
-SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
-<pre><code>ml.PREDICT(MODEL `bqml_lab.sample_model`, (</code></pre><p>  SELECT</p>
-<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
-device.isMobile AS is_mobile,
-IFNULL(totals.pageviews, 0) AS pageviews,
-IFNULL(geoNetwork.country, &quot;&quot;) AS country,
-fullVisitorId</code></pre><p>  FROM</p>
-<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
-<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY fullVisitorId<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10;</p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="▌Reference"><a href="#▌Reference" class="headerlink" title="▌Reference:"></a>▌Reference:</h2><ol>
-<li>Qwikilab :<a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/2157?parent=catalog</a></li>
-<li><a href="https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html" target="_blank" rel="noopener">https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html</a></li>
-<li>說明Iteration, Loss: <a href="https://jtcozylife.com/google-machine-learning-crash-course-%E7%AD%86%E8%A8%98-part-2/" target="_blank" rel="noopener">https://jtcozylife.com/google-machine-learning-crash-course-筆記-part-2/</a></li>
-<li>完的ML訓練過程說明 <a href="https://ithelp.ithome.com.tw/articles/10221245" target="_blank" rel="noopener">https://ithelp.ithome.com.tw/articles/10221245</a></li>
-</ol>
-
-          
+          [GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on
+Getting Started with BQMLGetting Started with BQML | Qwiklabs
+▌只要會SQL就能做Machine Learning？是的
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -550,7 +381,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -621,24 +452,18 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
-<p><a href="https://www.youtube.com/watch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
-<p><img src="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
-<p><a href="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
-<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
-<p>與傳統的TCP/IP 不同最主要地方，BBR主要是估計</p>
-<ul>
-<li><code>頻寬</code>和<code>延遲</code>狀況</li>
-<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
-</ul>
-<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCP/IP ( TCP/IP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
-<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http://google.com/" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
-<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https://www.mile.cloud/zh-hant/tcp-bbr-congestion-control-comes-to-gcp/" target="_blank" rel="noopener">https://www.mile.cloud/zh-hant/tcp-bbr-congestion-control-comes-to-gcp/</a></li>
-<li><a href="https://caloskao.org/tcp-bottleneck-bandwidth-and-round-trip-propagation-time/" target="_blank" rel="noopener">https://caloskao.org/tcp-bottleneck-bandwidth-and-round-trip-propagation-time/</a></li>
-</ol>
+          什麼是 TCP BBR | What is BBR?Status: Completed
+Faster Networking with TCP BBR (Cloud Performance Atlas)
 
-          
+http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjP
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -685,7 +510,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/sorted/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/17/TCP-BBR-What-is-BBR/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -704,7 +529,7 @@ fullVisitorId</code></pre><p>  FROM</p>
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/19/TCP-BBR-What-is-BBR/sorted/" itemprop="url">TCP-BBR-What-is-BBR/sorted</a></h1>
+                <a class="post-title-link" href="/2020/02/17/TCP-BBR-What-is-BBR/" itemprop="url">TCP BBR What is BBR</a></h1>
         
 
         <div class="post-meta">
@@ -716,8 +541,8 @@ fullVisitorId</code></pre><p>  FROM</p>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:57:54+08:00">
-                2020-02-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-17T14:57:54+08:00">
+                2020-02-17
               </time>
             
 
@@ -726,6 +551,28 @@ fullVisitorId</code></pre><p>  FROM</p>
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -756,24 +603,18 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
-<p><a href="https:www.youtube.comwatch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
-<p><img src="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
-<p><a href="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
-<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
-<p>與傳統的TCPIP 不同最主要地方，BBR主要是估計</p>
-<ul>
-<li><code>頻寬</code>和<code>延遲</code>狀況</li>
-<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
-</ul>
-<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCPIP ( TCPIP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
-<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http:google.com" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
-<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp" target="_blank" rel="noopener">https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp</a></li>
-<li><a href="https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time" target="_blank" rel="noopener">https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time</a></li>
-</ol>
+          什麼是 TCP BBR | What is BBR?Status: Completed
+Faster Networking with TCP BBR (Cloud Performance Atlas)
 
-          
+http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAA
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/17/TCP-BBR-What-is-BBR/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -820,142 +661,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Joe Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黃大仙的雲端修行室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/19/TCP-BBR-What-is-BBR/" itemprop="url">TCP BBR What is BBR</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:57:54+08:00">
-                2020-02-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
-<p><a href="https:www.youtube.comwatch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
-<p><img src="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
-<p><a href="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
-<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
-<p>與傳統的TCPIP 不同最主要地方，BBR主要是估計</p>
-<ul>
-<li><code>頻寬</code>和<code>延遲</code>狀況</li>
-<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
-</ul>
-<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCPIP ( TCPIP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
-<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http:google.com" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
-<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp" target="_blank" rel="noopener">https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp</a></li>
-<li><a href="https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time" target="_blank" rel="noopener">https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -1048,85 +754,16 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="GCP-Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#GCP-Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="[GCP]Google Apps Scripts 串接 GCP BigQuery"></a>[GCP]Google Apps Scripts 串接 GCP BigQuery</h1><h2 id="Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="Google Apps Scripts 串接 GCP BigQuery"></a>Google Apps Scripts 串接 GCP BigQuery</h2><h3 id="Google-Apps-Scripts"><a href="#Google-Apps-Scripts" class="headerlink" title="Google Apps Scripts"></a>Google Apps Scripts</h3><p><a href="https://script.google.com/u/0/home" target="_blank" rel="noopener">Apps Script</a></p>
-<p>Apps Script是Google開發的腳本平台，用於在G Suite平台中進行輕量級應用程序開發。可以簡單的後端功能也就能輕鬆實現了，這篇將會介紹如何使用 Google Apps Script，實現串接Cloud BigQuery</p>
-<blockquote>
-<p><code>&quot;Apps Script is a serverless JavaScript runtime for G suite automation, extension, and integration.&quot;</code><br>It is server-side JavaScript, similar to Node.js, but focuses on tight integration with G Suite and other Google services rather than fast asynchronous event-driven application hosting. It also features a development environment that may be completely different from what you’re used to. With Apps Script, you:</p>
-</blockquote>
-<ul>
-<li>Develop in a browser-based code editor but can choose to develop locally if using <a href="http://developers.google.com/apps-script/guides/clasp" target="_blank" rel="noopener">clasp</a>, the command-line deployment tool for Apps Script</li>
-<li>Code in a specialized version of JavaScript customized to access G Suite, and other Google or external services (via the Apps Script <a href="https://developers.google.com/apps-script/reference/url-fetch/" target="_blank" rel="noopener">URLfetch</a> or <a href="https://developers.google.com/apps-script/reference/jdbc/" target="_blank" rel="noopener">Jdbc</a> services)</li>
-<li>Avoid writing authorization code because Apps Script handles it for you</li>
-<li>Do not have to host your app—it lives and runs on Google servers in the cloud</li>
-</ul>
-<h3 id="▌實作步驟"><a href="#▌實作步驟" class="headerlink" title="▌實作步驟"></a>▌實作步驟</h3><ol>
-<li>登入Google Apps Scripts，建立一個新的App scripts</li>
-<li>啟用 GCP BigQuery API</li>
-<li>編寫script：BigQuery code</li>
-<li>驗證內容 Apps Scripts</li>
-</ol>
-<hr>
-<h3 id="1-登入Google-Apps-Scripts，建立一個新的App-scripts"><a href="#1-登入Google-Apps-Scripts，建立一個新的App-scripts" class="headerlink" title="1. 登入Google Apps Scripts，建立一個新的App scripts"></a>1. 登入Google Apps Scripts，建立一個新的App scripts</h3><ul>
-<li><p>開啟一開新專案</p>
-<p>  <img src="Untitled.png" alt=" Untitled.png"></p>
-</li>
-<li><p>建立一個為為first-appscript project</p>
-<p>  <img src="Untitled%201.png" alt=" Untitled%201.png"></p>
-</li>
-</ul>
-<h3 id="2-啟用-GCP-BigQuery-API"><a href="#2-啟用-GCP-BigQuery-API" class="headerlink" title="2. 啟用 GCP BigQuery API"></a>2. 啟用 GCP BigQuery API</h3><p>啟用API設定有二個地方，第一是GCP API &amp; Service</p>
-<p>第二是App Script中的 Advanced Google service</p>
-<ul>
-<li><p>設定 App Script  “Advanced Google service”</p>
-<p>  <img src="Untitled2.png" alt=" Untitled%202.png"></p>
-</li>
-<li><p>BigQuery API → <code>on</code></p>
-<p>  <img src="Untitled3.png" alt=" Untitled%203.png"></p>
-</li>
-<li><p>GCP API &amp; Service → <code>API enabled</code></p>
-<p>  <img src="Untitled4.png" alt=" Untitled%204.png"></p>
-</li>
-</ul>
-<h3 id="3-編寫Script：BigQuery-code"><a href="#3-編寫Script：BigQuery-code" class="headerlink" title="3. 編寫Script：BigQuery code"></a>3. 編寫Script：BigQuery code</h3><p>這個是Google提供的範本，我們僅需要修改二個部份</p>
-<ol>
-<li>GCP Project ID： <code>var PROJECT_ID = &#39;&lt;YOUR_PROJECT_ID&gt;&#39;</code></li>
-<li>實際跑BigQuery code：<code>function runQuery()</code> </li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">     * Copyright 2018 Google LLC</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">     * you may not use this file except in compliance with the License.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">     * You may obtain a copy of the License at apache.org&#x2F;licenses&#x2F;LICENSE-2.0.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">     * Unless required by applicable law or agreed to in writing, software</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">     * See the License for the specific language governing permissions and</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">     * limitations under the License.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">     *&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; Filename for data results</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    var QUERY_NAME &#x3D; &quot;Most common words in all of Shakespeare&#39;s works&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; Replace this value with your Google Cloud API project ID</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    var PROJECT_ID &#x3D; &#39;&lt;YOUR_PROJECT_ID&gt;&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    if (!PROJECT_ID) throw Error(&#39;Project ID is required in setup&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">     * Runs a BigQuery query; puts results into Sheet. You must enable</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">     * the BigQuery advanced service before you can run this code.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;developers.google.com&#x2F;apps-script&#x2F;advanced&#x2F;bigquery#run_query</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;github.com&#x2F;gsuitedevs&#x2F;apps-script-samples&#x2F;blob&#x2F;master&#x2F;advanced&#x2F;bigquery.gs</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">     *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">     * @returns &#123;Spreadsheet&#125; Returns a spreadsheet with BigQuery results</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">     * @see http:&#x2F;&#x2F;developers.google.com&#x2F;apps-script&#x2F;reference&#x2F;spreadsheet&#x2F;spreadsheet</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">     *&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">    function runQuery() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Replace sample with your own BigQuery query.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">      var request &#x3D; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">        query:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">            &#39;SELECT &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">                &#39;LOWER(word) AS word, &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">                &#39;SUM(word_count) AS count &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">            &#39;FROM [bigquery-public-data:samples.shakespeare] &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">            &#39;GROUP BY word &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">            &#39;ORDER BY count &#39; +</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">            &#39;DESC LIMIT 10&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line">      &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line">      var queryResults &#x3D; BigQuery.Jobs.query(request, PROJECT_ID);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">      var jobId &#x3D; queryResults.jobReference.jobId;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Wait for BQ job completion (with exponential backoff).</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">46</span></pre></td><td class="code"><pre><span class="line">      var sleepTimeMs &#x3D; 500;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">47</span></pre></td><td class="code"><pre><span class="line">      while (!queryResults.jobComplete) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">48</span></pre></td><td class="code"><pre><span class="line">        Utilities.sleep(sleepTimeMs);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">49</span></pre></td><td class="code"><pre><span class="line">        sleepTimeMs *&#x3D; 2;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">50</span></pre></td><td class="code"><pre><span class="line">        queryResults &#x3D; BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">51</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">52</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">53</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Get all results from BigQuery.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">54</span></pre></td><td class="code"><pre><span class="line">      var rows &#x3D; queryResults.rows;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">55</span></pre></td><td class="code"><pre><span class="line">      while (queryResults.pageToken) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">56</span></pre></td><td class="code"><pre><span class="line">        queryResults &#x3D; BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">57</span></pre></td><td class="code"><pre><span class="line">          pageToken: queryResults.pageToken</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">58</span></pre></td><td class="code"><pre><span class="line">        &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">59</span></pre></td><td class="code"><pre><span class="line">        rows &#x3D; rows.concat(queryResults.rows);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">60</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">61</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">62</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Return null if no data returned.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">63</span></pre></td><td class="code"><pre><span class="line">      if (!rows) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">64</span></pre></td><td class="code"><pre><span class="line">        return Logger.log(&#39;No rows returned.&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">65</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">66</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">67</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Create the new results spreadsheet.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">68</span></pre></td><td class="code"><pre><span class="line">      var spreadsheet &#x3D; SpreadsheetApp.create(QUERY_NAME);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">69</span></pre></td><td class="code"><pre><span class="line">      var sheet &#x3D; spreadsheet.getActiveSheet();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">70</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">71</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Add headers to Sheet.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">72</span></pre></td><td class="code"><pre><span class="line">      var headers &#x3D; queryResults.schema.fields.map(function(field) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">73</span></pre></td><td class="code"><pre><span class="line">        return field.name.toUpperCase();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">74</span></pre></td><td class="code"><pre><span class="line">      &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">75</span></pre></td><td class="code"><pre><span class="line">      sheet.appendRow(headers);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">76</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">77</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Append the results.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">78</span></pre></td><td class="code"><pre><span class="line">      var data &#x3D; new Array(rows.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">79</span></pre></td><td class="code"><pre><span class="line">      for (var i &#x3D; 0; i &lt; rows.length; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">80</span></pre></td><td class="code"><pre><span class="line">        var cols &#x3D; rows[i].f;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">81</span></pre></td><td class="code"><pre><span class="line">        data[i] &#x3D; new Array(cols.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">82</span></pre></td><td class="code"><pre><span class="line">        for (var j &#x3D; 0; j &lt; cols.length; j++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">83</span></pre></td><td class="code"><pre><span class="line">          data[i][j] &#x3D; cols[j].v;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">84</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">85</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">86</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">87</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; Start storing data in row 2, col 1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">88</span></pre></td><td class="code"><pre><span class="line">      var START_ROW &#x3D; 2;      &#x2F;&#x2F; skip header row</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">89</span></pre></td><td class="code"><pre><span class="line">      var START_COL &#x3D; 1;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">90</span></pre></td><td class="code"><pre><span class="line">      sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">91</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">92</span></pre></td><td class="code"><pre><span class="line">      Logger.log(&#39;Results spreadsheet created: %s&#39;, spreadsheet.getUrl());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">93</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">94</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">95</span></pre></td><td class="code"><pre><span class="line">- 貼上script，編輯BigQuery query code</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">96</span></pre></td><td class="code"><pre><span class="line">- 命名為[&#96;bq-sheets-slides.gs&#96;](http:&#x2F;&#x2F;bq-sheets-slides.gs&#x2F;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">97</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">98</span></pre></td><td class="code"><pre><span class="line">    ![ Untitled%205.png](Untitled5.png)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">99</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">100</span></pre></td><td class="code"><pre><span class="line">- 主要BigQuery query cod內容</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">101</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">102</span></pre></td><td class="code"><pre><span class="line">    往public-data拿資料samples.shakespeare(莎士比亞作品)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">103</span></pre></td><td class="code"><pre><span class="line">    擷取作品中出现频率最高的10個單字，並依歡迎程度降冪排序</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">104</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">105</span></pre></td><td class="code"><pre><span class="line">    SELECT</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">106</span></pre></td><td class="code"><pre><span class="line">        LOWER(word) AS word,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">107</span></pre></td><td class="code"><pre><span class="line">        SUM(word_count) AS count</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">108</span></pre></td><td class="code"><pre><span class="line">    FROM [bigquery-public-data:samples.shakespeare]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">109</span></pre></td><td class="code"><pre><span class="line">    GROUP BY word</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">110</span></pre></td><td class="code"><pre><span class="line">    ORDER BY count</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">111</span></pre></td><td class="code"><pre><span class="line">    DESC LIMIT 10</span></pre></td></tr></table></figure>
-
-<h3 id="4-驗證內容-Apps-Scripts"><a href="#4-驗證內容-Apps-Scripts" class="headerlink" title="4. 驗證內容 Apps Scripts"></a>4. 驗證內容 Apps Scripts</h3><ul>
-<li>第一次 run<ul>
-<li>review permissions 系統會再驗證一次user/pwd</li>
-<li>執行完會產出Google sheet</li>
-</ul>
-</li>
-</ul>
-<p><img src="Untitled6.png" alt=" Untitled%206.png"></p>
-<h3 id="Google-Drive"><a href="#Google-Drive" class="headerlink" title="Google Drive"></a>Google Drive</h3><ul>
-<li><p>去看看產出名為 <code>Most common words in all of Shakespeare&#39;s works</code> 的sheet</p>
-<p>  <img src="Untitled7.png" alt=" Untitled%207.png"></p>
-</li>
-<li><p>檢視一下檔案內容，看到計算出的結果</p>
-<p>  <img src="Untitled8.png" alt=" Untitled%208.png"></p>
-</li>
-</ul>
-<h3 id="驗證從原本的bq-也有一樣的結果"><a href="#驗證從原本的bq-也有一樣的結果" class="headerlink" title="驗證從原本的bq 也有一樣的結果"></a>驗證從原本的bq 也有一樣的結果</h3><ul>
-<li>同樣的Query，直接在BigQuery執行</li>
-</ul>
-<p><img src="Untitled9.png" alt=" Untitled%209.png"></p>
-<h3 id="Query-history"><a href="#Query-history" class="headerlink" title="Query history"></a>Query history</h3><ul>
-<li><p>從query history可以看到剛剛的執行結果</p>
-<p>  <img src="Untitled10.png" alt=" Untitled%2010.png"></p>
-</li>
-<li><p>第二次直接使用BigQuery的執行結果也出現在history中</p>
-<p>  <img src="Untitled11.png" alt=" Untitled%2011.png"></p>
-</li>
-</ul>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>[1] <a href="https://www.qwiklabs.com/focuses/3565?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/3565?parent=catalog</a></p>
-<p>[2] <a href="https://script.google.com/u/0/home" target="_blank" rel="noopener">https://script.google.com/u/0/home</a></p>
-<hr>
-
-          
+          [GCP]Google Apps Scripts 串接 GCP BigQueryGoogle Apps Scripts 串接 GCP BigQueryGoogle Apps ScriptsApps Script
+Apps Script是Google開發的腳本平台，用於在G Suite平台中進行輕量級
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1173,7 +810,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -1266,49 +903,17 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="啟發-偽工作者-Pseudo-Worker"><a href="#啟發-偽工作者-Pseudo-Worker" class="headerlink" title="[啟發] 偽工作者 | Pseudo Worker"></a>[啟發] 偽工作者 | Pseudo Worker</h1><p>Status: Published Medium</p>
-<p>想在年前想要有個漂亮的收尾，今天分享工作效率方面的話題，來自得到App | 吳軍 | 矽谷來信 | 第001封信，不作一個偽工作者</p>
-<p>很多人會覺得每天的事情太多，總是做不完，是現代人遇到的一個普遍問題，尤其是發展特別快的行業裡 (比如IT領域)的人或者創業者。唯一的解決方法恐怕就是一些事情不要做了，而不是把所有的事情湊合做完了(學習減法的智慧)，我們先來看看一個在Google的工作智慧</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>img from: <a href="https://www.euronews.com/2019/04/22/two-google-employees-say-company-retaliated-after-they-organized-walkout-n997266" target="_blank" rel="noopener">euronews.com</a></p>
-<h2 id="故事一"><a href="#故事一" class="headerlink" title="故事一"></a>故事一</h2><p>Google在2006年成立了中國分公司後，而Google總部一開始對中國研發團隊的評價相當低，遲遲未得到Google總部的認可，這段過程非常漫長。最初，北京3、4工程師抵不上Google Google總部的1個工程師，主要的原因就是工作沒效率。</p>
-<blockquote>
-<p>吳軍先生分享當時的情況：「我經過訪談，並協助分析原因。發現北京工程師們其實也挺忙的，但是產出卻不高，他們自己也很焦慮。我把一些工程師叫到會議室，讓他們把手中的工作都列了出來，他們每個人列出4~5項要做的工作，有的人可能更多一點。</p>
-</blockquote>
-<p>然後我問他們，如果完成了其中的一半，你們是否就不再那麼焦慮了。他們大部分人都給我肯定的回答，這也合情合理，工作少了一半，壓力也應該少一半。我告訴他們，當他們完成了兩三項任務後(一半工作)，他們手上 的任務依然是四五項，不會減少，甚至可能更多，因為新的任務又了。<br>因為這個行業行業發展太快，這和傳統軟體公司情況不一樣。」</p>
-<h2 id="認真工作的認知"><a href="#認真工作的認知" class="headerlink" title="認真工作的認知"></a>認真工作的認知</h2><ul>
-<li><p>傳統的軟體開發中：任務是事先定義清楚的，雖然在開發的過程中有所變動，但是變動不大，你只要在規定的時間前完成自己的模塊就可以了，隨著時間的推移，剩下的工作是越來越少。</p>
-</li>
-<li><p>網路公司的產品：開發則不同，它的產品是一個動態迭代的過程。無法清晰定義一個靜態的版本，新的問題總是不斷地湧現，每一個問題似乎都有必要立即解決，因此不存在一個把工作隊列清空的可能性。</p>
-</li>
-</ul>
-<blockquote>
-<p>在這樣的大背景下，一個人所追求的不應該是完成了%之幾，或者%幾十的工作，<strong><em>而是做完了哪幾件重要的事情</em></strong>。一個聰明的工作者，應該善於找到最重要的工作，並且優先完成它們 → 這是所有新員工都欠缺的技能，也是大家對於%的迷思。</p>
-</blockquote>
-<p>簡單的說：就是當處於工作永遠做不完的處境時，先把那些最重要的完成了。試試看，這樣你的工作狀態會不會發生改變？</p>
-<p>在Google總部，新員工永遠只佔一小部分，因此很容易在有經驗的員工帶動下比較快地掌握工作 技能。而在中國，幾乎所有的工程師都是剛畢業的學生，沒有人告訴他們該怎樣工作，因此雖然大家很忙，但是卻沒有對公司的發展產生什麼重大效果。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="什麼是偽工作者-Pseudo-Worker"><a href="#什麼是偽工作者-Pseudo-Worker" class="headerlink" title="什麼是偽工作者 | Pseudo Worker"></a>什麼是偽工作者 | Pseudo Worker</h2><p>前一陣Yahoo被<code>Verizon</code>收購了，標誌著一個時代的結束。Yahoo這個曾經被看作是網路的代名詞的公司，走到今天悲慘的地步有很多原因，其中一條就是<strong><em>他們的員工做了太多的偽工 作</em></strong>。只要看看他們產品的變化就能知道這一點，他們產品不斷地改版， 其實這些改版也不增加新功能，也沒有讓人覺得更好用，另外一方面它們也很少開發新的產品。</p>
-<p>在Google內，上述這種每天應付事務性工作的人被稱為Pseudo Worker，後來Facebook學習Google的很多管理方法，也使用這種說法，而Pseudo Worker直譯出來就是…</p>
-<blockquote>
-<p><strong>“偽工作者” ：</strong>這些人每天 把自己搞得很忙，他們所做的工作可能也是公司裡面存在的工作。但是那些工作(也被稱為偽工作)不產生什麼效果。</p>
-</blockquote>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>img from: [Flickriver]( Flickriver pseudo worker - a photo on Flickriver)</p>
-<h2 id="如何防止偽工作者呢"><a href="#如何防止偽工作者呢" class="headerlink" title="如何防止偽工作者呢?"></a>如何防止偽工作者呢?</h2><p>怎樣才能防止員工成為偽工作者呢？有二個方針：</p>
-<ul>
-<li>管理者要讓員工站在「做什麼事情能讓公司最大獲益」的基礎上去工作。如此，<strong>他們在做不完的工作中，才能動腦筋去尋找那些對公司最有幫助的事情去做</strong>，而不是簡單應付老板派下來的工作，然後向老闆交差。在一個知識型企業中，管理者不可能對員工進行事無巨細的管理，因此員工的主動性很重要。</li>
-<li><strong>管理者要讓員工明白，<em>他們積極工作 (而不是消極完成任務)，最大的受益方是他們自己</em></strong>。公司裡不免有員工對自己對處境、周圍人的態度、所給予的機會等等，有不滿意的時候，這種時候，他們會消極對待工作，不自覺地成為一個不動腦筋的偽工作者。<br>有些鬼精的人，甚至會表現出一種任勞任怨的態度，也不和老闆爭執，被動地從老闆指派的工作中找一些容易的工作來做，而不是那些有挑戰的任務。當被問起為何不接有困難的任務時，他們總是推脫說時間不夠。</li>
-</ul>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>在一間公司待一年左右，對於那些鬼精的同事總是會浮現出來，公司面對這樣的人，一般老闆還真拿他們沒有辦法，在考評時只好讓他及格。但是這些人實際上在坑自己，因為那些<strong><em>偽工作</em></strong>做得越多，個人進步就越慢，甚至能力還會倒退。這樣想或許對自已會些安慰，也算是一種警愓，另外一種打算就是快離開那裡。</p>
-<p>有些時候需要換一個角度來審視我們所做的事情，就會發現，捨棄一些事情也未嘗不可。<br>再寬泛地講，其實很多人在生活中，也是不斷地把時間浪費在那些其實可做可不做的事情<br>上。最後，我想說的真的有自知的員工(我指的是那些會善用時間讓自已成長的朋友)，</p>
-<p>會不停地追求有價值的事情，反而忽略那些鬼精的同仁們</p>
-<blockquote>
-<p>所以每當你因為總是幹也幹不完的工作而焦慮時<br>不妨試試先停下來，重新梳理一遍手邊的工作</p>
-</blockquote>
-<p>→ 主動地站在對公司業務幫助最大的角度！<br>→ 主動站在提升自己能力的角度！</p>
-
-          
+          [啟發] 偽工作者 | Pseudo WorkerStatus: Published Medium
+想在年前想要有個漂亮的收尾，今天分享工作效率方面的話題，來自得到App | 吳軍 | 矽谷來信 | 第001封信，不作一個偽工作者
+很多人會覺得每天的事情太多，總是做不完，是現代人遇到的一個普遍問題，
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1355,7 +960,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-Don-t-Let-Best-be-Enemy-of-Better-%E6%9C%80%E5%A5%BD%E6%98%AF%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B5%E4%BA%BA/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E5%95%9F%E7%99%BC-Don-t-Let-Best-be-Enemy-of-Better-%E6%9C%80%E5%A5%BD%E6%98%AF%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B5%E4%BA%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -1448,43 +1053,16 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人"><a href="#啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人" class="headerlink" title="[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人"></a>[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人</h1><p>近來讀了一篇很有心得的文章，特此下筆分享給大家，習得觀念是從訂閱&lt;得到&gt;app 有聲書而來的，它是吳軍老師 | 硅谷來信 | 第215封信</p>
-<p>一開始看到這個主題，還不懂它的意思，直到文中提到，工作中很多時候我們無所作為不是因為不想做事，而是一根筋地追求最好(完美)，最後什麼也沒有得到。</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h2 id="更白話的說："><a href="#更白話的說：" class="headerlink" title="更白話的說："></a>更白話的說：</h2><p>人們時常因為一昧追求美完，而忘記自已還是原地踏步，道理很容易懂，不過也常一鼓腦兒想朝向盡善盡美境界，因為價值 = 經驗 x 時間 更是讓人有滿滿的感觸</p>
-<p>雖然我們說要實現最後10%，但這並<strong>不意謂我們不可以接受部份的改進</strong>。很多時候，一個完美結果需要很<strong>多次的改進才能實現，而不是一步就位</strong>。</p>
-<p>一步到位，追求完美的觀念。或許是來自工業時代的觀念，因為製造出來的產品不能有任何的瑕疪，這會影響整體的量產，最終管理學也造就了<a href="https://zh.wikipedia.org/zh-tw/%E5%85%AD%E6%A8%99%E6%BA%96%E5%B7%AE" target="_blank" rel="noopener">6 Sigma(σ)</a>，來提升品質</p>
-<h2 id="保時捷-911的例子"><a href="#保時捷-911的例子" class="headerlink" title="保時捷 911的例子"></a>保時捷 911的例子</h2><p>著名保時捷911的開發者<a href="https://zh.wikipedia.org/wiki/%E6%96%90%E8%BF%AA%E5%8D%97%C2%B7%E4%BF%9D%E6%99%82%E6%8D%B7" target="_blank" rel="noopener">小保時捷</a>，是承習父親的喜愛汽車基因，而他不滿現況<a href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E4%BC%97%E7%94%B2%E5%A3%B3%E8%99%AB" target="_blank" rel="noopener">福斯金龜車</a>(Volkswagen Beetle)馬力不足。也因此下定決心打造一台完美的汽車。他所創立的汽車公司最初所生產的跑車，亦是從福斯金龜車發展而來，但保時捷911更具備他所期望 → 馬力。最後他為了追求完美，成功打造一台保時捷911風靡全球，這個是工業時代的典範。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p>你看現今911跑車是不是還保有金龜車的神韻</p>
-<h2 id="軟工思維-v-s-產品疊代"><a href="#軟工思維-v-s-產品疊代" class="headerlink" title="軟工思維 v.s 產品疊代"></a>軟工思維 v.s 產品疊代</h2><p>一位在Google老員工小黃，曾待過全球衛星製造商SUSS MicroTec，IBM以及Yahoo，他身上流著純軟體工程的血液，事事都要做好規劃且開發時，必須嚴格導循軟體規範。這樣的工作思維讓他很不習新東家Yahoo環境，他看到Yahoo工程師時間一到軟體就匆忙上線，身為主管的他，跟他的下屬說明開發是要按照規範做事，但工程師回應說：「我們產品的疊代週期根本趕不上競爭對手阿」</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>軟體工程學中的UML 關系圖</p>
-<h2 id="漸進式節奏是合理的"><a href="#漸進式節奏是合理的" class="headerlink" title="漸進式節奏是合理的"></a>漸進式節奏是合理的</h2><p>我們來分析一下，在資訊時代下的產物(軟體)，其實它的召回成本不算太高，因此在工業時代的擔心其實是沒有必要的。後來小黃他到了Google也漸漸這樣的節奏，意思是說</p>
-<blockquote>
-<p>他已經習慣每一次工作做更好，而不是最到最好。</p>
-</blockquote>
-<p>在資訊時代，最有效的工作方式就是保證每一次要比先前更好，且能做到持續不斷的進步，而不是為了追求最好把工作的週期無限拖長</p>
-<h2 id="iOS更新災情"><a href="#iOS更新災情" class="headerlink" title="iOS更新災情"></a>iOS更新災情</h2><p>最近iphone iOS 13自動更新，引起很多用戶反應發生系統問題，我家人也是深受其害。但讀完上面的例子，你現在可以理解在資訊時代，軟體的開發節奏似乎大於一切，突然懂了什麼…原來這就是資訊時代的節奏阿</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>由蘋果人blog整理災情資訊: <a href="https://applealmond.com/posts/59808" target="_blank" rel="noopener">https://applealmond.com/posts/59808</a></p>
-<h2 id="“目標”-與-“行動”-是不一樣的"><a href="#“目標”-與-“行動”-是不一樣的" class="headerlink" title="“目標” 與 “行動” 是不一樣的"></a>“目標” 與 “行動” 是不一樣的</h2><p>同樣的，Google有個基礎服務，這個服務每星期要更新一次，每一次更新雖然會事先規劃好需要更新的全部的功能，但到了升級前，總有別的項目不能如期交付，以至于它的不完美。</p>
-<p>那怎麼辨呢？是否再等一兩天？</p>
-<blockquote>
-<p>Google的做法是不能等，因為永遠沒有完美的時候！</p>
-</blockquote>
-<p>將一個比原來更好的一點的版本按時提供給user，總比為了追求一個完美的版本，最後什麼都提供不了好得多。</p>
-<h2 id="用數學打個比方"><a href="#用數學打個比方" class="headerlink" title="用數學打個比方"></a>用數學打個比方</h2><p>假如一個更好的改進可以讓我們獲得<strong>20%的收益</strong>，<strong>2次</strong>這樣的改進就能獲得40%，而我們自以為的完美最好的改進，不過是30%。</p>
-<p>2 + 2 &gt; 3 的道理誰都懂，做事情不怕慢，就怕停<br>因為我們隨著時間的推進，我們發現</p>
-<blockquote>
-<p>過去所認為的完美，其實並不完美了</p>
-</blockquote>
-<h2 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h2><ul>
-<li>經濟日報 <a href="https://money.udn.com/money/story/6709/3784258" target="_blank" rel="noopener">https://money.udn.com/money/story/6709/3784258</a></li>
-<li>Who first said it? <a href="https://www.entrepreneur.com/article/249676" target="_blank" rel="noopener">(Don’t Let the Perfect Be the Enemy of the Good)</a></li>
-</ul>
-
-          
+          [ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人近來讀了一篇很有心得的文章，特此下筆分享給大家，習得觀念是從訂閱&lt;得到&gt;app 有聲書而來的，它是吳軍老師 | 硅谷來信 | 第215封信
+一開始看到這個主題，還不懂它的意思，直到文中
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E5%95%9F%E7%99%BC-Don-t-Let-Best-be-Enemy-of-Better-%E6%9C%80%E5%A5%BD%E6%98%AF%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B5%E4%BA%BA/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1531,7 +1109,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -1624,46 +1202,16 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening"><a href="#啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening" class="headerlink" title="[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening"></a>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</h1><p>Status: Published Medium</p>
-<h2 id="常言道：一日之計在於晨"><a href="#常言道：一日之計在於晨" class="headerlink" title="常言道：一日之計在於晨"></a>常言道：一日之計在於晨</h2><p>世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，<strong>一日之計在於晨</strong>，說得是學習和工作一定要抓緊早上的時光。可是早上覺得有精神到底是一種感覺呢，還是真有什麼明顯的影響呢？</p>
-<p>光有知道這個道理是不行的，我們還需要知道這個道理重要程度，是不是真值得我們調整做事的優先級別，因此你需要有實證有量化分析，這就是</p>
-<blockquote>
-<p><strong>科學方法</strong> 和傳統智慧的差別</p>
-</blockquote>
-<p>本文是讀完&lt;得到&gt;app | 萬維鋼老師的 | &lt;見機&gt; 這門課心得，課堂參考2018出版的&lt;見機：完美的科學秘密&gt; (When The Scientific Secrets of Perfect Timing)內容，作者透過大量數據來解釋人們如何使用的時間，並提醒人們使用時間才有效率</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p><a href="https://www.books.com.tw/products/F014128997" target="_blank" rel="noopener">https://www.books.com.tw/products/F014128997</a></p>
-<h2 id="一日之中的高低潮"><a href="#一日之中的高低潮" class="headerlink" title="一日之中的高低潮"></a>一日之中的高低潮</h2><p>下圖是紐約時報的報導，X軸是一天之中的時刻，Y軸代表的是情緒，總得來說人們在週未的情緒普遍上較好，另外一個觀察是不論是那一天，情緒變化的曲線型狀都非常相似</p>
-<p>早上起來七八點鐘是情緒的高峰，這時候大家說話比較正面，之後人們的情緒變化會慢慢變低落，到下午五點左右達到最低潮(等下班)。而晚上，人們的情緒又開始回升，到了午夜又達到一個高峰，您不妨可以檢視自已是有吻合這樣的情緒浮動</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study</a></p>
-<h2 id="研究指出：情緒變化三個時段"><a href="#研究指出：情緒變化三個時段" class="headerlink" title="研究指出：情緒變化三個時段"></a>研究指出：情緒變化三個時段</h2><p>人的下丘腦之中有個視交叉核，負責整個不同時段的荷爾蒙分佈，其實這就是我們的生理時鐘。而情緒，顯然是受到時生理時鐘的影響。</p>
-<p>總結來說，我們可以把一天的之中的情緒變化分為三段：</p>
-<blockquote>
-<p>上午達到高峰，下午經歷低潮，晚上出現反彈</p>
-</blockquote>
-<h2 id="集中精神的時機點"><a href="#集中精神的時機點" class="headerlink" title="集中精神的時機點"></a>集中精神的時機點</h2><p><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">大腦有二種思維模式</a>：一種是<strong>集中思維</strong>，需要你嚴格按照規則執行，比如說做數學題。集中思維要求大腦處於機靈的狀態，集中注意力。另一種是<strong>發散思維</strong>，適合創造性的活動，注意力不集，混亂一點反而更好。若依照上面的統計結果：<strong>你最好在上午從事集中思維，下午從事發散思維</strong>。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>「專注模式」和「發散模式」 <a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">https://www.thenewslens.com/article/88323</a></p>
-<h2 id="粹鍊過的大數據結論"><a href="#粹鍊過的大數據結論" class="headerlink" title="粹鍊過的大數據結論"></a>粹鍊過的大數據結論</h2><p>相信或不相信科學結果是主觀的決定。但你都不知道的生理反應，數據則會說話。會有人說，難到我早上自已起來精力好不好，什麼時候適合做什麼自已還不知道嗎？為什麼要聽研究報告說的話？</p>
-<p>你可能真的不知道，但你肯定有個印象，你沒做過量化分析，也許你感覺上午精力更好，但是你不知道有多少，你不知道值不值得為此改變作習，改變工作安排</p>
-<h2 id="量化應用在運動"><a href="#量化應用在運動" class="headerlink" title="量化應用在運動"></a>量化應用在運動</h2><p>現在很流行的量化自我的運動，誰誰誰每天跑了幾公里，把距離分享到社交網路，還要和朋友比較一驟。但社交可不是量化自我的真正的本義，量化自我是一種科學的方法，它的真正目的是為了了解自已、研究自已、對自已做出更好的安排</p>
-<h2 id="高手善於觀察自已"><a href="#高手善於觀察自已" class="headerlink" title="高手善於觀察自已"></a>高手善於觀察自已</h2><p>科學的價值是什麼。別人是用分析了四億條twitter和26000個con-call才得出這些結論，而且給你提供了一個度。有這個度(量)，我們才談得上是科學決策</p>
-<p>量化分析是高手必備的能力。你到底是白天雲雀還是夜間貓頭鷹？自已做個量化分析，看看你在一天中的高峰，低潮和反彈期到底是在什麼時候，並好好的利你的有限時間吧</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>不管心情怎麼變化，都要認識、掌握自已 photo by medium.com</p>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>人的情緒和認知能力在一天之中有明顯的變化，可以分為高峰、低潮和反彈三個時段。你必須</p>
-<blockquote>
-<p>了解自已的這三個時間都在什麼候，對各種任務給予合理的安排</p>
-</blockquote>
-<h3 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h3><ul>
-<li>&lt;得到&gt;app | 萬維鋼老師 | &lt;見機&gt;</li>
-<li><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">Moods on Twitter Follow Biological Rhythms, Study Find - NYTimes.com</a></li>
-<li><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">《深度學習的技術》：從「專注模式」切換到「發散模式」</a></li>
-</ul>
-<hr>
-
-          
+          [啟發] 量化科學的一日之計 | An hour in the morning is worth two in the eveningStatus: Published Medium
+常言道：一日之計在於晨世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，一日之
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1710,7 +1258,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E5%AF%AB%E4%BD%9C%E7%9A%84%E6%96%87%E9%87%87-Improving-Qualities-of-Good-Writing/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E5%95%9F%E7%99%BC-%E5%AF%AB%E4%BD%9C%E7%9A%84%E6%96%87%E9%87%87-Improving-Qualities-of-Good-Writing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -1803,66 +1351,16 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="啟發-寫作的文采-Improving-Qualities-of-Good-Writing"><a href="#啟發-寫作的文采-Improving-Qualities-of-Good-Writing" class="headerlink" title="[啟發] 寫作的文采 | Improving Qualities of Good Writing"></a>[啟發] 寫作的文采 | Improving Qualities of Good Writing</h1><p>Status: Published Medium</p>
-<h2 id="什麼是文采"><a href="#什麼是文采" class="headerlink" title="什麼是文采"></a>什麼是文采</h2><p>此次心得是來自&lt;寫作，是最好的自我投資&gt;一書中的片段內容，分享於大家。什麼是文采？往往在寫作時，都希望自已的文章可以擁有一定的水準，最好像大師們一樣。而什麼是大師們的文采？更具體一點，可能是滿滿的成語，可能是滿滿的引經據典。</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>從字典上解釋：文辭方面的才華。更直觀的說法，是指它的語言帶給人<strong>審美上的愉悅感</strong>。</p>
-<p>我們可以把這種審美上的愉悅分為<strong>畫面感</strong>和<strong>音律感</strong>，分別對應「看」、「聽」這兩種人類最原始的接收資訊方式</p>
-<h2 id="愉悅感怎麼定義"><a href="#愉悅感怎麼定義" class="headerlink" title="愉悅感怎麼定義"></a><strong>愉悅感怎麼定義</strong></h2><blockquote>
-<p><strong>愉悅感來自畫面感和音律感</strong></p>
-</blockquote>
-<p>我們把感官直接獲得的資訊稱為<strong>形象化資訊</strong>，另外對比的則是<strong>抽象化</strong>話。寫作需要的是形象化！把原本讀書腦中還<strong>很抽象的概念將 → 它具體化</strong>，如此自然也會讓人自更容易接受，這也是為什麼電影版&lt;哈利波特&gt;總是比看小說版的&lt;哈利波特&gt;還要多</p>
-<h2 id="降低讀者理解成本"><a href="#降低讀者理解成本" class="headerlink" title="降低讀者理解成本"></a>降低讀者理解成本</h2><p>另外一個重點，一個好的作者，就應該以降低讀者的理解成本為目的。盡可能為你的讀者提供容易接受的資訊。</p>
-<p>那麼要如何去降低理解成本？請記住三點</p>
-<ol>
-<li>語言要簡單化、口語化</li>
-<li>文字要營造畫面感(塑景，讓腦中有個畫面)</li>
-<li>用具體代替抽象(講一個代表物，細細描述它)</li>
-</ol>
-<p>先談談技巧一：其實寫作是一個把思想編輯成網狀的輸出的一個線性過程，這個過程並不容易。因為讀都的收入一句一句話吸收，因此首先我們要讓句子簡單化，你只要做一件事：修改</p>
-<p>你一定聽說過，好文章都是修改出來的。這修改階段，重點是要改掉這幾個語法結構</p>
-<ul>
-<li>過長的子句(clause)</li>
-<li>多層的邏輯，比如雙重否定</li>
-<li>連續的形容詞</li>
-</ul>
-<p>先說明上面三種情況很容易讓讀者，為了尋找句子主軸而被迫放慢閱讀的速度，消秏掉他們的耐心。一個過長的子句，你應該要把它拆開成幾個短句。多層的邏輯則要拆成單一層的邏輯；盡量不用連續的形容詞，如果去掉形容詞會丟失語意，那就打掉原有句子結構，放棄過長的形容詞，重新安排一整句話。</p>
-<h2 id="技巧一：語言要簡單化、口語化-→-閱讀節奏感"><a href="#技巧一：語言要簡單化、口語化-→-閱讀節奏感" class="headerlink" title="技巧一：語言要簡單化、口語化 → 閱讀節奏感"></a>技巧一：語言要簡單化、口語化 → 閱讀節奏感</h2><p>短句跟長句相比，還有一個優點，就是有節奏感、音律感。想想我們平時說話，一般一口氣說話不超過十個字。在文章表達中，記住，多用逗號，會讓你的文字節奏更加明快。</p>
-<p>研究一下逗號的真正的用意…</p>
-<h2 id="技巧二：用文字建立一幅畫"><a href="#技巧二：用文字建立一幅畫" class="headerlink" title="技巧二：用文字建立一幅畫"></a>技巧二：用文字建立一幅畫</h2><p>即然人的大腦天生更<strong>容易識別具象化</strong>(圖)的東西，而不太容易記他那些抽象化的概念。</p>
-<p>那麼你就應該給讀者留下深刻印象，就得多善用<strong>文字構圖(這四個字也很抽象XD)</strong>。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p>photo by: website:&lt; People who daydream are more intelligent: study&gt;</p>
-<p>但我立馬提具體的做法，有三個思路</p>
-<ol>
-<li>多用動詞、名詞，少用形容詞</li>
-<li>善於抓細節</li>
-<li>善於用比喻(即是擬人法)</li>
-</ol>
-<h2 id="形容詞是疊加理解成本"><a href="#形容詞是疊加理解成本" class="headerlink" title="形容詞是疊加理解成本"></a>形容詞是疊加理解成本</h2><blockquote>
-<p>因為動詞和名詞是<strong>描述具體的事物</strong>，而<strong>形容詞是描述抽象的感知</strong></p>
-</blockquote>
-<p>舉例來說，描述人類復雜的心理情緒，或描述事物的某動作狀態，所以形容詞是會疊高閱讀的<strong>理解成本</strong></p>
-<p>書中有提到<strong>注意力寫作</strong>(前面沒有提到)要求我們使用更低的成本的詞彙，即是強調使用動詞和名詞。作者觀察到，只有在初級的寫作朋友會傾向用豪麗和模糊的形容詞。很有經驗的寫作者一定會克制對於形容詞的使用頻率，而更多的使用名詞和動詞</p>
-<p>我自已的理解：我想可以從英文文法中的形容司子句，它的存在就是可有可無，也不會影響原本句子的本意，就是這樣意涵吧</p>
-<h2 id="塑景-細節描寫"><a href="#塑景-細節描寫" class="headerlink" title="塑景 | 細節描寫"></a>塑景 | 細節描寫</h2><p>好的細節就好像好的材質和素料，賦予文字質感，細節描寫容易<strong>引發聯想(塑景)</strong>，讓產生帶入感，甚至達到身臨其境的效果。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>塑景的過程好比brianstorming，大伙把心中的idea說出來體體化</p>
-<p>書中舉一個美食作家曾祺的例子</p>
-<p>高郵鹹蛋的特點是質細而油多。蛋白柔嫩，不似別處的發乾，發粉，入口如嚼石灰。油多尤為別處及所不及…平常食用，一般都是敲敲「空頭」用筷子挖著吃。筷子頭一札下去。吱—— 紅油就冒出來了。</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>photo by: Jennifer’s Kitchen: 自製漏油鹹蛋</p>
-<p>你看，這段話的時候，高郵鹹蛋是否彷彿就在你的眼前，食慾都被勾起來了？</p>
-<h2 id="天下雜誌也是如此"><a href="#天下雜誌也是如此" class="headerlink" title="天下雜誌也是如此"></a>天下雜誌也是如此</h2><p>另外我自已也訂閱&lt;天下雜誌&gt;，長期閱讀下有觀察到每期的人物採訪亦或是故事報導，文章的開頭都有一段的場景描述，如擷圖：位於三峽區，小小兩公頃的廠區，堆滿了改裝的機器與上千個油槽…</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>photo by: &lt;天下雜誌 2019 10月刊&gt;</p>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>讀完這篇文章，你可以知道用<strong>畫面感和音律感</strong>來提升你的文章水準，而好的文章品是易讀和易理理，使用的手段可以用控制文章結構提高閱讀節奏感，另外由不同的面向細細描述一種事物，也容易讓讀者腦中塑景，使其更深入期境。</p>
-<h2 id="TOPIC-1-有具像化，也有抽象化，我們談表達…"><a href="#TOPIC-1-有具像化，也有抽象化，我們談表達…" class="headerlink" title="TOPIC 1:有具像化，也有抽象化，我們談表達…"></a>TOPIC 1:有具像化，也有抽象化，我們談表達…</h2><p>refer 羅胖文章</p>
-<h2 id="TOPIC-2-中文和英文的逗號"><a href="#TOPIC-2-中文和英文的逗號" class="headerlink" title="TOPIC 2: 中文和英文的逗號"></a>TOPIC 2: 中文和英文的逗號</h2><hr>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-
-          
+          [啟發] 寫作的文采 | Improving Qualities of Good WritingStatus: Published Medium
+什麼是文采此次心得是來自&lt;寫作，是最好的自我投資&gt;一書中的片段內容，分享於大家。什麼是文采？往往在寫作時，都希望自已的文章可以擁有一定的水準，
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E5%AF%AB%E4%BD%9C%E7%9A%84%E6%96%87%E9%87%87-Improving-Qualities-of-Good-Writing/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1909,7 +1407,7 @@ fullVisitorId</code></pre><p>  FROM</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E7%82%BA%E4%BB%80%E9%BA%BC%E6%8A%95%E8%B3%87%E6%9C%83%E8%B3%BA%E9%8C%A2/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E5%95%9F%E7%99%BC-%E7%82%BA%E4%BB%80%E9%BA%BC%E6%8A%95%E8%B3%87%E6%9C%83%E8%B3%BA%E9%8C%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -2002,66 +1500,167 @@ fullVisitorId</code></pre><p>  FROM</p>
       
         
           
-            <h1 id="啟發-為什麼投資會賺錢"><a href="#啟發-為什麼投資會賺錢" class="headerlink" title="[啟發] 為什麼投資會賺錢"></a>[啟發] 為什麼投資會賺錢</h1><p>Status: Published Medium</p>
-<p>今天的分享來自得到App | 吳軍谷歌方法論 | 146封信，說明了亞洲人炒房的始未，更用經濟學解釋了股市，會何長期來看要做多，而不能做空！</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h2 id="從盲從的人，變成了自由的人。"><a href="#從盲從的人，變成了自由的人。" class="headerlink" title="從盲從的人，變成了自由的人。"></a>從盲從的人，變成了自由的人。</h2><p>今天和明天，我們就來聊聊在投資中某些方面是站不住腳的，幾乎幾乎是永恆的真理，對於那些永恆的真理，其背後的原因是什麼？知道了裡面的原因，我們就從 被動狀態變成了主動狀態，從盲從的人，變成了自由的人。</p>
-<p>在一般人看來，投資必然有 回報，這是天經地義的事情。但是，很多人認為理所當然的事情，未必正確，而即便是那些我們每天都在使用的正確的結論，絕大部分人也不知道是為什麼？</p>
-<p>今天和明天，我們就來聊聊在投資中哪些結論是站不住腳的，哪些幾乎是永恆的真理，對於那些永恆的真理，其背後的原因是什麼?知道了裡面的原因，我們就從被動狀態變成了主動| 狀態，從盲從的人，變成了自由的人。</p>
-<h2 id="美洲發現了大銀礦"><a href="#美洲發現了大銀礦" class="headerlink" title="美洲發現了大銀礦"></a>美洲發現了大銀礦</h2><p>從歷史談財富的來源，先講講財富從哪裡來？</p>
-<p>財富只有兩個來源「創造」、「掠奪」</p>
-<p>從長遠本身，通過<strong>創造</strong>能獲得的財物富到遠比通過<strong>掠奪</strong>獲得的多得多。我們過對殖民時代有一個誤解，認為早期資本主義的財富是靠掠奪而來的。其實稍微有點一點頭腦的人可以算一筆賬，無論是非洲，美洲還是澳大利亞土著人，由於生產力極度低下，積累的那點財富少得可憐。甚至是後來西班牙人在美洲發現了大銀礦，接近乎掠奪獲得的財富，但是那些財富和英，荷重新創造的財富分配，只不過是九牛一毛，這也是後來為什麼葡萄牙和西班牙衰落，英，荷崛起的成就。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p>另外，西班牙人開採的白銀，大約有1/3運到了中國買商品，這麼多錢所購買的商品不過是中國生產的很小一部分而已。對於資本主義的發跡，馬克思和恩格斯有句話說得特別到位</p>
-<blockquote>
-<p>在不到100年的時間裡，資產類別創造的生產力比過去一切時代創造的全部積累還要多，還要”大”。這揭示了我們財富的來源之謎</p>
-</blockquote>
-<h2 id="談談「掠奪」"><a href="#談談「掠奪」" class="headerlink" title="談談「掠奪」"></a>談談「掠奪」</h2><p>但是今天，人們已經無法直接去掠奪金銀了，但是依然有人通過掠奪獲得財富。什麼財富具有掠奪這種性質呢？其實非常多，比如像歐洲養了非常多的具有勞動能力卻在家吃福利，過得比工薪階層還要好的人，他們其實是在掠奪財</p>
-<p>當然，對於東亞人和很多戰敗國家的人(比如德國)來講，在房地產上所獲得的財富也屬於這一類。在這些地區，大部分人主要的財富增長是來自於房地產的增值。房地產為什麼會增值呢?</p>
-<blockquote>
-<p>其實這部分價值(主要是土地的價值) 本身已經存在了，只是在開發房地產之前沒有量化度量而已</p>
-</blockquote>
-<p>這就像你家裡祖上留下一個花瓶，擺放了一百年也沒有人覺得它有什麼用， 忽然有一天佳士得的人跑來說，它值一個億， 於是你就有了一個億。</p>
-<blockquote>
-<p>土地的價值也是如此。這部分財富已經存在 了，就是沒有分配而已。後來土地可以變現後的價值是怎麼分配的呢？</p>
-</blockquote>
-<p>實際上誰有本事拿到就是誰的(掠奪的特點)。早期房地產開發商拿到了批零差價，而早期買房子的人實際上相當於拿到了零售的利潤說白了就是誰跑去拿，財富就給了誰。</p>
-<h2 id="談談「勞動創造」"><a href="#談談「勞動創造」" class="headerlink" title="談談「勞動創造」"></a>談談「勞動創造」</h2><p>財富的第二個來源是靠勞動創造，這也是長期來講最可靠的來源。債券、股票和房地產投資能夠獲得回報的主要原因，是因為它們<em>參與了創造財富的過程</em></p>
-<blockquote>
-<p>從本質上講，投資獲利能夠成立的唯一原因：<br>就是生產力是不斷發展的，從長遠來講是經濟能夠增長！</p>
-</blockquote>
-<h2 id="資本的作用是什麼呢"><a href="#資本的作用是什麼呢" class="headerlink" title="資本的作用是什麼呢?"></a>資本的作用是什麼呢?</h2><p>對於一個企業的主人來講，資本的作用是什麼呢？它可以加速獲利的速度。比如一個公司有 1億的規模，一年可以獲利2000萬(20%)， 如果它有2個億，將規模擴大一倍，在理想狀態下，它可以獲得4000萬利潤。如果僅僅是通過自然增長擴大規模，那麼它的商業增長速度就很慢。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>那麼簡單的辦法就是它借來一個億，賺了額外的2000萬之後，將其中一部分利潤(比如一半)提供給資本所有者。至於需要付給資本的所有者多少錢，就看資本本身是多麼稀缺的資源了。如果兩個競爭對手都需要這一個億的現金，那麼他們開出的價格就高。反過來，如果有兩個銀行家都想給一個工廠主貸款，銀行家們就不得不接受低利息。這就是企業貸款，以及後來能夠流通的企業債券的由來。顯然，當資本太多時，回報就一定 下降。明白這一點，就容易看清中國經濟上的 一些現象了。</p>
-<h2 id="利益的分配-股票的由來"><a href="#利益的分配-股票的由來" class="headerlink" title="利益的分配 | 股票的由來"></a>利益的分配 | 股票的由來</h2><p>當然有人會問，憑什麼經濟發展了，提供資本的人需要參加利益的分配呢？或者說創造財富的人為什麼必須把相當大的一部分利潤分給投資人呢?</p>
-<blockquote>
-<p>過去在中國普遍流行這樣一個經濟學觀點，就是<strong>利潤</strong>僅來自於勞動者的勞動 (即所謂的剩餘價值)，資本對於此沒有貢獻，因此資本不該參加分配利潤。</p>
-</blockquote>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>當然利益的分配的一種方式就是，一部分工廠主或者商人願意出讓一部分<strong><em>所有權</em></strong>獲得現金，而不借貸款，這就是後來股票的由來。 “股票”一詞的英文“stock”原意是存量，就是商人和工廠老闆所有的資產的代名詞。</p>
-<blockquote>
-<p>通常貨款和債券的回報是事先談好的且固定的。而股票的回報則是隨著一個公司贏利能力而變化的，如果創造財富的能力在增加， 那​​麼它的存量就值錢，資本的回報就增加。</p>
-</blockquote>
-<p>**總之資本是需要獲得回報的，這是錢能夠生錢的原因和合法性所在。</p>
-<p>對於一個國家，情況也是如此，假如經濟發展的速度是10%，也就是說它今年比去年多創造了10%的財富，那麼創造這些財富的公司(或者其他機構)的價值，也應該相應增長。因此，從這個角度講，股市從長期來看永遠是向上走的，這是投資時少數幾個幾乎永遠成立的結論。正是因為如此，巴菲特才不建議做空股市，因為這是和客觀規律相違背的，也正是因為如此，那些堅持在股市上長期不斷投資的人都賺到錢了，如果你是一般等閒之輩的，就不要輕易做空股票。</p>
-<hr>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>早期沒有錢買房人的人，對不起。你沒有資格參加利益分配，但這種屬於一次或的掠奪財。如果此生沒機會參加，你倒是可以好好善用資本與勞動創造的循環，也就是投資！</p>
-<p>讀了完資本跟利益的相關性，以及長期來看經濟向上的理由是緣自於「勞動創造」與「資本回創」，二大雙引擎，投資賺取利益的的循環就不會停下來。而擁有資本的人，它對社會上的任務就是不斷形這個流水，源源不絕倒進市場，他們的責任就是把賺到的錢在放入到社會，招來更多的生意跟受雇者，想想我們常說的M型化社會，其中一個意思是說大部份的錢集中到資本家身上，其實是一種善用活水的力量，他們把經驗跟火力撐起下一個經濟體，只是人們不喜歡總是住在大企業所建的規擇裡罷了。</p>
-<hr>
-<h2 id="股票的由來"><a href="#股票的由來" class="headerlink" title="股票的由來"></a>股票的由來</h2><p>當然，一部分工廠主或者商人願意出讓一部分 所有權獲得現金，而不借貸款，這就是後來股 票的由來。 “股票”一詞的英文“stock”原意是 | 存量，就是商人和工廠老闆所有的資產的代名詞。</p>
-<p>通常，貨款和債券的回報是事先談好的， 固定的。而股票的回報則是隨著一個公司贏利 能力而變化的，如果創造財富的能力在增加， 那​​麼它的存量就值錢，資本的回報就增加。但 是，不論是發行股票，還是藉貸款，總之資本 是需要獲得回報的，這是錢能夠生錢的原因和 合法性所在。<br>對於一個國家，情況也是如此，假如經濟發展的速度是10%，也就是說它今年比去年多創造了10%的財富，那麼創造這些財富的公司(或者其他機構)的價值，也應該相應增長。因 此，從這個角度講，股市從長期來看永遠是向 上走的，這是投資時少數幾個幾乎永遠成立的 結論。正是因為如此，巴菲特才不建議做空股 | 市，因為這是和客觀規律相違背的，也正是因 為如此，那些堅持在股市上長期不斷投資的人 都掙到錢了。</p>
-<h2 id="為什麼在全世界美國股市上漲比較快呢"><a href="#為什麼在全世界美國股市上漲比較快呢" class="headerlink" title="為什麼在全世界美國股市上漲比較快呢?"></a>為什麼在全世界美國股市上漲比較快呢?</h2><p>這裡面有兩個根本原因，首先是它的股市監管好， 風險小，而投資是要考慮風險的。根據我們之 前講的夏普比率，風險小的地方，這個比率就 會高，大家就願意投資，就會推高股市。<br>第二，也是最根本的，美國大部分上市公司都是國際化公司，標普500指數的成分股公司半的收入來自海外，通常美國GDP如果上漲1%，標普500指數能上漲2-3 %，這些放大效益主要來自於海外的利潤。此外，由於美國國產格採用退市製度，從2000年到2016年，退市公司的數量比上市公司的數量還略多，因此上市公司的資質較好，它們利潤的增長比未上市公司更快。只有保持上市公司的質量，股市才 能快速增長。<br>我們可以對比兩種不同的股市，一種是永遠只 保留10000家最好的公司，不合格的堅決淘 汰，可以想像這種股市的增長就會非常快。另 一一開始皇這nnon家上市公司 但見不</p>
-<h2 id="美股的監管與下市機制"><a href="#美股的監管與下市機制" class="headerlink" title="美股的監管與下市機制"></a>美股的監管與下市機制</h2><p>美股收益主要來自於海外的利潤。此外，由於美國嚴格採用”下市製度”，從2000年到2016年，<em>下市公司的數量比上市公司的數量還略多</em>，因此上市公司的品資較好，它們利潤的增長比未上市公司更快。只有保持上市公司的質量，股市才能快速增長。</p>
-<p>我們可以對比兩種不同的股市</p>
-<ul>
-<li>一種是永遠只保留10000家最好的公司，不合格的堅決淘汰，可以想像這種股市的增長就會非常快。</li>
-<li>第二種一開始是這10000家上市公司，但是不淘汰，很快這裡面很多家因為各種原因變得沒有競爭力了，甚至一半的公司幾乎沒有利潤，即使這時候加入2000家新的好公司，股市規模變成12000家，這種股市的表現一定不如第一種好，因為它有5000家公司在裡面。</li>
-</ul>
-<p>由於產業更新非常快，一個公司能夠20年經營得不錯都是件非常困難的事情，因此，沒有淘汰機制的股市表現一定好不了。</p>
-<p>理解了投資會有回報的本質，你就應該對(債</p>
-<hr>
+          [啟發] 為什麼投資會賺錢Status: Published Medium
+今天的分享來自得到App | 吳軍谷歌方法論 | 146封信，說明了亞洲人炒房的始未，更用經濟學解釋了股市，會何長期來看要做多，而不能做空！
+
+從盲從的人，變成了自由的人。今天和明天，我們就來聊聊在投資中某些方面是站不住腳的
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E7%82%BA%E4%BB%80%E9%BA%BC%E6%8A%95%E8%B3%87%E6%9C%83%E8%B3%BA%E9%8C%A2/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/%E6%8A%95%E8%B3%87-%E7%A4%BE%E6%9C%83%E5%83%B9%E5%80%BC-v-s-%E6%9C%83%E6%BB%BE%E5%8B%95%E7%9A%84%E7%8F%BE%E9%87%91%E6%B5%81-Identity-and-Rich-Dad-Impression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/12/%E6%8A%95%E8%B3%87-%E7%A4%BE%E6%9C%83%E5%83%B9%E5%80%BC-v-s-%E6%9C%83%E6%BB%BE%E5%8B%95%E7%9A%84%E7%8F%BE%E9%87%91%E6%B5%81-Identity-and-Rich-Dad-Impression/" itemprop="url">[投資] 社會價值 v.s 會滾動的現金流 | Identity and Rich Dad Impression</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:59:48+08:00">
+                2020-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%95%9F%E7%99%BC/" itemprop="url" rel="index">
+                    <span itemprop="name">啟發</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          [投資] 社會價值 v.s 會滾動的現金流 | Identity and Rich Dad ImpressionStatus: Published
+打理自已的事: 自已的資產欄此次心得是來自&lt;富爸爸，窮爸爸&gt;一書中的片段內容，分享於大家。作者常說打理自已的事業時，其意思就是建立自已強的大
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/12/%E6%8A%95%E8%B3%87-%E7%A4%BE%E6%9C%83%E5%83%B9%E5%80%BC-v-s-%E6%9C%83%E6%BB%BE%E5%8B%95%E7%9A%84%E7%8F%BE%E9%87%91%E6%B5%81-Identity-and-Rich-Dad-Impression/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2145,7 +1744,7 @@ fullVisitorId</code></pre><p>  FROM</p>
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2156,7 +1755,7 @@ fullVisitorId</code></pre><p>  FROM</p>
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 
               </div>
@@ -2167,7 +1766,7 @@ fullVisitorId</code></pre><p>  FROM</p>
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

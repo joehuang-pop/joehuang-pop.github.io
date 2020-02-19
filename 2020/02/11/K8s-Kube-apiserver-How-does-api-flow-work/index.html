@@ -83,20 +83,20 @@
 <meta name="keywords" content="K8s,kube-api">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s Kube apiserver How does api flow work">
-<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
 <meta property="og:description" content="[K8s] Kube-apiserver 工作流程 | How does api-flow work?▌什麼是 Kube-apiserver？kube-apiserver 是 Kubernetes 最重要的核心組件之一，它的位置在master node裡面 主要功能就是提供cluster管理，下面會用二個例跟大家來說明  Core Components of K8s  REST API ：包括認證">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled1.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled2.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled3.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled4.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled5.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled6.png">
 <meta property="og:updated_time" content="2020-02-12T07:13:23.641Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled.png">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;11&#x2F;K8s-Kube-apiserver-How-does-api-flow-work&#x2F;Untitled.png">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://joehuang-pop.github.io/2020/02/11/K8s-Kube-apiserver-How-does-api-flow-work/"/>
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/02/11/K8s-Kube-apiserver-How-does-api-flow-work/"/>
 
 
 
@@ -239,7 +239,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/11/K8s-Kube-apiserver-How-does-api-flow-work/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/11/K8s-Kube-apiserver-How-does-api-flow-work/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -495,7 +495,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -506,7 +506,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 
               </div>
@@ -517,7 +517,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

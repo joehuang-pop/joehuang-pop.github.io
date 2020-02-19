@@ -83,29 +83,29 @@
 <meta name="keywords" content="GCP,Cloud Scheduler,Google Pubsub">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost">
-<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
 <meta property="og:description" content="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP CostAgenda 前題要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機  不過用不同的關機指令或方法，有不同的關機速度像是OS">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled1.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled2.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled3.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled4.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled5.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled6.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled7.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled8.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;cloud.google.com&#x2F;scheduler&#x2F;docs&#x2F;images&#x2F;schedule-fields.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled9.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled10.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled11.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled12.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled13.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled14.png">
 <meta property="og:updated_time" content="2020-02-12T07:12:05.749Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;02&#x2F;12&#x2F;GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost&#x2F;Untitled.png">
 
 
 
@@ -135,7 +135,7 @@
 
 
 
-  <link rel="canonical" href="https://joehuang-pop.github.io/2020/02/12/GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost/"/>
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/02/12/GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost/"/>
 
 
 
@@ -248,7 +248,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost/">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/02/12/GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Joe Huang">
@@ -658,7 +658,7 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -669,7 +669,7 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 
               </div>
@@ -680,7 +680,7 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
