@@ -231,6 +231,730 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/" itemprop="url">[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:58:27+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on"><a href="#GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on" class="headerlink" title="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on"></a>[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</h1><hr>
+<h2 id="Getting-Started-with-BQML"><a href="#Getting-Started-with-BQML" class="headerlink" title="Getting Started with BQML"></a>Getting Started with BQML</h2><p><a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">Getting Started with BQML | Qwiklabs</a></p>
+<h2 id="▌只要會SQL就能做Machine-Learning？"><a href="#▌只要會SQL就能做Machine-Learning？" class="headerlink" title="▌只要會SQL就能做Machine Learning？"></a>▌只要會SQL就能做Machine Learning？</h2><p>是的！沒錯，BigQuery ML是bases BigQuery，它的運作是提取BigQuery 內的data提供ML訓練模型。使用上80%的語法都是原本的Query的語法，使用ML時儘需加入<code>model_type</code>，如此即可建立從Data Warehouse打造出來的專屬情境模型</p>
+<blockquote>
+<p><a href="https://cloud.google.com/bigquery/" target="_blank" rel="noopener">BigQuery Machine Learning</a> (BQML, product in beta) enables users to create and execute machine learning models in BigQuery using SQL queries. The goal is to democratise machine learning by enabling SQL practitioners to build models using their existing tools and to increase development speed by eliminating the need for data movement.</p>
+</blockquote>
+<h2 id="▌機器學習的原理-x-天文軌道"><a href="#▌機器學習的原理-x-天文軌道" class="headerlink" title="▌機器學習的原理 x 天文軌道"></a>▌機器學習的原理 x 天文軌道</h2><p>先用一個例子來解釋什麼是機器學習？機器學習(ML)實際上是尋找一種<code>數學模型</code>，讓這種模型符合它所要描述的對象。比如說我們要尋找一種描述天體運動的模型，讓它符合太陽系行星的運動情況，今天這個模型就是開普勒-牛頓的橢圓形模型:太陽系中所有的行星和彗星圍繞著太陽系的重心(和太陽的位置很接近但是有所差別)，做橢圓運動。當然，這個模型內不同物體的運動速度和周期不同，這些數據被稱為模型的<code>參數</code>。</p>
+<p>有了這樣一個模型，就可以知道今後太陽系中行星和彗星的運行規律了，哈雷就用它成功地預測了哈雷彗星未來回到人們視野的時間。</p>
+<blockquote>
+<p>因此在模型中，要得到模型的參數(比如每一個星體運動的長軸半徑，運動一圈的周期)，就要根據觀察到的歷史資料計算</p>
+</blockquote>
+<h2 id="▌Mobile-x-預測交易機率"><a href="#▌Mobile-x-預測交易機率" class="headerlink" title="▌Mobile x 預測交易機率"></a>▌Mobile x 預測交易機率</h2><p>換一個例子，我們想透過mobile裝置的歷史資料包括device.operatingSystem、device.isMobile、使用者的國家、以及總瀏覽次數，共四項指標去預測客戶<code>再次交易的機率</code></p>
+<pre><code>#standardSQL
+CREATE OR REPLACE MODEL `bqml_lab.sample_model`
+OPTIONS(model_type=&apos;logistic_reg&apos;) AS
+SELECT
+  IF(totals.transactions IS NULL, 0, 1) AS label,
+  IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+  device.isMobile AS is_mobile,
+  IFNULL(geoNetwork.country, &quot;&quot;) AS country,
+  IFNULL(totals.pageviews, 0) AS pageviews
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN &apos;20160801&apos; AND &apos;20170631&apos;
+LIMIT 100000;</code></pre><h3 id="其中"><a href="#其中" class="headerlink" title="其中"></a>其中</h3><ol>
+<li><p>一開始我們使用 <strong><code>[CREATE MODEL](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create?hl=zh-tw)</code></strong> 子句來建立及訓練名為 <strong><code>bqml_tutorial.sample_model</code></strong> 的模型。</p>
+<p> <strong><code>OPTIONS(model_type=&#39;logistic_reg&#39;)</code></strong> 子句代表您在建立<a href="https://en.wikipedia.org/wiki/Logistic_regression" target="_blank" rel="noopener">邏輯迴歸</a>模型。 邏輯迴歸模型會嘗試將輸入資料拆分成兩個類別，並且給予各類別資料一個機率。</p>
+<p> 這邊有用 <code>0</code>,<code>1</code> 的 label<code>標示</code>有沒有交易，像這樣有標記的就是supervised learning，訓練出的模型可以對一個新的使用者行為資料預測他”會不會交易”</p>
+<blockquote>
+<p>以辨識電子郵件是否屬於垃圾郵件為例，其屬於您有意偵測的事件；這類事件通常會用 1 表示，而不在此類的他種事件，則以 0 代表。若邏輯迴歸模型輸出 0.9，則表示有 90% 的機率為輸入資料是您想偵測的事件 (電子郵件屬於垃圾郵件)。</p>
+</blockquote>
+</li>
+<li><p>這個查詢的 <strong><code>SELECT</code></strong> 語法提取下列欄位，而這些欄位可被模型用來預測顧客完成交易的機率:</p>
+<ul>
+<li><strong><code>totals.transactions</code></strong> — 訪客於當次工作階段內所達成的電子商務交易總數，若交易次數是 <strong><code>NULL</code></strong>，<strong><code>label</code></strong> 欄位的值就會被設為 <strong><code>0</code></strong>，否則該欄位就會被設定為 <strong><code>1</code></strong>，這些值皆可用來表示可能的結果。若要在 <strong><code>CREATE MODEL</code></strong> 陳述式中設定 <strong><code>input_label_cols=</code></strong> 選項，那麼建立一個名為 <strong><code>label</code></strong> 的別名是可行的替代方案。<ul>
+<li><strong><code>device.operatingSystem</code></strong> — 訪客裝置的作業系統。</li>
+<li><strong><code>device.isMobile</code></strong> — 用來表示訪客的裝置是否為行動裝置。</li>
+<li><strong><code>geoNetwork.country</code></strong> — 以 IP 位置來表示該次工作階段的流量來源國家。</li>
+<li><strong><code>totals.pageviews</code></strong> — 當次工作階段的總檢視頁數。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong><code>FROM</code></strong> 子句 — <strong><code>bigquery-public-data.google_analytics_sample.ga_sessions_*</code></strong> </p>
+<ul>
+<li>表示正在查詢 Google Analytics 樣本資料集此資料集位在 <strong><code>bigquery-public-data</code></strong> 專案中，以日期為分類查詢一組資料表。這可用資料表名稱中的萬用字元來表示：<strong><code>google_analytics_sample.ga_sessions_*</code></strong></li>
+</ul>
+</li>
+<li><p><strong><code>WHERE</code></strong> 子句 — <strong><code>_TABLE_SUFFIX BETWEEN &#39;20160801&#39; AND &#39;20170630&#39;</code></strong> — 限制了查詢所能夠掃描的資料表數量，而所掃描的日期區間則是從 2016.08.01 年 8 月 1 - 2017.06.30</p>
+</li>
+</ol>
+<h2 id="▌模型有那些呢-Supported-models-in-BigQuery-ML"><a href="#▌模型有那些呢-Supported-models-in-BigQuery-ML" class="headerlink" title="▌模型有那些呢 | Supported models in BigQuery ML"></a>▌模型有那些呢 | Supported models in BigQuery ML</h2><p>看完上面的例子，還算簡單吧？因為除了既有的SQL語法之外，其實就只一條code 是在建立模型 → “OPTIONS(model_type=’logistic_reg’)”，那麼到底有幾種呢？</p>
+<p><a href="https://cloud.google.com/bigquery-ml/docs/bigqueryml-intro" target="_blank" rel="noopener">Introduction to BigQuery ML | Google Cloud</a></p>
+<p>目前有三大類forecasting、classification、 data segmentation，包含客製model共五種：</p>
+<ol>
+<li>Linear regression for forecasting</li>
+<li>Binary logistic for classification</li>
+<li>Multiclass logistic regression for classification</li>
+<li>K-means clustering for data segmentation</li>
+<li>TensorFlow model importing | 客製用</li>
+</ol>
+<p>以下簡單說明模型使用的場景：</p>
+<h3 id="1-Binary-logistic-二元分類模型"><a href="#1-Binary-logistic-二元分類模型" class="headerlink" title="1. Binary logistic | 二元分類模型"></a>1. Binary logistic | 二元分類模型</h3><p>簡單說就是用來做二分法，非A及B，就是兩個可能的類別之中，選其中一個當作結果</p>
+<ul>
+<li><strong>二元分類問題範例</strong><ul>
+<li>是否問題 → 「這個電子郵件是否為垃圾郵件？」</li>
+<li>會不會問題 → 「客戶會不會購買此產品？」</li>
+<li>是A還是B → 「這個產品是書籍還是電子產品？」</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Multiclass-logistic-多類別分類模型"><a href="#2-Multiclass-logistic-多類別分類模型" class="headerlink" title="2. Multiclass logistic | 多類別分類模型"></a>2. Multiclass logistic | 多類別分類模型</h3><p>Multiclass logistic ML 模型可讓您為多類別產生預測，簡單說就是預測兩個以上結果的其中一個。</p>
+<ul>
+<li><strong>多類別問題範例</strong><ul>
+<li>「這個產品是書籍、電影還是衣服？」</li>
+<li>「這個電影是浪漫喜劇片、紀錄片還是驚悚片？」</li>
+<li>「這個客戶最感興趣的產品類別為何？」</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-Linear-regressio-線性回歸模型"><a href="#3-Linear-regressio-線性回歸模型" class="headerlink" title="3. Linear regressio | 線性回歸模型"></a>3. Linear regressio | 線性回歸模型</h3><p>回歸問題的 ML 模型預測未來可能發生問題，使用數值做為結果基礎。</p>
+<ul>
+<li><strong>回歸問題範例</strong><ul>
+<li>「西雅圖明天的溫度為何？」</li>
+<li>「這個產品會售出多少單位？」</li>
+<li>「這棟房屋的售價為何？」</li>
+</ul>
+</li>
+</ul>
+<h2 id="▌實戰BigQuery"><a href="#▌實戰BigQuery" class="headerlink" title="▌實戰BigQuery"></a>▌實戰BigQuery</h2><h3 id="1-訓練模型"><a href="#1-訓練模型" class="headerlink" title="#1. 訓練模型"></a>#1. 訓練模型</h3><p>訓練模型之前有個前提是帶你的dataset，因屬於BigQuery工作這邊先不多述。看我們的例子使用的模型類型是二元邏輯回歸。在這種情況下，標籤就是你試圖適應的東西</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<ul>
+<li><p>訓練結果| Execution details<br>產出有三個criteria可以參考：loss、Duration、Learn rate。我們可以發現<code>iteration</code>(迭代)經過了八次，確實有助了<code>loss</code>的下降，代表模型有很高的正確率</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+<li><p><strong>什麼是學習率(learn rate)</strong><br>這個參數是掌握模型的學習進度，如何調learn rate是訓練出好模型的關鍵要素。比如說learn rate對梯度下降的影響，如果learn rate太小，代表對神經網絡進行非常小的權重更新，會使其訓練變非常緩慢；另外learn rate太大，可能導致無法收斂。</p>
+</li>
+<li><p><strong>什麼遺失值(loss)</strong></p>
+<p>  ML演算法是透過若干已知預測結果的範例 (像是使用者購買次數的歷史資料) 以及藉由迭代法來不斷調整模型中的各式權重，使得模型預測得以與真實數值吻合。最後能達到這個目標，是因為機器學習演算法透過「遺失」指標降低模型的錯誤預測。</p>
+<p>  預期目標是每次迭代，遺失值越來越低 (理想狀況是降低到 0)。遺失值 0，代表模型具有 100% 的正確率。</p>
+</li>
+</ul>
+<blockquote>
+<p>「訓練資料遺失率」(Training Data Loss) 資料欄代表在訓練資料集上指定迭代後計算出來的損失指標。由於您執行了邏輯迴歸，因此該資料欄是<a href="https://en.wikipedia.org/wiki/Cross_entropy#Cross-entropy_error_function_and_logistic_regression" target="_blank" rel="noopener">對數損失</a>， 「評估資料遺失率」(Evaluation Data Loss) 資料欄是在保留資料集上計算的相同損失指標 (從訓練資料收回以驗證模型的資料)。</p>
+</blockquote>
+<h3 id="2-使用Model-預測"><a href="#2-使用Model-預測" class="headerlink" title="#2. 使用Model 預測"></a>#2. 使用Model 預測</h3><p>剛訓練完的模型，可以再經過一次資料評估但這邊先省略，直帶入做預測，我們要做的是用此模型來預測結果，您使用模型預測來自於每<code>一個國家的網站訪客所進行的交易次數</code>。</p>
+<ul>
+<li>FROM ml.EVALUATE(MODEL <code>bqml_lab.sample_model</code>：選擇方才建立的模型</li>
+<li>SELECT：選擇進入的變數</li>
+<li>FROM：選擇進入的table</li>
+<li>WHERE：指定table 的日期</li>
+</ul>
+<p>選用的資料集為</p>
+<ul>
+<li><p>ml.EVALUATE(MODEL `bqml_lab.sample_model</p>
+</li>
+<li><p>選用每個國家的網站訪客所進行的交易次數 → 故SELECT country</p>
+</li>
+<li><p>使用的資料期間為<code>20170701 - 20170801</code> → 注意這次帶入的資料就是用不同區間的資料</p>
+<p>  #standardSQL<br>  SELECT</p>
+<pre><code>country,
+SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
+<pre><code>ML.PREDICT(MODEL `bqml_tutorial.sample_model`, (</code></pre><p>  SELECT</p>
+<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+device.isMobile AS is_mobile,
+IFNULL(totals.pageviews, 0) AS pageviews,
+IFNULL(geoNetwork.country, &quot;&quot;) AS country</code></pre><p>  FROM</p>
+<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
+<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY country<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10</p>
+</li>
+</ul>
+<p>通過這個查詢，預測每個國家的訪問者進行的交易數量，對結果進行排序，並根據購買情況選擇前10個國家：</p>
+<h3 id="其中-1"><a href="#其中-1" class="headerlink" title="其中"></a>其中</h3><ul>
+<li><p><code>[ML.PREDICT](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-predict?hl=zh_tw)</code> 函式可運用您的 <code>bqml_tutorial.sample_model</code> 模型來預測結果。</p>
+<p>  這個查詢的巢狀 <code>SELECT</code> 陳述式及 <code>FROM</code> 子句與 <code>CREATE MODEL</code> 查詢中的相同。</p>
+</li>
+<li><p><code>WHERE</code> 子句 — <code>_TABLE_SUFFIX BETWEEN &#39;20170701&#39; AND &#39;20170801&#39;</code> — 它限定查詢掃描的資料表數量，日期區間提定在 2017.07.01 - 2017.08.01 ，</p>
+</li>
+<li><p><code>GROUP BY</code> 與 <code>ORDER BY</code> 子句藉由國家名稱分組結果，並以遞減方式將預測到的交易次數加總後進行遞減排序。</p>
+</li>
+<li><p><code>LIMIT</code> 子句在此處的用途是僅顯示前 10 筆查詢結果。</p>
+</li>
+<li><p>Job info</p>
+<ul>
+<li><code>duration</code>：可以看到執行的時間花了1.7 sec</li>
+<li><code>bytes processed</code>：這次Query，是以量計價的模式(on-demand )，BigQuery 會根據「bytes processed處理的位元組數」，白話說也就是系統讀取的bytes，這項指標來收取執行查詢作業的費用</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<ul>
+<li><p>work timing<br>完整從SQL篩選資料給ML訓練使用</p>
+<p>  Input → Join → Aggregate → Compute(S03)平行運算 → Compute(S04)平行運算 → Output</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<h3 id="3-預測結果說明"><a href="#3-預測結果說明" class="headerlink" title="3. 預測結果說明"></a>3. 預測結果說明</h3><ul>
+<li><p><strong>預測1：</strong></p>
+<p>  執行 ML.PREDICT 查詢，可以看到表格是預測各國的消費預測如下表</p>
+<ul>
+<li><p>預估1：美國會有209次的購買</p>
+</li>
+<li><p>預估2：台灣會有006次的購買</p>
+</li>
+<li><p>預估3：加國會有004次的購買</p>
+<p>  <img src="Untitled4.png" alt="Untitled4.png"></p>
+</li>
+</ul>
+</li>
+<li><p><strong>預測2：</strong></p>
+<p>  另外也可以修改Query，變成是預測每位使用者的購買量，我們把f<code>ullVisitorId</code> 加入到<code>SELECT</code></p>
+<ul>
+<li><p>預估1：客戶ID: 2537542…910，未來會有4次的購買</p>
+</li>
+<li><p>預估2：客戶ID: 9681060…629，未來會有3次的購買</p>
+</li>
+<li><p>預估3：客戶ID: 7102244…635，未來會有3次的購買</p>
+<p>  #standardSQL<br>  SELECT</p>
+<pre><code>fullVisitorId,
+SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
+<pre><code>ml.PREDICT(MODEL `bqml_lab.sample_model`, (</code></pre><p>  SELECT</p>
+<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+device.isMobile AS is_mobile,
+IFNULL(totals.pageviews, 0) AS pageviews,
+IFNULL(geoNetwork.country, &quot;&quot;) AS country,
+fullVisitorId</code></pre><p>  FROM</p>
+<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
+<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY fullVisitorId<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10;</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="▌Reference"><a href="#▌Reference" class="headerlink" title="▌Reference:"></a>▌Reference:</h2><ol>
+<li>Qwikilab :<a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/2157?parent=catalog</a></li>
+<li><a href="https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html" target="_blank" rel="noopener">https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html</a></li>
+<li>說明Iteration, Loss: <a href="https://jtcozylife.com/google-machine-learning-crash-course-%E7%AD%86%E8%A8%98-part-2/" target="_blank" rel="noopener">https://jtcozylife.com/google-machine-learning-crash-course-筆記-part-2/</a></li>
+<li>完的ML訓練過程說明 <a href="https://ithelp.ithome.com.tw/articles/10221245" target="_blank" rel="noopener">https://ithelp.ithome.com.tw/articles/10221245</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/" itemprop="url">TCP-BBR-What-is-BBR/TCP BBR What is BBR</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:57:54+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
+<p><a href="https://www.youtube.com/watch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
+<p><img src="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
+<p><a href="http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http://1.bp.blogspot.com/-qSM0e4OBDSs/WXEDMUuQjPI/AAAAAAAAEJs/B1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCw/s1600/GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
+<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
+<p>與傳統的TCP/IP 不同最主要地方，BBR主要是估計</p>
+<ul>
+<li><code>頻寬</code>和<code>延遲</code>狀況</li>
+<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
+</ul>
+<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCP/IP ( TCP/IP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
+<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http://google.com/" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https://www.mile.cloud/zh-hant/tcp-bbr-congestion-control-comes-to-gcp/" target="_blank" rel="noopener">https://www.mile.cloud/zh-hant/tcp-bbr-congestion-control-comes-to-gcp/</a></li>
+<li><a href="https://caloskao.org/tcp-bottleneck-bandwidth-and-round-trip-propagation-time/" target="_blank" rel="noopener">https://caloskao.org/tcp-bottleneck-bandwidth-and-round-trip-propagation-time/</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/sorted/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/19/TCP-BBR-What-is-BBR/sorted/" itemprop="url">TCP-BBR-What-is-BBR/sorted</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:57:54+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
+<p><a href="https:www.youtube.comwatch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
+<p><img src="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
+<p><a href="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
+<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
+<p>與傳統的TCPIP 不同最主要地方，BBR主要是估計</p>
+<ul>
+<li><code>頻寬</code>和<code>延遲</code>狀況</li>
+<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
+</ul>
+<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCPIP ( TCPIP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
+<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http:google.com" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp" target="_blank" rel="noopener">https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp</a></li>
+<li><a href="https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time" target="_blank" rel="noopener">https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/TCP-BBR-What-is-BBR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/19/TCP-BBR-What-is-BBR/" itemprop="url">TCP BBR What is BBR</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:57:54+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什麼是-TCP-BBR-What-is-BBR"><a href="#什麼是-TCP-BBR-What-is-BBR" class="headerlink" title="什麼是 TCP BBR | What is BBR?"></a>什麼是 TCP BBR | What is BBR?</h1><p>Status: Completed</p>
+<p><a href="https:www.youtube.comwatch?v=PkWleEfaGAU" target="_blank" rel="noopener">Faster Networking with TCP BBR (Cloud Performance Atlas)</a></p>
+<p><img src="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" alt="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif"></p>
+<p><a href="http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%25281%2529.gif" target="_blank" rel="noopener">http:1.bp.blogspot.com-qSM0e4OBDSsWXEDMUuQjPIAAAAAAAAEJsB1Sbj24nIgA2kSmjSsbdfbdD7p3X7l1ugCK4BGAYYCws1600GCP-TCP-BBR-animate-r3%2B%281%29.gif</a></p>
+<h3 id="▌簡介原理"><a href="#▌簡介原理" class="headerlink" title="▌簡介原理"></a>▌簡介原理</h3><p>什麼是BBR（<strong>B</strong>ottleneck <strong>B</strong>andwidth and <strong>R</strong>ound-trip propagation time）是Google的一種壅塞控制演算法，在網路連結的電腦或行動裝置中運行，可決定數據發送的速度，旨在解決網路壅塞問題。</p>
+<p>與傳統的TCPIP 不同最主要地方，BBR主要是估計</p>
+<ul>
+<li><code>頻寬</code>和<code>延遲</code>狀況</li>
+<li>而非不斷偵測<code>封包傳輸的錯誤率</code></li>
+</ul>
+<h3 id="▌解決問題"><a href="#▌解決問題" class="headerlink" title="▌解決問題"></a>▌解決問題</h3><p>在啟用BBR前，自1980年代起，TCPIP ( TCPIP Protocol Suite ) <code>的演算法大多都是先觀測傳輸時封包是否有丟失狀況</code>，如果有丟失則認識此為網路壅塞，而處理方式是全面降速，直到丟失的封包成功傳出，此舉會導致緩衝區不斷擴大，在傳輸大量資料時速度越來越慢、最後卡死。</p>
+<h3 id="▌實際應用"><a href="#▌實際應用" class="headerlink" title="▌實際應用"></a>▌實際應用</h3><p>它是根據總傳輸量和錯誤量的比例來決定要以何種頻寬傳輸，降低緩衝區堵塞的狀況，進而提高傳輸速度。Google 率先將 BBR 用在 <a href="http:google.com" target="_blank" rel="noopener">google.com</a> 及 YouTube 上，大幅提高了頻寬使用效率，全球網路平均傳輸量提升4%，最高更達到14%，<code>雙向傳播時間加快三成</code>，重新緩衝的平均時間也增長11%。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li>GCP採用新演算法TCP BBR　傳輸率將提高2700倍！<br><a href="https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp" target="_blank" rel="noopener">https:www.mile.cloudzh-hanttcp-bbr-congestion-control-comes-to-gcp</a></li>
+<li><a href="https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time" target="_blank" rel="noopener">https:caloskao.orgtcp-bottleneck-bandwidth-and-round-trip-propagation-time</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1371,849 +2095,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E6%8A%95%E8%B3%87-%E7%A4%BE%E6%9C%83%E5%83%B9%E5%80%BC-v-s-%E6%9C%83%E6%BB%BE%E5%8B%95%E7%9A%84%E7%8F%BE%E9%87%91%E6%B5%81-Identity-and-Rich-Dad-Impression/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Joe Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黃大仙的雲端修行室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/12/%E6%8A%95%E8%B3%87-%E7%A4%BE%E6%9C%83%E5%83%B9%E5%80%BC-v-s-%E6%9C%83%E6%BB%BE%E5%8B%95%E7%9A%84%E7%8F%BE%E9%87%91%E6%B5%81-Identity-and-Rich-Dad-Impression/" itemprop="url">[投資] 社會價值 v.s 會滾動的現金流 | Identity and Rich Dad Impression</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:59:48+08:00">
-                2020-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%95%9F%E7%99%BC/" itemprop="url" rel="index">
-                    <span itemprop="name">啟發</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="投資-社會價值-v-s-會滾動的現金流-Identity-and-Rich-Dad-Impression"><a href="#投資-社會價值-v-s-會滾動的現金流-Identity-and-Rich-Dad-Impression" class="headerlink" title="[投資] 社會價值 v.s 會滾動的現金流 | Identity and Rich Dad Impression"></a>[投資] 社會價值 v.s 會滾動的現金流 | Identity and Rich Dad Impression</h1><p>Status: Published</p>
-<h2 id="打理自已的事-自已的資產欄"><a href="#打理自已的事-自已的資產欄" class="headerlink" title="打理自已的事: 自已的資產欄"></a>打理自已的事: 自已的資產欄</h2><p>此次心得是來自<a href="https://www.books.com.tw/products/0010791121" target="_blank" rel="noopener">&lt;富爸爸，窮爸爸&gt;</a>一書中的片段內容，分享於大家。作者常說打理自已的事業時，其意思就是建立自已強的大「資產欄」。目的是</p>
-<blockquote>
-<p>只要有任何一塊錢流進你的資產，就不要讓它流走</p>
-</blockquote>
-<p>你這樣想吧，這一塊錢落進你的資產欄，它就是你的雇員了。關於錢，最美妙的是，它能一天24小時不斷地工作，並為你的子孫服務。</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>如果想致富，就需要學習財務知識。 首先，必須先<strong>明白資產與負債的區別</strong>，並且購持續買資產</p>
-<p>在我觀察的存股部落格中&lt;<a href="https://www.facebook.com/dragonsky7/" target="_blank" rel="noopener">孫悟天</a>&gt;也都是提倡這個觀念，簡單說也就是<strong>錢生錢</strong>的最基礎概念。</p>
-<blockquote>
-<p>千萬記住：生出來的利息、配股，都不能動<br>它們的存在是為了下一張股票的生存的。</p>
-</blockquote>
-<h2 id="窮人和中產皆級的別差"><a href="#窮人和中產皆級的別差" class="headerlink" title="窮人和中產皆級的別差"></a>窮人和中產皆級的別差</h2><p>當你的現金流增加時(開始滾動時)，你可以買一點奢侈品，一個重要的區別是富人最後才買奢侈品，而窮人和中產階級則傾向先買奢侈品。他們會先買下諸如大房子(注意他是說大房子)、皮衣、珠寶、遊艇等奢侈品，因為他們想看上去很富有。</p>
-<h2 id="社會的虛榮感"><a href="#社會的虛榮感" class="headerlink" title="社會的虛榮感"></a>社會的虛榮感</h2><p>我自個兒想想，因為人們身上有著社會的虛榮感，造就人們的普遍認知。</p>
-<blockquote>
-<p>即使古代的哲人早已道盡生命的過程，解答人生的困惑，只是我仍然惑於現實的虛榮，無法放下，所以焦慮不堪</p>
-</blockquote>
-<p>by 無垢劇場-林麗珍</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p>他們看上去的確很富有，但已深陷貸款的陷阱之中。那些有錢二代繼承遺產的人，都是父祖輩先建立他們的資產，然後才用資產所產生的的收入購買奢侈品；窮人和中產則用他們的<strong>血汗錢</strong>，和原本要留給孩子們的遺產去購買奢侈品。</p>
-<h2 id="奢侈品的正當性"><a href="#奢侈品的正當性" class="headerlink" title="奢侈品的正當性"></a>奢侈品的正當性</h2><p>真正的奢侈品，應該是來自投資和積累<strong>真正的資產獎勵</strong>。比如說投資獲得的額外收入，可以使用這筆錢去購買奢侈品。這樣的循環，證明了理財效益，也意味自已能夠用自已的財務知識得到它，因為缺乏財務知識，或是執行力不足都是在懲罰自已。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<h2 id="劫富說"><a href="#劫富說" class="headerlink" title="劫富說"></a>劫富說</h2><p>劫富可以說是針對富人的稅人，政府希望以控制金錢的流向以補助中產以下階層。殊不知富人終究是有各種節稅的方法，讓稅法影響不到自已的財產。</p>
-<p>這邊舉個例子：一旦稅法通過，錢便開始流入國庫。起初人們很高興，可是錢郤被政府分配了雇員和富人。怎麼說呢？稅金透過工作和退休金的形式發給了政府雇員，另外透過政府的採購的形式付給了富人。政府是形成了一個巨大的錢庫，但財政的管理方式，讓錢又回流於富人。舉個專案預算的例子，政府的理想是避免擁有結餘，如果你沒有用完預用款，在下次預算你就會被削減這些錢的風險。因為你不會因為有結餘款被認為有效率並得到獎勵，此時商人則因為有結餘而得到獎勵。</p>
-<h2 id="公司保護富人"><a href="#公司保護富人" class="headerlink" title="公司保護富人"></a>公司保護富人</h2><p>公司的確是保護富人，一般人不明白這個道理。因為公司不一定是真正的實體，另一種說法它可以只是一種形式上符合法律要求的文件，符合需求後即可註冊為公司。正因為企業所得稅率低於個人收入所得稅率，所以公司可以在稅前就先獲得抵減。</p>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>我個人十分認同資產欄造就的現金流，對此也解決現況是否採取購房行動。另外我想提到的是只要是為人，就會有意識，思想讓我們有存在感，我們常被需要被受認同和肯定(<a href="https://neganchor.com/2015-01-02-300/" target="_blank" rel="noopener">自我認同 identity</a>)，如果自由意志思被社會牽著走，那又何嘗成為人呢？</p>
-<p>這邊順道分享<a href="https://medium.com/@Learnhu/nlp%E4%B8%AD%E9%9A%8E-1-%E6%99%82%E9%96%93%E7%B7%9A-%E5%BE%9E%E5%B1%AC%E7%AD%89%E7%B4%9A-3d2d7653838d" target="_blank" rel="noopener">NLP稱為從屬等級（Logical Level）</a>。這東西是心靈成長課裡我個人獲益最多的一個模型，用這套模型去觀察他人或是檢視自我的內心狀態</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>這是一張NLP, 心理學模型，其中自我認同（Identity）是很高的部份僅次於你的靈性。一旦沒有自我就會面臨種種負面情緒</p>
-<p>書中用很嚴肅的口吻談劫富的觀點，富人和窮人之間的戰爭已經進了幾百年了。任何時間，只要制定稅法就會這種鬥爭。問題是輸家一定是無知者，即是那些每天起來勤奮工作以及繳稅的人。所以趕緊經營你的資產欄吧</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E8%AE%80%E6%9B%B8%E7%9B%AE%E7%9A%84-v-s-%E6%BB%91%E6%89%8B%E6%A9%9F%E7%9B%AE%E7%9A%84-The-Propose-between-Reading-and-Phubbing/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Joe Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黃大仙的雲端修行室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E8%AE%80%E6%9B%B8%E7%9B%AE%E7%9A%84-v-s-%E6%BB%91%E6%89%8B%E6%A9%9F%E7%9B%AE%E7%9A%84-The-Propose-between-Reading-and-Phubbing/" itemprop="url">[啟發] 讀書目的 v.s 滑手機目的 | The Propose between Reading and Phubbing</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:58:36+08:00">
-                2020-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%95%9F%E7%99%BC/" itemprop="url" rel="index">
-                    <span itemprop="name">啟發</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="啟發-讀書目的-v-s-滑手機目的-The-Propose-between-Reading-and-Phubbing"><a href="#啟發-讀書目的-v-s-滑手機目的-The-Propose-between-Reading-and-Phubbing" class="headerlink" title="[啟發] 讀書目的 v.s 滑手機目的 | The Propose between Reading and Phubbing"></a>[啟發] 讀書目的 v.s 滑手機目的 | The Propose between Reading and Phubbing</h1><p>Status: Published</p>
-<p>今天的分享主來自&lt;得到 App&gt; 吳軍 | 硅谷來信 | 219封信，談的是閱讀的目的。在開始之前先給你講二個故事，有一天下午作者在小鎮中的圖書館遇見了老奶奶，她借了一本&lt;哈利. 波特&gt;，作者問她“您喜歡看這種書？“，老奶奶說，是她自已想讀一讀</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h2 id="祖孫間的哈利波特"><a href="#祖孫間的哈利波特" class="headerlink" title="祖孫間的哈利波特"></a>祖孫間的哈利波特</h2><p>原來，她發現自已已經和過去疼愛有加的孫子陷入無話可說的尷尬境地。每當她打電話詢問孫子的生活情況，對房的回答僅幾個字：「挺好的」。有一天她問起來了孫子在看什麼書。孫子說剛開始看&lt;哈利.波特&gt;。</p>
-<p>這位祖母也決定看看第一冊，看完之後，他們祖孫之間開始有了話題。</p>
-<p>這位老奶奶和孫子雖有血緣關係，但其實沒有什麼共同之處，除老人的舐犢情深之外，他們又多聊天的話題，關係也更親近了</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="借書可以化競爭為友"><a href="#借書可以化競爭為友" class="headerlink" title="借書可以化競爭為友"></a>借書可以化競爭為友</h2><p>富蘭克林在他的自傳中講，他曾經有個頗有影響力政治對手，于是他想把那個人爭取過來。我們一般能想到的辨法是好言相勸，曉以之理，誘之以利，或是懇求對方。但是富蘭克林的方法郤很獨創，他去向對方借書，而對方還真的借給了他，最二個人成為了朋友。</p>
-<p>為什麼借書這件事在當時的情況下非常可行？因為說明了至少二個人有共同的語言</p>
-<blockquote>
-<p>在此基礎上，談合作也好，談利益也罷，才搭得上話</p>
-</blockquote>
-<p>致于什麼惺惺相惜，那是深度交流後的結果。</p>
-<h2 id="閱讀的目的"><a href="#閱讀的目的" class="headerlink" title="閱讀的目的"></a>閱讀的目的</h2><p>今天，我們閱讀不僅僅是為了交朋友，而是為了改變生活方式 ，當網路出現時，我們很容易就能夠獲取知識</p>
-<blockquote>
-<p>現在我們每天給自已安排的行程非常滿，一直在抱怨自已太忙，但並不清楚時間都花到哪裡去了。</p>
-</blockquote>
-<p>我們總是在買一些不需要的東西，然後因為它們堆滿了房間，塞滿了抽屜而心煩。我們有很多提高效率的工具，但是郤難以擁有充足而優質的睡眠。</p>
-<blockquote>
-<p>我們許許多多的「熟人」加了LINE，但是能說點真心話的朋友越來越少</p>
-</blockquote>
-<p>我們每天刷手機FB、IG、各種消息，但是那些內容我們什麼也沒有記住，也沒有對我們產生任何影響。</p>
-<h2 id="滑手機背後的恐懼"><a href="#滑手機背後的恐懼" class="headerlink" title="滑手機背後的恐懼"></a>滑手機背後的恐懼</h2><p>其實這樣現象的背後透露著一種恐懼</p>
-<blockquote>
-<p>生怕自已錯過些什麼。不論我們身在何處，總怕沒有看到某一條消息，錯過了什麼機會。</p>
-</blockquote>
-<p>一個人總希望能經歷更多好玩的事情，看到更多的風景，品嚐到更多的美食，等等。我們把它稱為快節奏，但這其實是沒有節奏。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<h2 id="失去自主能力的感覺"><a href="#失去自主能力的感覺" class="headerlink" title="失去自主能力的感覺"></a>失去自主能力的感覺</h2><p>&lt;不滑手機會怎樣嗎？&gt; 這篇Blog很深刻了記錄滑手機時的前後心境，我們不妨來看看：</p>
-<p>「人到中年之後，當你的生活有了擺脫不了的壓力，突破不了的困難，每當想逃避時，有樣東西能讓你暫時忘記煩憂，就很容易對不好的東西上癮，<strong>一種失去自主能力的感覺</strong>，這也就是我們中年人常常看起來很廢的原因吧！」</p>
-<h2 id="未經審視的人生"><a href="#未經審視的人生" class="headerlink" title="未經審視的人生"></a>未經審視的人生</h2><p>蘇格拉底臨死前說未經審視的人生不值得度過，而審視人生需要有閒暇。我們今天有很多獲取知識的管道，但是它們不能幫助我們審視人生，因為它們不能給我們帶來閒暇，反而讓我們更加沒有閒暇來思考。</p>
-<h2 id="讀書可以”慢下來"><a href="#讀書可以”慢下來" class="headerlink" title="讀書可以”慢下來"></a>讀書可以”慢下來</h2><p>讀書則不同，尤其是在閱讀紙本時，我們必須有比較長的一段時間，不做其它的事情，這樣才能讀進去，正因為是不得把手邊的事情先放一邊，才能夠審視人生。因此作者看來，閱讀是一件協助檢審人生的活動。</p>
-<h2 id="寫下來可以”更慢"><a href="#寫下來可以”更慢" class="headerlink" title="寫下來可以”更慢"></a>寫下來可以”更慢</h2><p>其實我很鼓勵大家寫作，很多時候當思緒亂了，想找個人抒發心情，當下找不到傾訴對向時，如果你有寫作的習慣，會發現在寫作的同時，思緒會慢下來，順便整理一下心情，思緒同樣也有個出口，您不妨試試</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>多年來很多人包括我，開始注意自已使用手機的習慣。起初文章是說明閱讀的好處，但讓我最具啟發的地方是：讓我終於明白這個<strong>深層的答案</strong>，刷手機的原因是<strong>生怕自已錯過些什麼。</strong>這個答案太衝擊，直接點出人性</p>
-<p>人類是個群體動物，進化到現今生存就要合作與溝通，心理也不免會隨時想接收新的訊息，建立待下次和別人溝通、合作的基礎，這點是否跟<strong>祖孫間的哈利波特</strong>故事十分相近呢？</p>
-<hr>
-<p>今天的分享主來自&lt;得到 App&gt; 吳軍 | 硅谷來信 | 219封信，談的是閱讀的目的。在開始之前先給你講二個故事，有一天下午作者在小鎮中的圖書館遇見了老奶奶，她借了一本&lt;哈利. 波特&gt;，作者問她“您喜歡看這種書？“，老奶奶說，是她自已想讀一讀</p>
-<h2 id="祖孫間的哈利波特-1"><a href="#祖孫間的哈利波特-1" class="headerlink" title="祖孫間的哈利波特"></a>祖孫間的哈利波特</h2><p>原來，她發現自已已經和過去疼愛有加的孫子陷入無話可說的尷尬境地。每當她打電話詢問孫子的生活情況，對房的回答僅幾個字：「挺好的」。有一天她問起來了孫子在看什麼書。孫子說剛開始看&lt;哈利.波特&gt;。</p>
-<p>這位祖母也決定看看第一冊，看完之後，他們祖孫之間開始有了話題。</p>
-<p>這位老奶奶和孫子雖有血緣關係，但其實沒有什麼共同之處，除老人的舐犢情深之外，他們又多聊天的話題，關係也更親近了</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<h2 id="借書可以化競爭為友-1"><a href="#借書可以化競爭為友-1" class="headerlink" title="借書可以化競爭為友"></a>借書可以化競爭為友</h2><p>富蘭克林在他的自傳中講，他曾經有個頗有影響力政治對手，于是他想把那個人爭取過來。我們一般能想到的辨法是好言相勸，曉以之理，誘之以利，或是懇求對方。但是富蘭克林的方法郤很獨創，他去向對方借書，而對方還真的借給了他，最二個人成為了朋友。</p>
-<p>為什麼借書這件事在當時的情況下非常可行？因為說明了至少二個人有共同的語言</p>
-<blockquote>
-<p>在此基礎上，談合作也好，談利益也罷，才搭得上話</p>
-</blockquote>
-<p>致于什麼惺惺相惜，那是深度交流後的結果。</p>
-<p>Ｘ</p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<h2 id="閱讀的目的-1"><a href="#閱讀的目的-1" class="headerlink" title="閱讀的目的"></a>閱讀的目的</h2><p>今天，我們閱讀不僅僅是為了交朋友，而是為了改變生活方式 ，當網路出現時，我們很容易就能夠獲取知識</p>
-<blockquote>
-<p>現在我們每天給自已安排的行程非常滿，一直在抱怨自已太忙，但並不清楚時間都花到哪裡去了。</p>
-</blockquote>
-<p>我們總是在買一些不需要的東西，然後因為它們堆滿了房間，塞滿了抽屜而心煩。我們有很多提高效率的工具，但是郤難以擁有充足而優質的睡眠。</p>
-<blockquote>
-<p>我們許許多多的「熟人」加了LINE，但是能說點真心話的朋友越來越少</p>
-</blockquote>
-<p>我們每天刷手機FB、IG、各種消息，但是那些內容我們什麼也沒有記住，也沒有對我們產生任何影響。</p>
-<h2 id="滑手機背後的恐懼-1"><a href="#滑手機背後的恐懼-1" class="headerlink" title="滑手機背後的恐懼"></a>滑手機背後的恐懼</h2><p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<p>其實這樣現象的背後透露著一種恐懼</p>
-<blockquote>
-<p>生怕自已錯過些什麼。不論我們身在何處，總怕沒有看到某一條消息，錯過了什麼機會。</p>
-</blockquote>
-<p>一個人總希望能經歷更多好玩的事情，看到更多的風景，品嚐到更多的美食，等等。我們把它稱為快節奏，但這其實是沒有節奏。</p>
-<h2 id="失去自主能力的感覺-1"><a href="#失去自主能力的感覺-1" class="headerlink" title="失去自主能力的感覺"></a>失去自主能力的感覺</h2><p>&lt;不滑手機會怎樣嗎？&gt; 這篇Blog很深刻了記錄滑手機時的前後心境，我們不妨來看看：</p>
-<p>「人到中年之後，當你的生活有了擺脫不了的壓力，突破不了的困難，每當想逃避時，有樣東西能讓你暫時忘記煩憂，就很容易對不好的東西上癮，<strong>一種失去自主能力的感覺</strong>，這也就是我們中年人常常看起來很廢的原因吧！」</p>
-<h2 id="未經審視的人生-1"><a href="#未經審視的人生-1" class="headerlink" title="未經審視的人生"></a>未經審視的人生</h2><p>蘇格拉臨死前說未經審視的人生不值得度過，而審視人生需要有閒暇。我們今天有很多獲取知識的管道，但是它們不能幫助我們審視人生，因為它們不能給我們帶來閒暇，反而讓我們更加沒有閒暇來思考。</p>
-<h2 id="讀書可以”慢下來-1"><a href="#讀書可以”慢下來-1" class="headerlink" title="讀書可以”慢下來"></a>讀書可以”慢下來</h2><p>讀書則不同，尤其是在閱讀紙本時，我們必須有比較長的一段時間，不做其它的事情，這樣才能讀進去，正因為是不得把手邊的事情先放一邊，才能夠審視人生。因此作者看來，閱讀是一件協助檢審人生的活動。</p>
-<h2 id="寫下來可以”更慢-1"><a href="#寫下來可以”更慢-1" class="headerlink" title="寫下來可以”更慢"></a>寫下來可以”更慢</h2><p>其實我很鼓勵大家寫作，很多時候當思緒亂了，想找個人抒發心情，當下找不到傾訴對向時，如果你有寫作的習慣，會發現在寫作的同時，思緒會慢下來，順便整理一下心情，思緒同樣也有個出口，您不妨試試</p>
-<h2 id="結論：-1"><a href="#結論：-1" class="headerlink" title="結論："></a>結論：</h2><p>多年來很多人包括我，開始注意自已使用手機的習慣。起初文章是說明閱讀的好處，但讓我最具啟發的地方是：讓我終於明白這個<strong>深層的答案</strong>，刷手機的原因是<strong>生怕自已錯過些什麼。</strong>這個答案太衝擊，直接點出人性</p>
-<p>人類是個群體動物，進化到現今生存就要合作與溝通，心理也不免會隨時想接收新的訊息，建立待下次和別人溝通、合作的基礎，這點是否跟<strong>祖孫間的哈利波特</strong>故事十分相近呢？</p>
-<p><img src="Untitled7.png" alt="Untitled7.png"></p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
-<h2 id="失去自主能力的感覺-2"><a href="#失去自主能力的感覺-2" class="headerlink" title="失去自主能力的感覺"></a>失去自主能力的感覺</h2><p>&lt;不滑手機會怎樣嗎？&gt; 這篇文章很深刻了記錄滑手機時的前後心境，我們不房來看看：「人到中年之後，當你的生活有了擺脫不了的壓力，突破不了的困難，每當想逃避時，有樣東西能讓你暫時忘記煩憂，就很容易對不好的東西上癮，<strong>一種失去自主能力的感覺</strong>，這也就是我們中年人常常看起來很廢的原因吧！」</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E6%95%99%E8%82%B2-%E6%80%9D%E8%80%83%E6%89%8D%E6%98%AF%E6%95%99%E8%82%B2%E7%9A%84%E6%A0%B8%E5%BF%83-Forward-to-I-think-therefore-I-am/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Joe Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黃大仙的雲端修行室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/12/%E6%95%99%E8%82%B2-%E6%80%9D%E8%80%83%E6%89%8D%E6%98%AF%E6%95%99%E8%82%B2%E7%9A%84%E6%A0%B8%E5%BF%83-Forward-to-I-think-therefore-I-am/" itemprop="url">[教育] 思考才是教育的核心 | Forward to I think, therefore I am</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:57:48+08:00">
-                2020-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%95%9F%E7%99%BC/" itemprop="url" rel="index">
-                    <span itemprop="name">啟發</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="教育-思考才是教育的核心-Forward-to-I-think-therefore-I-am"><a href="#教育-思考才是教育的核心-Forward-to-I-think-therefore-I-am" class="headerlink" title="[教育] 思考才是教育的核心 | Forward to I think, therefore I am"></a>[教育] 思考才是教育的核心 | Forward to I think, therefore I am</h1><p>Status: Published</p>
-<p>今天分享來自&lt;天下雜誌&gt; | 685期 和 &lt;得到app&gt;  | 谷歌方法論 43封信</p>
-<p>談的是<strong>教學的核心，</strong>我們先看看雜誌專訪的副標題</p>
-<p>國語課的核心並非修此而<strong>是文本</strong>，數學課的更不是算式而<strong>是邏輯</strong></p>
-<p>若不想單方面餵養標準簽案，老師該怎麼做才能帶動學生<strong>獨立思考？</strong></p>
-<p>透過不斷提問、雙向溝通與同儕討論，這所小學的改變正大力發酵</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="台南復興國五年七班，很不一樣"><a href="#台南復興國五年七班，很不一樣" class="headerlink" title="台南復興國五年七班，很不一樣"></a>台南復興國五年七班，很不一樣</h2><p>鐘聲剛響起，進行的是國語課，學生們用手指默讀課文「一池子的綠」，讀完後再闔上。接著老師開發問：「一池子的綠」是指什麼？此時應答聲此起彼落，是「水芺蓉！」</p>
-<p>接又老師又問：「池子在哪裡？」，學生回答到「在作老家裡！」課堂中，雙方一來一往，就像一顆球碰撞牆壁不斷反彈。邱老師得到答案後，不斷拋出問題，學生埋頭討論，從課文找出答案。</p>
-<p>隨著時間推進，問題的難度也逐進提升，這時，學生得找出課文形容的「美」句子，並分析原因…</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>翻拍天下雜誌 | 685期 專訪</p>
-<h2 id="答案相同，理由不同"><a href="#答案相同，理由不同" class="headerlink" title="答案相同，理由不同"></a>答案相同，理由不同</h2><p>邱老師提醒學生不怕答案相同，<strong>因為你們的理由不會每個字都一樣</strong>。想辨法生出一點點不一樣，這就是挑戰！這樣的上課方式</p>
-<blockquote>
-<p>打破以往國語課逐段解講課文，再教生字、圈詞的模版。</p>
-</blockquote>
-<h2 id="整體到微觀，引導思考"><a href="#整體到微觀，引導思考" class="headerlink" title="整體到微觀，引導思考"></a>整體到微觀，引導思考</h2><p>邱老師藉由問答，從整體到微觀，引導學生<strong>自動</strong>細讀課文。四十分鐘的國文課到了尾聲，</p>
-<blockquote>
-<p>學生們都可以抓到文本的核核心精神</p>
-</blockquote>
-<p>邱老師以「一池子的綠」為例，說明學生在提問下不斷練習<strong><em>觀察、探究、思辯</em></strong>，連結日常生活，找出作者借物抒情，用不同技法描寫<strong>美</strong>的重點。</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>powered by Pexels: thinking</p>
-<h2 id="餵養教育-填鴨教育"><a href="#餵養教育-填鴨教育" class="headerlink" title="餵養教育(填鴨教育)"></a>餵養教育(填鴨教育)</h2><p>邱老師教書資歷17年，5年前接觸到日本教育大師「學習共同體」，邱老師開始改變教學方法，希望翻轉老師單向「餵養」知識的模式</p>
-<p>曾是邱老師的同學觀察到如何做到<strong>整體到微觀，引導學生思考。</strong>老師的角色是負責起頭、穿針引線請學生發予，下課前整理、歸納學生的想法。這個概念和我最近上培訓課，去當客戶的助教的經驗相符，小組討論時即使同學一片極靜、沉默甚至是沒興趣，我的任務就是 → <strong>引領思考，歸納重點</strong>。</p>
-<h2 id="畢業同學現身說法"><a href="#畢業同學現身說法" class="headerlink" title="畢業同學現身說法"></a>畢業同學現身說法</h2><p>目前就讀國一的李同學，曾是邱老師的學生則很有感：「國中的題目比較繁雜，考試強調思考邏輯，不是呆板的文子，尤其是數學，落差很大」，而剛結束段考的她認為小學累積2年的閱讀理解能力，確實對於銜接國中課程有幫助。不斷引導學生思考、討論是本質，課堂不應只是追求標準答案，而是釐清疑惑的地方。</p>
-<h2 id="美國人的歷史課"><a href="#美國人的歷史課" class="headerlink" title="美國人的歷史課"></a>美國人的歷史課</h2><p>在台灣和中國，一般的歷史課是講述歷史事件和它們的影響，學生記住結論就好。但美國，學歷史是為了學會做究，這一點是美國教育的重點。他們的歷史課很大一部份成績是做研究，比如說分析一下華盛頓這個人在歷史作用，這種練習在中學就這樣要求了</p>
-<blockquote>
-<p>對於作業沒有絕對正確的標準答案，只有好的答案和不好的答案。</p>
-</blockquote>
-<p>你可以說華盛頓是了不起的偉人，也可以說是為了維護白人利益自的政治家。</p>
-<p>不管怎麼說</p>
-<blockquote>
-<p>分析得要有理有據，結論必須是由証據自然推演出的邏輯結果，當然報告還要寫得好。</p>
-</blockquote>
-<p>吳軍 | 谷歌方法論 43封 | 為什麼要學歷史</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>讀過一次華盛頓簡介，每個人的認知都不盡相同</p>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>108年課綱以素養教育為核心，國小、國中、高中各自要把素養培養到什麼程度，其實都寫了很清楚，近年課綱一直在改，教學方式只能靠老師們自覺，很多人說，教育要仿歐美的教育捨棄現況的課綱。我們就用美國人學歷史來借鏡，課程不是唯一重點，真正的重點在老師的<strong>教學手法！</strong>因此老師在培育台灣未來十年、二十年後需要的人才，無論是課程設計或教學，都要有<strong>永續的概念</strong>。</p>
-<p>美國歷史課的學習，學生們的驗究能力、分析和寫作能力都得到了訓練，我認為這就是最佳自<strong>主思考的能力</strong>。</p>
-<p>常言道：終生學習的背後，其實就是<strong>自學</strong>，而懂得主動求知，找資料就是一切的根本。張忠謀也提倡<a href="https://money.udn.com/money/story/5648/3887498" target="_blank" rel="noopener">只有終身學習，才可避免被AI取代</a>，這觀念尤其重要！</p>
-<blockquote>
-<p>專業的道路上，只有累積沒有奇蹟<br>時間花在那裡，成就就在那裡</p>
-</blockquote>
-<hr>
-<hr>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<p><img src="Untitled7.png" alt="Untitled7.png"></p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>經過這樣歷史課的學習，學生們的破究能力、分析和寫作能力都得到了訓練。</p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
-<h2 id="學歷史是為了學會做究"><a href="#學歷史是為了學會做究" class="headerlink" title="學歷史是為了學會做究"></a>學歷史是為了學會做究</h2><p>在美國，學歷史是為了學會做究，這一點是美國教育的重點。</p>
-<p>一般的歷史課是講述歷史事件和它們的影響，學生記住結論就好。</p>
-<p>在美國，歷史課很大一部份成績是做研究，比如說分析一下華盛頓這個人在歷史作用，這種練習在中學就這樣要求了，對於這樣的作業，沒有絕對正確的標準答案，只有好的答案和不好的答案。</p>
-<p>你可以說華盛頓是了不起的偉人，也可以說是為了維護白人利益自的政治家。不管怎麼說，分析得要有理有據，結論必須是由証據自然推演出的邏輯結果，當然報告還要寫得好。</p>
-<p>經過這樣歷史課的學習，學生們的驗究能力、分析和寫作能力都得到了訓練。</p>
-<p>吳軍 | 谷歌方法論 43封 | 為什麼要學使史</p>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
-<p><img src="Untitled10.png" alt="Untitled10.png"></p>
-<p><img src="Untitled11.png" alt="Untitled11.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/12/%E5%95%9F%E7%99%BC-%E4%B8%BB%E8%A7%80%E4%B8%8D%E6%AF%94%E5%AE%A2%E8%A7%80%E5%B7%AE-Subjective-is-more-Valuable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Joe Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黃大仙的雲端修行室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/12/%E5%95%9F%E7%99%BC-%E4%B8%BB%E8%A7%80%E4%B8%8D%E6%AF%94%E5%AE%A2%E8%A7%80%E5%B7%AE-Subjective-is-more-Valuable/" itemprop="url">[啟發] 主觀不比客觀差 | Subjective is more Valuable</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-12T14:57:00+08:00">
-                2020-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%95%9F%E7%99%BC/" itemprop="url" rel="index">
-                    <span itemprop="name">啟發</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="啟發-主觀不比客觀差-Subjective-is-more-Valuable"><a href="#啟發-主觀不比客觀差-Subjective-is-more-Valuable" class="headerlink" title="[啟發] 主觀不比客觀差 | Subjective is more Valuable"></a>[啟發] 主觀不比客觀差 | Subjective is more Valuable</h1><p>Status: Published</p>
-<p>今天來談一個知名的話題— 主觀與客觀</p>
-<p>我們經常覺得主觀不好，客觀好。當然也有很多的人會質疑有聲書觀點是否客觀。追求客觀性這件事本身是好，但是同時我們必須明白很多時候，有自已的觀點也不是件壞事。</p>
-<h2 id="客觀就是好，主觀就是不好？"><a href="#客觀就是好，主觀就是不好？" class="headerlink" title="客觀就是好，主觀就是不好？"></a>客觀就是好，主觀就是不好？</h2><p>日常生活中談到主客觀的議題。</p>
-<p>如果客觀性的定義本身都帶有一定的主觀性，那麼強調客觀就是好，主觀就是不好，似乎有點站不住腳</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p><a href="https://keydifferences.com/difference-between-objective-and-subjective.html" target="_blank" rel="noopener">https://keydifferences.com/difference-between-objective-and-subjective.html</a></p>
-<p>為什麼這麼講呢？我們先來看看主觀和客觀的定義。</p>
-<p>二者本身是一個哲學概念：</p>
-<h2 id="客觀"><a href="#客觀" class="headerlink" title="客觀"></a><strong>客觀</strong></h2><p>先說<strong>客觀</strong>—它<strong>指觀察一件事，或者判斷一件事情的時候，不受個人思想、感受、利益等與個人有關的因素影響，以便能多保持其真實性。</strong></p>
-<h2 id="主觀"><a href="#主觀" class="headerlink" title="主觀"></a>主觀</h2><p>主觀嘛，當然與客觀性相對。它指從主體自身的視角出發去看待事物，這樣的觀點或者傾向就<strong>難免受到個人意識、經驗、慾望和感受的影響</strong>，當然可能影響到對事物判斷的准確性。</p>
-<p>以我在台上當講師的經驗來看，我曾經問過同學們，你們喜歡多做一些Lab(實驗)或是聽我講一些實際案例呢？就有同學希望聽到更多的實例，如此可以強化對新產品的認識，也可以縮短上手的時間成本。</p>
-<h2 id="從歷史看看主客觀"><a href="#從歷史看看主客觀" class="headerlink" title="從歷史看看主客觀"></a>從歷史看看主客觀</h2><p>歷史學者則因為看到了歷史上太多好的初衷在多年後帶來的壞的結果，對很多科學的發明都非常謹慎和保守。這個問題上，並非科學家有更多的專業和知識，講話就有更大的發言權。相反的歷史學者的忠告常常是要聽的。</p>
-<p>學歷史是常握一種<strong>客觀公允</strong>，而且能夠超出時代的看問題方法，用更寬更廣的角度來檢視。</p>
-<h2 id="產品的客觀性"><a href="#產品的客觀性" class="headerlink" title="產品的客觀性"></a>產品的客觀性</h2><p>作者吳軍十多年前在Google負責搜尋品質相關的項目，專案的目標是把品質做好。不過什麼是好的品質？內部就有些爭議，但組識有一個共識，就是搜索結果的<strong>排名要客觀</strong>，不能像一些搜索引擎那樣，誰給多少錢，就給誰排在前面</p>
-<p>在 Google工作幾年後，開始深入思考。吳軍對主觀性和客觀性的思考就源於那個時期的工作。提出在Google工作時期發生一些故事對主、客觀哲學有更深入的看法。</p>
-<p>他和大家一樣從中學開始接觸馬克思<strong><a href="https://zh.wikipedia.org/zh-tw/%E5%94%AF%E7%89%A9%E4%B8%BB%E4%B9%89" target="_blank" rel="noopener">唯物主義</a></strong>的世界觀，是堅定的反對主對支持客觀的人。</p>
-<h2 id="Google排名官司"><a href="#Google排名官司" class="headerlink" title="Google排名官司"></a>Google排名官司</h2><p>第一個故事是 Google是世界上永遠的樹大招風，當Google上市後就有一些小公司告Google，說Google的排名不公平，影響他們的流量。Google方面沒有向法官說明自已的排名演算法多麼客觀，反而是引用了美國憲法的第一修正案，即關於言論自由。也就是說Google不需要把排名做到<strong>絕對客觀</strong>公平，它還是可以表達自已的意願，而排名就是它的主觀意願的表達</p>
-<p>這件事你聽起來可能學得很悖論(矛盾)，以追求客觀性為目標的Google，打贏司反而要靠調強主觀性</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p><a href="http://www.massaffectadvertising.com/seo-and-page-rank-which-is-more-important/" target="_blank" rel="noopener">http://www.massaffectadvertising.com/seo-and-page-rank-which-is-more-important/</a></p>
-<h2 id="Google-v-s-Morgan-Stanley"><a href="#Google-v-s-Morgan-Stanley" class="headerlink" title="Google v.s Morgan Stanley"></a>Google v.s Morgan Stanley</h2><p>第二個故事是Google有幾個工程師和摩根士丹利(Morgan Stanley)和高盛集團(Goldman Sachs Group Inc.)打擂台，看誰的管理資本的回報高，最後的結果是Google工程師贏了。畢竟他們的工程素質跟Google比起來差甚多，因此要做到客觀判斷市場，並不容易。</p>
-<p>這此事件帶來的收獲是，發現主觀的看法很多時候比客觀更重要。作者那時候開始定閱&lt;華爾街日報&gt;，因為除了那些所謂的客觀新聞之外，還有很強烈主觀的專欄。</p>
-<h2 id="專欄價值來自主觀論述"><a href="#專欄價值來自主觀論述" class="headerlink" title="專欄價值來自主觀論述"></a>專欄價值來自主觀論述</h2><p>為什麼主觀的意見比客觀的事實更重要呢？這裡有二個原因，第一：那些所謂客觀的事情其實不過是按照某一個標準把<strong>主觀性濾除的結論</strong>，而那個標準的本身也是一種主觀。其次，</p>
-<blockquote>
-<p>真正的<strong>真知灼</strong>見都在所謂主觀性的看法中，這一點尤其重要。</p>
-</blockquote>
-<p>&lt;華爾街日報&gt;中有各種帶有主觀色彩的專欄文章，它們可能帶有偏見</p>
-<blockquote>
-<p><strong><em>但是它們代表一類人的看法</em></strong>。同時，你也可能讀到截然相反的觀點。</p>
-</blockquote>
-<p>但你可以把這些觀點綜合起來，自已好好分析，你就不難得到很多深刻的看法，思考那些客觀描述，通常是完全正確，又完全無用 。</p>
-<p>其實人的主觀性是區別於動物的一個固有屬性。動物有本能，但是缺乏主觀意識，比如說一群動物的想法，常常是一樣的，但是人類不同，<strong>這原本就是應該是人的價值所在</strong></p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<h2 id="主觀可引導思考"><a href="#主觀可引導思考" class="headerlink" title="主觀可引導思考"></a>主觀可引導思考</h2><p>一昧從客觀，會產生一種後果，就是聽不到任何人的主觀意見，自以為是看到了一個客觀的結果，往後的思考都直接定讞。對於任何排名、評判和意見，我的看法是先看看他們的根據，看看他們思考問題的出發點，再審視他們是否說得有道理，也就是說用更寬廣的時空背景去檢視它</p>
-<p>因為對主客觀，作者基本的看法是這樣的：</p>
-<ol>
-<li><p>世界上沒有什麼絕對的客觀，因此</p>
-<blockquote>
-<p>人不能偷懶，不過經思考就接受所謂權威客觀的標準</p>
-</blockquote>
-</li>
-<li><p>主觀的意見非常重要，我們即要聽主觀的意見，<br>也要發表自已的主觀看法，而很多所謂的客觀論述不過是重復且不會引起爭議的訊息</p>
-</li>
-<li><p>多聽不同人的意見(主觀)，而不是僅僅相信權性的意見</p>
-</li>
-<li><p>做出判斷時要做到公平、公正，做事的時候要遵守規則。這項遠比糾結主觀和客觀重要得多</p>
-</li>
-</ol>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>其實所謂的客觀標準本身又是極其主觀的。現在的我，很喜歡詢問別人的意見，也算是一種<a href="https://www.books.com.tw/products/0010245329" target="_blank" rel="noopener">QBQ</a>的精神，背後就是了解他真正動機是什麼？得到完整的資訊後，才能換位思考，因此就能有更多的寬容、包容，也能和差異相擁，人生更豁達</p>
-<p>對於一般人會擁包客觀的原因，我認為是所見有限，主觀是有所其局限性和不隱定性，那麼就會尋找對全面穩定的觀察方式，就得借助所謂的客觀，也填充自已的知識圈。但不能因為就此結束自已的再進步的機會，所以</p>
-<blockquote>
-<p>客觀不能指導生活，反而恰恰應該是被主觀利用的東西</p>
-</blockquote>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<pre><code>小秘技：按著拍手可以連拍呦！！</code></pre><hr>
-<h2 id="客觀就是好，主觀就是不好？-1"><a href="#客觀就是好，主觀就是不好？-1" class="headerlink" title="客觀就是好，主觀就是不好？"></a>客觀就是好，主觀就是不好？</h2><p>日常生活中談到主客觀的議題。</p>
-<p>如果客觀性的定義本身都帶有一定的主觀性，那麼強調客觀就是好，主觀就是不好，似乎有點站不住腳</p>
-<h2 id="產品的客觀性-1"><a href="#產品的客觀性-1" class="headerlink" title="產品的客觀性"></a>產品的客觀性</h2><p>作者在十多年前在Google負責搜尋品質相關的項目，專案的目標是把品質做好。不過什麼是好的品質？內部就有些爭議，但組識有一個共識，就是搜索結果的排名要客觀，不能像一些搜索引擎那樣，誰給多少錢，就給誰排在前面</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>今天來談一個知名的話題— 主觀與客觀</p>
-<p>我們經常覺得主觀不好，客觀好。當然也有很多的人會質疑有聲書觀點是否客觀。追求客觀性這件事本身是好，但是同時我們必須明白很多時候，有自已的觀點也不是壞事。</p>
-<p>為什麼這麼講呢？我們先來看看主觀和客觀的定義。二者本身是一個哲學概念：</p>
-<h2 id="客觀-1"><a href="#客觀-1" class="headerlink" title="客觀"></a><strong>客觀</strong></h2><p>先說<strong>客觀</strong>—它<strong>指觀察一件事，或者判斷一件事情的時候，不受個人思想、感受、利益等與個人有關的因素影響，以便能多保持其真實性。</strong></p>
-<h2 id="主觀-1"><a href="#主觀-1" class="headerlink" title="主觀"></a>主觀</h2><p>主觀嘛，當然與客觀性相對，它指從主體自身的視角出發去看待事物，這樣的觀點或者傾向就難免受到個人意識、經驗、慾望和感受的影響，當然可能影響到對事物判斷的准確性。</p>
-<p>以我在台上當講師的經驗來看，我曾經問過同學們，你們喜歡多做一些Lab(實驗)或是聽我講一些實際經驗呢？</p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<p>在 Google工作幾年後，開始深入思考。吳軍對主觀性和客觀性的思考就源於那個時期的工作。作者在Google工作時期發生一些故事對主、客觀哲學有更深入的看法。</p>
-<p>他和大家一樣從中學開始接觸唯物主義的世界觀，是堅定的反對主對支持客觀的人。</p>
-<p>第一個故事是 Google是世界上永遠的樹大招風，當Google上市後就有一些小公司告Google，說Google的排名不公平，影響他們的流量。Google方面沒有向法官說明自已的排名演算法多麼客觀，反而是引用了美國憲法的第一修正案，即關於論論自由。也就是說Google不需要把排名做到絕對客觀公平，它還是可以表達自已的意願，而排名就是它的主觀意願的表達</p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<p>這件事你聽起來可能學得很悖論(矛盾)，以追求客觀性為目標的Google，打贏司反而要靠調強主觀性</p>
-<p>第二個故事是Google有幾個工程師和摩根士丹利(Morgan Stanley)和高盛集團(Goldman Sachs Group Inc.)打擂台，看誰的管理資本的回報高，最後的結果Google工程師贏了。</p>
-<p>這個事件帶來的收獲是，發現主觀的看法很多時候比客觀更重要。吳軍那時候開始定閱&lt;華爾街日報&gt;，因為除了那些所謂的客觀新聞之外，還有很強烈主觀的專欄。</p>
-<p>畢竟他們的工程素質跟Google別起來差甚多，因此要做到客觀判斷市場，並不容易</p>
-<p><img src="Untitled7.png" alt="Untitled7.png"></p>
-<p>為什麼主觀的意見比客觀的事實更重要呢？這裡有二個原因，第一，那些所謂客觀的事情其實不過是按照某一個標準把主觀性濾除的結，而那個標準的本身是主觀的。</p>
-<p>其次，真正的真知灼見都在所謂主觀性的看法中，這一點尤其重要。</p>
-<p>在&lt;華爾街日報&gt;中有各種帶有主觀色彩的專欄文章，它們可能帶有偏見，<strong><em>但是它們代表一類人的看法</em></strong>。同時，你也可能讀到截然相反的觀點。</p>
-<p>但你可以把這些觀點綜合起來，自已好好分析，你就不難得到很多深刻的看法，思考那些客觀描述，通常是完全正確，又完全無用 。</p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
-<p>其實人的主觀性是區別於動物的一個固有屬性。動物有本能，但是缺乏主觀意識，比如說一群動物的想法，常常是一樣的，但是人類不同，這原本就是應該是人的價值所在</p>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
-<p>一昧從客觀，會產生一種後果。最怕聽不到任何人的主觀意見，自以為是看到了一個客的結果。對於任何排名、評判和意見，我的看法是先看看他們的根據，看看他們思考問題的出發點，再審視他們是否說得有道理</p>
-<p>因為對主客觀，我基本的看法是這樣的：</p>
-<ol>
-<li><p>世界上沒有什麼絕對的客觀，因此</p>
-<blockquote>
-<p>人不能偷懶，不過經思考就接受所謂權威客觀的標準</p>
-</blockquote>
-</li>
-<li><p>主觀的意見非常重要的，我們即要聽主觀的意見，也要發表自已的主觀看法，而很多所謂的客觀論述不過是重復且不會引起爭議的訊息</p>
-</li>
-<li><p>多聽不同人的意見(主觀)，而不是僅僅相信權感的意見</p>
-</li>
-<li><p>作出判斷時要做到公平、公正，做事的時候要遵守規則。這項遠比糾結主觀和客觀重要得多</p>
-</li>
-</ol>
-<p><img src="Untitled10.png" alt="Untitled10.png"></p>
-<h2 id="結論：-1"><a href="#結論：-1" class="headerlink" title="結論："></a>結論：</h2><p>其實所謂的客觀標準本身又是極其主觀的。現在的我，很喜歡詢問別人的意見，也算是一種QBQ的精神，背後就是了解他真正動機是什麼？</p>
-<p><img src="Untitled11.png" alt="Untitled11.png"></p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<h2 id="從歷史看看主客觀-1"><a href="#從歷史看看主客觀-1" class="headerlink" title="從歷史看看主客觀"></a>從歷史看看主客觀</h2><p>歷史學者則因為看到了歷史上太多好的初衷在多年後帶來的壞的結果，對多很多科學發明都非常謹慎和保守。這個問題上，並非科學家有更多的專業和知識，講話就有更大的發言權。相反的歷史學者的忠告常常是要聽的。</p>
-<p>學歷史是常握一種客觀公允，而且能夠超出時代的看問題方法。</p>
-<p><img src="Untitled12.png" alt="Untitled12.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -2259,7 +2145,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

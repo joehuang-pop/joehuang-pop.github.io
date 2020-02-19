@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on Getting Started with BQMLGetting Started with BQML | Qwiklabs ▌只要會SQL就能做Machine Learning？是的！沒錯，BigQuery ML是bases BigQuery，它的運作是提取BigQuery 內的d">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on Getting Started with BQMLGetting Started with BQML | Qwiklabs ▌只要會SQL就能做Machine Learning？是的！沒錯，BigQuery ML是bases BigQuery，它的運作是提取BigQuery 內的d">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled5.png">
+<meta property="og:updated_time" content="2020-02-19T06:58:53.659Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;2020&#x2F;02&#x2F;19&#x2F;GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/2020/02/19/GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on/"/>
+
+
+
+
+
+  <title>[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:58:27+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on"><a href="#GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on" class="headerlink" title="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on"></a>[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</h1><hr>
+<h2 id="Getting-Started-with-BQML"><a href="#Getting-Started-with-BQML" class="headerlink" title="Getting Started with BQML"></a>Getting Started with BQML</h2><p><a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">Getting Started with BQML | Qwiklabs</a></p>
+<h2 id="▌只要會SQL就能做Machine-Learning？"><a href="#▌只要會SQL就能做Machine-Learning？" class="headerlink" title="▌只要會SQL就能做Machine Learning？"></a>▌只要會SQL就能做Machine Learning？</h2><p>是的！沒錯，BigQuery ML是bases BigQuery，它的運作是提取BigQuery 內的data提供ML訓練模型。使用上80%的語法都是原本的Query的語法，使用ML時儘需加入<code>model_type</code>，如此即可建立從Data Warehouse打造出來的專屬情境模型</p>
+<blockquote>
+<p><a href="https://cloud.google.com/bigquery/" target="_blank" rel="noopener">BigQuery Machine Learning</a> (BQML, product in beta) enables users to create and execute machine learning models in BigQuery using SQL queries. The goal is to democratise machine learning by enabling SQL practitioners to build models using their existing tools and to increase development speed by eliminating the need for data movement.</p>
+</blockquote>
+<h2 id="▌機器學習的原理-x-天文軌道"><a href="#▌機器學習的原理-x-天文軌道" class="headerlink" title="▌機器學習的原理 x 天文軌道"></a>▌機器學習的原理 x 天文軌道</h2><p>先用一個例子來解釋什麼是機器學習？機器學習(ML)實際上是尋找一種<code>數學模型</code>，讓這種模型符合它所要描述的對象。比如說我們要尋找一種描述天體運動的模型，讓它符合太陽系行星的運動情況，今天這個模型就是開普勒-牛頓的橢圓形模型:太陽系中所有的行星和彗星圍繞著太陽系的重心(和太陽的位置很接近但是有所差別)，做橢圓運動。當然，這個模型內不同物體的運動速度和周期不同，這些數據被稱為模型的<code>參數</code>。</p>
+<p>有了這樣一個模型，就可以知道今後太陽系中行星和彗星的運行規律了，哈雷就用它成功地預測了哈雷彗星未來回到人們視野的時間。</p>
+<blockquote>
+<p>因此在模型中，要得到模型的參數(比如每一個星體運動的長軸半徑，運動一圈的周期)，就要根據觀察到的歷史資料計算</p>
+</blockquote>
+<h2 id="▌Mobile-x-預測交易機率"><a href="#▌Mobile-x-預測交易機率" class="headerlink" title="▌Mobile x 預測交易機率"></a>▌Mobile x 預測交易機率</h2><p>換一個例子，我們想透過mobile裝置的歷史資料包括device.operatingSystem、device.isMobile、使用者的國家、以及總瀏覽次數，共四項指標去預測客戶<code>再次交易的機率</code></p>
+<pre><code>#standardSQL
+CREATE OR REPLACE MODEL `bqml_lab.sample_model`
+OPTIONS(model_type=&apos;logistic_reg&apos;) AS
+SELECT
+  IF(totals.transactions IS NULL, 0, 1) AS label,
+  IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+  device.isMobile AS is_mobile,
+  IFNULL(geoNetwork.country, &quot;&quot;) AS country,
+  IFNULL(totals.pageviews, 0) AS pageviews
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN &apos;20160801&apos; AND &apos;20170631&apos;
+LIMIT 100000;</code></pre><h3 id="其中"><a href="#其中" class="headerlink" title="其中"></a>其中</h3><ol>
+<li><p>一開始我們使用 <strong><code>[CREATE MODEL](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create?hl=zh-tw)</code></strong> 子句來建立及訓練名為 <strong><code>bqml_tutorial.sample_model</code></strong> 的模型。</p>
+<p> <strong><code>OPTIONS(model_type=&#39;logistic_reg&#39;)</code></strong> 子句代表您在建立<a href="https://en.wikipedia.org/wiki/Logistic_regression" target="_blank" rel="noopener">邏輯迴歸</a>模型。 邏輯迴歸模型會嘗試將輸入資料拆分成兩個類別，並且給予各類別資料一個機率。</p>
+<p> 這邊有用 <code>0</code>,<code>1</code> 的 label<code>標示</code>有沒有交易，像這樣有標記的就是supervised learning，訓練出的模型可以對一個新的使用者行為資料預測他”會不會交易”</p>
+<blockquote>
+<p>以辨識電子郵件是否屬於垃圾郵件為例，其屬於您有意偵測的事件；這類事件通常會用 1 表示，而不在此類的他種事件，則以 0 代表。若邏輯迴歸模型輸出 0.9，則表示有 90% 的機率為輸入資料是您想偵測的事件 (電子郵件屬於垃圾郵件)。</p>
+</blockquote>
+</li>
+<li><p>這個查詢的 <strong><code>SELECT</code></strong> 語法提取下列欄位，而這些欄位可被模型用來預測顧客完成交易的機率:</p>
+<ul>
+<li><strong><code>totals.transactions</code></strong> — 訪客於當次工作階段內所達成的電子商務交易總數，若交易次數是 <strong><code>NULL</code></strong>，<strong><code>label</code></strong> 欄位的值就會被設為 <strong><code>0</code></strong>，否則該欄位就會被設定為 <strong><code>1</code></strong>，這些值皆可用來表示可能的結果。若要在 <strong><code>CREATE MODEL</code></strong> 陳述式中設定 <strong><code>input_label_cols=</code></strong> 選項，那麼建立一個名為 <strong><code>label</code></strong> 的別名是可行的替代方案。<ul>
+<li><strong><code>device.operatingSystem</code></strong> — 訪客裝置的作業系統。</li>
+<li><strong><code>device.isMobile</code></strong> — 用來表示訪客的裝置是否為行動裝置。</li>
+<li><strong><code>geoNetwork.country</code></strong> — 以 IP 位置來表示該次工作階段的流量來源國家。</li>
+<li><strong><code>totals.pageviews</code></strong> — 當次工作階段的總檢視頁數。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong><code>FROM</code></strong> 子句 — <strong><code>bigquery-public-data.google_analytics_sample.ga_sessions_*</code></strong> </p>
+<ul>
+<li>表示正在查詢 Google Analytics 樣本資料集此資料集位在 <strong><code>bigquery-public-data</code></strong> 專案中，以日期為分類查詢一組資料表。這可用資料表名稱中的萬用字元來表示：<strong><code>google_analytics_sample.ga_sessions_*</code></strong></li>
+</ul>
+</li>
+<li><p><strong><code>WHERE</code></strong> 子句 — <strong><code>_TABLE_SUFFIX BETWEEN &#39;20160801&#39; AND &#39;20170630&#39;</code></strong> — 限制了查詢所能夠掃描的資料表數量，而所掃描的日期區間則是從 2016.08.01 年 8 月 1 - 2017.06.30</p>
+</li>
+</ol>
+<h2 id="▌模型有那些呢-Supported-models-in-BigQuery-ML"><a href="#▌模型有那些呢-Supported-models-in-BigQuery-ML" class="headerlink" title="▌模型有那些呢 | Supported models in BigQuery ML"></a>▌模型有那些呢 | Supported models in BigQuery ML</h2><p>看完上面的例子，還算簡單吧？因為除了既有的SQL語法之外，其實就只一條code 是在建立模型 → “OPTIONS(model_type=’logistic_reg’)”，那麼到底有幾種呢？</p>
+<p><a href="https://cloud.google.com/bigquery-ml/docs/bigqueryml-intro" target="_blank" rel="noopener">Introduction to BigQuery ML | Google Cloud</a></p>
+<p>目前有三大類forecasting、classification、 data segmentation，包含客製model共五種：</p>
+<ol>
+<li>Linear regression for forecasting</li>
+<li>Binary logistic for classification</li>
+<li>Multiclass logistic regression for classification</li>
+<li>K-means clustering for data segmentation</li>
+<li>TensorFlow model importing | 客製用</li>
+</ol>
+<p>以下簡單說明模型使用的場景：</p>
+<h3 id="1-Binary-logistic-二元分類模型"><a href="#1-Binary-logistic-二元分類模型" class="headerlink" title="1. Binary logistic | 二元分類模型"></a>1. Binary logistic | 二元分類模型</h3><p>簡單說就是用來做二分法，非A及B，就是兩個可能的類別之中，選其中一個當作結果</p>
+<ul>
+<li><strong>二元分類問題範例</strong><ul>
+<li>是否問題 → 「這個電子郵件是否為垃圾郵件？」</li>
+<li>會不會問題 → 「客戶會不會購買此產品？」</li>
+<li>是A還是B → 「這個產品是書籍還是電子產品？」</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Multiclass-logistic-多類別分類模型"><a href="#2-Multiclass-logistic-多類別分類模型" class="headerlink" title="2. Multiclass logistic | 多類別分類模型"></a>2. Multiclass logistic | 多類別分類模型</h3><p>Multiclass logistic ML 模型可讓您為多類別產生預測，簡單說就是預測兩個以上結果的其中一個。</p>
+<ul>
+<li><strong>多類別問題範例</strong><ul>
+<li>「這個產品是書籍、電影還是衣服？」</li>
+<li>「這個電影是浪漫喜劇片、紀錄片還是驚悚片？」</li>
+<li>「這個客戶最感興趣的產品類別為何？」</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-Linear-regressio-線性回歸模型"><a href="#3-Linear-regressio-線性回歸模型" class="headerlink" title="3. Linear regressio | 線性回歸模型"></a>3. Linear regressio | 線性回歸模型</h3><p>回歸問題的 ML 模型預測未來可能發生問題，使用數值做為結果基礎。</p>
+<ul>
+<li><strong>回歸問題範例</strong><ul>
+<li>「西雅圖明天的溫度為何？」</li>
+<li>「這個產品會售出多少單位？」</li>
+<li>「這棟房屋的售價為何？」</li>
+</ul>
+</li>
+</ul>
+<h2 id="▌實戰BigQuery"><a href="#▌實戰BigQuery" class="headerlink" title="▌實戰BigQuery"></a>▌實戰BigQuery</h2><h3 id="1-訓練模型"><a href="#1-訓練模型" class="headerlink" title="#1. 訓練模型"></a>#1. 訓練模型</h3><p>訓練模型之前有個前提是帶你的dataset，因屬於BigQuery工作這邊先不多述。看我們的例子使用的模型類型是二元邏輯回歸。在這種情況下，標籤就是你試圖適應的東西</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<ul>
+<li><p>訓練結果| Execution details<br>產出有三個criteria可以參考：loss、Duration、Learn rate。我們可以發現<code>iteration</code>(迭代)經過了八次，確實有助了<code>loss</code>的下降，代表模型有很高的正確率</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+<li><p><strong>什麼是學習率(learn rate)</strong><br>這個參數是掌握模型的學習進度，如何調learn rate是訓練出好模型的關鍵要素。比如說learn rate對梯度下降的影響，如果learn rate太小，代表對神經網絡進行非常小的權重更新，會使其訓練變非常緩慢；另外learn rate太大，可能導致無法收斂。</p>
+</li>
+<li><p><strong>什麼遺失值(loss)</strong></p>
+<p>  ML演算法是透過若干已知預測結果的範例 (像是使用者購買次數的歷史資料) 以及藉由迭代法來不斷調整模型中的各式權重，使得模型預測得以與真實數值吻合。最後能達到這個目標，是因為機器學習演算法透過「遺失」指標降低模型的錯誤預測。</p>
+<p>  預期目標是每次迭代，遺失值越來越低 (理想狀況是降低到 0)。遺失值 0，代表模型具有 100% 的正確率。</p>
+</li>
+</ul>
+<blockquote>
+<p>「訓練資料遺失率」(Training Data Loss) 資料欄代表在訓練資料集上指定迭代後計算出來的損失指標。由於您執行了邏輯迴歸，因此該資料欄是<a href="https://en.wikipedia.org/wiki/Cross_entropy#Cross-entropy_error_function_and_logistic_regression" target="_blank" rel="noopener">對數損失</a>， 「評估資料遺失率」(Evaluation Data Loss) 資料欄是在保留資料集上計算的相同損失指標 (從訓練資料收回以驗證模型的資料)。</p>
+</blockquote>
+<h3 id="2-使用Model-預測"><a href="#2-使用Model-預測" class="headerlink" title="#2. 使用Model 預測"></a>#2. 使用Model 預測</h3><p>剛訓練完的模型，可以再經過一次資料評估但這邊先省略，直帶入做預測，我們要做的是用此模型來預測結果，您使用模型預測來自於每<code>一個國家的網站訪客所進行的交易次數</code>。</p>
+<ul>
+<li>FROM ml.EVALUATE(MODEL <code>bqml_lab.sample_model</code>：選擇方才建立的模型</li>
+<li>SELECT：選擇進入的變數</li>
+<li>FROM：選擇進入的table</li>
+<li>WHERE：指定table 的日期</li>
+</ul>
+<p>選用的資料集為</p>
+<ul>
+<li><p>ml.EVALUATE(MODEL `bqml_lab.sample_model</p>
+</li>
+<li><p>選用每個國家的網站訪客所進行的交易次數 → 故SELECT country</p>
+</li>
+<li><p>使用的資料期間為<code>20170701 - 20170801</code> → 注意這次帶入的資料就是用不同區間的資料</p>
+<p>  #standardSQL<br>  SELECT</p>
+<pre><code>country,
+SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
+<pre><code>ML.PREDICT(MODEL `bqml_tutorial.sample_model`, (</code></pre><p>  SELECT</p>
+<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+device.isMobile AS is_mobile,
+IFNULL(totals.pageviews, 0) AS pageviews,
+IFNULL(geoNetwork.country, &quot;&quot;) AS country</code></pre><p>  FROM</p>
+<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
+<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY country<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10</p>
+</li>
+</ul>
+<p>通過這個查詢，預測每個國家的訪問者進行的交易數量，對結果進行排序，並根據購買情況選擇前10個國家：</p>
+<h3 id="其中-1"><a href="#其中-1" class="headerlink" title="其中"></a>其中</h3><ul>
+<li><p><code>[ML.PREDICT](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-predict?hl=zh_tw)</code> 函式可運用您的 <code>bqml_tutorial.sample_model</code> 模型來預測結果。</p>
+<p>  這個查詢的巢狀 <code>SELECT</code> 陳述式及 <code>FROM</code> 子句與 <code>CREATE MODEL</code> 查詢中的相同。</p>
+</li>
+<li><p><code>WHERE</code> 子句 — <code>_TABLE_SUFFIX BETWEEN &#39;20170701&#39; AND &#39;20170801&#39;</code> — 它限定查詢掃描的資料表數量，日期區間提定在 2017.07.01 - 2017.08.01 ，</p>
+</li>
+<li><p><code>GROUP BY</code> 與 <code>ORDER BY</code> 子句藉由國家名稱分組結果，並以遞減方式將預測到的交易次數加總後進行遞減排序。</p>
+</li>
+<li><p><code>LIMIT</code> 子句在此處的用途是僅顯示前 10 筆查詢結果。</p>
+</li>
+<li><p>Job info</p>
+<ul>
+<li><code>duration</code>：可以看到執行的時間花了1.7 sec</li>
+<li><code>bytes processed</code>：這次Query，是以量計價的模式(on-demand )，BigQuery 會根據「bytes processed處理的位元組數」，白話說也就是系統讀取的bytes，這項指標來收取執行查詢作業的費用</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<ul>
+<li><p>work timing<br>完整從SQL篩選資料給ML訓練使用</p>
+<p>  Input → Join → Aggregate → Compute(S03)平行運算 → Compute(S04)平行運算 → Output</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<h3 id="3-預測結果說明"><a href="#3-預測結果說明" class="headerlink" title="3. 預測結果說明"></a>3. 預測結果說明</h3><ul>
+<li><p><strong>預測1：</strong></p>
+<p>  執行 ML.PREDICT 查詢，可以看到表格是預測各國的消費預測如下表</p>
+<ul>
+<li><p>預估1：美國會有209次的購買</p>
+</li>
+<li><p>預估2：台灣會有006次的購買</p>
+</li>
+<li><p>預估3：加國會有004次的購買</p>
+<p>  <img src="Untitled4.png" alt="Untitled4.png"></p>
+</li>
+</ul>
+</li>
+<li><p><strong>預測2：</strong></p>
+<p>  另外也可以修改Query，變成是預測每位使用者的購買量，我們把f<code>ullVisitorId</code> 加入到<code>SELECT</code></p>
+<ul>
+<li><p>預估1：客戶ID: 2537542…910，未來會有4次的購買</p>
+</li>
+<li><p>預估2：客戶ID: 9681060…629，未來會有3次的購買</p>
+</li>
+<li><p>預估3：客戶ID: 7102244…635，未來會有3次的購買</p>
+<p>  #standardSQL<br>  SELECT</p>
+<pre><code>fullVisitorId,
+SUM(predicted_label) as total_predicted_purchases</code></pre><p>  FROM</p>
+<pre><code>ml.PREDICT(MODEL `bqml_lab.sample_model`, (</code></pre><p>  SELECT</p>
+<pre><code>IFNULL(device.operatingSystem, &quot;&quot;) AS os,
+device.isMobile AS is_mobile,
+IFNULL(totals.pageviews, 0) AS pageviews,
+IFNULL(geoNetwork.country, &quot;&quot;) AS country,
+fullVisitorId</code></pre><p>  FROM</p>
+<pre><code>`bigquery-public-data.google_analytics_sample.ga_sessions_*`</code></pre><p>  WHERE</p>
+<pre><code>_TABLE_SUFFIX BETWEEN &apos;20170701&apos; AND &apos;20170801&apos;))</code></pre><p>  GROUP BY fullVisitorId<br>  ORDER BY total_predicted_purchases DESC<br>  LIMIT 10;</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="▌Reference"><a href="#▌Reference" class="headerlink" title="▌Reference:"></a>▌Reference:</h2><ol>
+<li>Qwikilab :<a href="https://www.qwiklabs.com/focuses/2157?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/2157?parent=catalog</a></li>
+<li><a href="https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html" target="_blank" rel="noopener">https://docs.aws.amazon.com/zh_tw/machine-learning/latest/dg/types-of-ml-models.html</a></li>
+<li>說明Iteration, Loss: <a href="https://jtcozylife.com/google-machine-learning-crash-course-%E7%AD%86%E8%A8%98-part-2/" target="_blank" rel="noopener">https://jtcozylife.com/google-machine-learning-crash-course-筆記-part-2/</a></li>
+<li>完的ML訓練過程說明 <a href="https://ithelp.ithome.com.tw/articles/10221245" target="_blank" rel="noopener">https://ithelp.ithome.com.tw/articles/10221245</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/19/TCP-BBR-What-is-BBR/TCP%20BBR%20What%20is%20BBR/" rel="next" title="TCP-BBR-What-is-BBR/TCP BBR What is BBR">
+                <i class="fa fa-chevron-left"></i> TCP-BBR-What-is-BBR/TCP BBR What is BBR
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-只要懂SQL-即刻打通-BigQuery-ML-任督二脈-BigQuery-ML-Hands-on"><span class="nav-number">1.</span> <span class="nav-text">[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-Started-with-BQML"><span class="nav-number">1.1.</span> <span class="nav-text">Getting Started with BQML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌只要會SQL就能做Machine-Learning？"><span class="nav-number">1.2.</span> <span class="nav-text">▌只要會SQL就能做Machine Learning？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌機器學習的原理-x-天文軌道"><span class="nav-number">1.3.</span> <span class="nav-text">▌機器學習的原理 x 天文軌道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌Mobile-x-預測交易機率"><span class="nav-number">1.4.</span> <span class="nav-text">▌Mobile x 預測交易機率</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其中"><span class="nav-number">1.4.1.</span> <span class="nav-text">其中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌模型有那些呢-Supported-models-in-BigQuery-ML"><span class="nav-number">1.5.</span> <span class="nav-text">▌模型有那些呢 | Supported models in BigQuery ML</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Binary-logistic-二元分類模型"><span class="nav-number">1.5.1.</span> <span class="nav-text">1. Binary logistic | 二元分類模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Multiclass-logistic-多類別分類模型"><span class="nav-number">1.5.2.</span> <span class="nav-text">2. Multiclass logistic | 多類別分類模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Linear-regressio-線性回歸模型"><span class="nav-number">1.5.3.</span> <span class="nav-text">3. Linear regressio | 線性回歸模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌實戰BigQuery"><span class="nav-number">1.6.</span> <span class="nav-text">▌實戰BigQuery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-訓練模型"><span class="nav-number">1.6.1.</span> <span class="nav-text">#1. 訓練模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用Model-預測"><span class="nav-number">1.6.2.</span> <span class="nav-text">#2. 使用Model 預測</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其中-1"><span class="nav-number">1.6.3.</span> <span class="nav-text">其中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-預測結果說明"><span class="nav-number">1.6.4.</span> <span class="nav-text">3. 預測結果說明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌Reference"><span class="nav-number">1.7.</span> <span class="nav-text">▌Reference:</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
