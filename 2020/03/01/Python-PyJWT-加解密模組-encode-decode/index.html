@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[Python] PyJWT 加解密模組: encode, decodeStatus: in 75% ▌Python JWT TokenWelcome to PyJWT - PyJWT 1.7.1 documentation PyJWT工具是用來encode、decode的加解密工具，使用jwt module。 即使Token，被擷取了也不用擔心，因為擷取的人沒有SECRET做decode的動作">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Python] PyJWT 加解密模組: encode, decode">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[Python] PyJWT 加解密模組: encode, decodeStatus: in 75% ▌Python JWT TokenWelcome to PyJWT - PyJWT 1.7.1 documentation PyJWT工具是用來encode、decode的加解密工具，使用jwt module。 即使Token，被擷取了也不用擔心，因為擷取的人沒有SECRET做decode的動作">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;Untitled3.png">
+<meta property="og:updated_time" content="2020-03-01T04:43:54.675Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;01&#x2F;Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/03/01/Python-PyJWT-加解密模組-encode-decode/"/>
+
+
+
+
+
+  <title>[Python] PyJWT 加解密模組: encode, decode | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Python] PyJWT 加解密模組: encode, decode</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-01T12:39:51+08:00">
+                2020-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Python-PyJWT-加解密模組-encode-decode"><a href="#Python-PyJWT-加解密模組-encode-decode" class="headerlink" title="[Python] PyJWT 加解密模組: encode, decode"></a>[Python] PyJWT 加解密模組: encode, decode</h1><p>Status: in 75%</p>
+<h2 id="▌Python-JWT-Token"><a href="#▌Python-JWT-Token" class="headerlink" title="▌Python JWT Token"></a>▌Python JWT Token</h2><p><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">Welcome to PyJWT - PyJWT 1.7.1 documentation</a></p>
+<p>PyJWT工具是用來encode、decode的加解密工具，使用jwt module。</p>
+<p>即使Token，被擷取了也不用擔心，因為擷取的人沒有<code>SECRET</code>做decode的動作</p>
+<p>使用前先導入jwt module，再傳入json格式，一個<code>key</code>、一個<code>value</code>，還有一個加密的算法<code>SECRET</code>，最後會幫你算出一個Token。</p>
+<h3 id="範例1：官方入門"><a href="#範例1：官方入門" class="headerlink" title="範例1：官方入門"></a>範例1：官方入門</h3><ul>
+<li>key = k123</li>
+<li>value = v123</li>
+<li>secret = secret</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()會幫你產出一組token</p>
+<pre><code># Sample1
+# encoded_jwt
+
+import jwt
+
+encoded_jwt = jwt.encode({&apos;k123&apos;: &apos;v123&apos;}, &apos;secret&apos;, algorithm=&apos;HS256&apos;)
+encoded_jwt
+
+jwt.decode(encoded_jwt, &apos;secret&apos;, algorithm=[&apos;HS256&apos;])</code></pre><h3 id="輸出1"><a href="#輸出1" class="headerlink" title="輸出1"></a>輸出1</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值{k123 : v123}</li>
+</ol>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<hr>
+<h3 id="範例2：帳密加密應用"><a href="#範例2：帳密加密應用" class="headerlink" title="範例2：帳密加密應用"></a>範例2：帳密加密應用</h3><ul>
+<li>k = username</li>
+<li>v = joe</li>
+<li>secret = mykey123</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()產出另一組token</p>
+<pre><code># Sample2
+# Token with account, passwd
+
+token = jwt.encode({&quot;username&quot;:&quot;joe&quot;}, &quot;mykey123&quot;, algorithm=&apos;HS256&apos;)
+token
+jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123= key,value; k=mykey123</code></pre><h3 id="輸出2"><a href="#輸出2" class="headerlink" title="輸出2"></a>輸出2</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></li>
+</ol>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<hr>
+<h3 id="範例3：Token-Expiration"><a href="#範例3：Token-Expiration" class="headerlink" title="範例3：Token Expiration"></a>範例3：Token Expiration</h3><p>上面的範例產出的token都是永久有效的，但這邊存在一個風險。只要對方拿到token後，在慢慢try secret，終究是可以得到明碼的帳密。因此需要設計成一個有效期限，若送出request超時再取token的時候系統就會報錯。</p>
+<p>因此token的使用，設定在一個有效的時間區間內。如果超過這個時間，token就等於無效的。</p>
+<p>如果要在次使用token時，就得再次輸入帳密</p>
+<ul>
+<li>使用時間模組<code>datetime</code>  <code>timedelta</code></li>
+<li>在json格式中，放進特殊的key:value → <code>{exp : date}</code><ul>
+<li>超時與時間描述，提供具體的有效期間</li>
+<li>“exp”: datetime.utcnow() + timedelta(minutes=1) → <code>utcnow</code> 當前時間 + <code>timedelta</code> 累加時間為1分鐘<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"># Sample3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"># Experiation</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">from datetime import datetime, timedelta</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"># add specific k &amp; value for exp</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">token_exp &#x3D; jwt.encode(&#123;&quot;username&quot;:&quot;joe&quot;, &quot;exp&quot;: datetime.utcnow() + timedelta(minutes&#x3D;1)&#125;, &quot;mykey123&quot;, algorithm&#x3D;&#39;HS256&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">token_exp</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">jwt.decode(token_exp, &quot;mykey123&quot;, algorithe&#x3D;[&#39;HS256&#39;])</span></pre></td></tr></table></figure>
+<h3 id="輸出3"><a href="#輸出3" class="headerlink" title="輸出3"></a>輸出3</h3></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>decode( ), 第一次解碼encode的json內容，在一分鐘之內可以解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></p>
+<p> <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+<li><p>decode( ), 第二次解碼，已超過一分鐘的區間，故報錯回應 → <code>ExpiredSignatureError</code></p>
+<p> <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ol>
+<h2 id="▌結論："><a href="#▌結論：" class="headerlink" title="▌結論："></a>▌結論：</h2><p>應用上會將jwt包成一個API，讓user login時，而他傳入的body即是account/passwd，正確的話即可以產生一組Token，供系統登入</p>
+<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
+<li><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pyjwt.readthedocs.io/en/latest/</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/19/GCP-%E5%8F%AA%E8%A6%81%E6%87%82SQL-%E5%8D%B3%E5%88%BB%E6%89%93%E9%80%9A-BigQuery-ML-%E4%BB%BB%E7%9D%A3%E4%BA%8C%E8%84%88-BigQuery-ML-Hands-on/" rel="next" title="[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on">
+                <i class="fa fa-chevron-left"></i> [GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-PyJWT-加解密模組-encode-decode"><span class="nav-number">1.</span> <span class="nav-text">[Python] PyJWT 加解密模組: encode, decode</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#▌Python-JWT-Token"><span class="nav-number">1.1.</span> <span class="nav-text">▌Python JWT Token</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#範例1：官方入門"><span class="nav-number">1.1.1.</span> <span class="nav-text">範例1：官方入門</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#輸出1"><span class="nav-number">1.1.2.</span> <span class="nav-text">輸出1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#範例2：帳密加密應用"><span class="nav-number">1.1.3.</span> <span class="nav-text">範例2：帳密加密應用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#輸出2"><span class="nav-number">1.1.4.</span> <span class="nav-text">輸出2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#範例3：Token-Expiration"><span class="nav-number">1.1.5.</span> <span class="nav-text">範例3：Token Expiration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#輸出3"><span class="nav-number">1.1.6.</span> <span class="nav-text">輸出3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌結論："><span class="nav-number">1.2.</span> <span class="nav-text">▌結論：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌參考"><span class="nav-number">1.3.</span> <span class="nav-text">▌參考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
