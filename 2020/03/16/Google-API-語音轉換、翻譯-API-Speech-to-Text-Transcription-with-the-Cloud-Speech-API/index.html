@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech APIStatus: Completed ▌目的 使用curl 發送API請求，協助轉換語音到文字 Creating a Speech API request and calling the API with curl 面對各國不同語言情境，可">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech APIStatus: Completed ▌目的 使用curl 發送API請求，協助轉換語音到文字 Creating a Speech API request and calling the API with curl 面對各國不同語言情境，可">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled11.png">
+<meta property="og:updated_time" content="2020-03-15T16:27:14.266Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;03&#x2F;16&#x2F;Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/03/16/Google-API-語音轉換、翻譯-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API/"/>
+
+
+
+
+
+  <title>[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/03/16/Google-API-%E8%AA%9E%E9%9F%B3%E8%BD%89%E6%8F%9B%E3%80%81%E7%BF%BB%E8%AD%AF-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-16T00:27:14+08:00">
+                2020-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Google-API-語音轉換、翻譯-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API"><a href="#Google-API-語音轉換、翻譯-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API" class="headerlink" title="[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API"></a>[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API</h1><p>Status: Completed</p>
+<h2 id="▌目的"><a href="#▌目的" class="headerlink" title="▌目的"></a>▌<strong>目的</strong></h2><ol>
+<li>使用<code>curl</code> 發送API請求，協助轉換語音到文字 Creating a Speech API request and calling the API with curl</li>
+<li>面對各國不同語言情境，可以調整語音辨語言</li>
+</ol>
+<hr>
+<h2 id="▌1-語音轉換文字-API-Cloud-Speech-to-Text-API"><a href="#▌1-語音轉換文字-API-Cloud-Speech-to-Text-API" class="headerlink" title="▌1. 語音轉換文字 API | Cloud Speech-to-Text API"></a>▌1. 語音轉換文字 API | Cloud Speech-to-Text API</h2><h3 id="1-建立可以授信的-API-key"><a href="#1-建立可以授信的-API-key" class="headerlink" title="1. 建立可以授信的 API key"></a>1. 建立可以授信的 API key</h3><ul>
+<li>建立一個憑證Credentials，一般信認的三式有種API Key、OAuth、Service Account</li>
+<li>本次使用的API Key</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<ul>
+<li><p>獲取Token Key</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+<li><p>完整Token 資訊</p>
+<ul>
+<li><p>限制<br>你的Token，可以只針對某些特定的application、HTTP、IP作使用</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+</li>
+<li><p>為了待會使用curl，需要做驗證<br>可以先將token設成一個變數，如此作法也較安全<br>不會因為明碼直接外洩</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<h3 id="2-準備一個語音檔Create-your-Speech-API-request"><a href="#2-準備一個語音檔Create-your-Speech-API-request" class="headerlink" title="2. 準備一個語音檔Create your Speech API request"></a>2. 準備一個語音檔Create your Speech API request</h3><p>準備一個json裡面要告知API語音的資訊</p>
+<ul>
+<li><p>encoding 也就是語音的格式：<code>flac</code>是一種語音格式檔</p>
+</li>
+<li><p>languageCode 語言：en-us(預式都是英文)</p>
+<p>  <img src="Untitled4.png" alt="Untitled4.png"></p>
+</li>
+</ul>
+<p>*補充encoding格式說明</p>
+<p><a href="https://cloud.google.com/speech-to-text/docs/reference/rest/v1/RecognitionConfig" target="_blank" rel="noopener">https://cloud.google.com/speech-to-text/docs/reference/rest/v1/RecognitionConfig</a></p>
+<h3 id="3-cURL-呼叫-Speech-API"><a href="#3-cURL-呼叫-Speech-API" class="headerlink" title="3. cURL: 呼叫 Speech API"></a>3. <code>cURL</code>: 呼叫 Speech API</h3><h3 id="curl-參數說明"><a href="#curl-參數說明" class="headerlink" title="curl 參數說明"></a>curl 參數說明</h3><ul>
+<li><p><code>-s</code> : –silent 安靜模式，不要顯示任何progress在console，即使有err也是</p>
+</li>
+<li><p><code>-X POST</code>: -X –request</p>
+<ul>
+<li>一般搭配 [GET|POST|PUT|DELETE|PATCH]<br>使用指定的 http method 來發出 http request</li>
+</ul>
+</li>
+<li><p><code>-H</code> : 設定 request 裡所攜帶的 header</p>
+</li>
+<li><p><code>—data-binary</code>: 攜帶 HTTP POST Data</p>
+</li>
+<li><p><code>@request.json</code>: 用來夾檔</p>
+</li>
+<li><p><code>?key=${API_KEY}</code>: 用來餵toke n</p>
+</li>
+<li><p><code>&gt; result.jso</code>n:  內容輸出到指定檔案</p>
+<p>  curl -s -X POST -H “Content-Type: application/json” –data-binary @request.json <br>  “<a href="https://speech.googleapis.com/v1/speech:recognize?ey=${API_KEY}&quot;" target="_blank" rel="noopener">https://speech.googleapis.com/v1/speech:recognize?ey=${API_KEY}&quot;</a> &gt; result.json</p>
+</li>
+</ul>
+<h3 id="4-輸出結果"><a href="#4-輸出結果" class="headerlink" title="4. 輸出結果"></a>4. 輸出結果</h3><p>將flac語音轉換成text文字，也附上轉的confidence指數高達98%，代表它的翻譯準確程度</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<hr>
+<hr>
+<h2 id="▌2-翻譯-API-Cloud-Translation-API"><a href="#▌2-翻譯-API-Cloud-Translation-API" class="headerlink" title="▌2. 翻譯 API | Cloud Translation API"></a>▌2. 翻譯 API | Cloud Translation API</h2><h3 id="1-Create-an-API-Key"><a href="#1-Create-an-API-Key" class="headerlink" title="1. Create an API Key"></a>1. Create an API Key</h3><p>基本上跟上面的例子一樣，建一個token供API request使用</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h3 id="2-開始翻譯-Translate-Text"><a href="#2-開始翻譯-Translate-Text" class="headerlink" title="2. 開始翻譯 | Translate Text"></a>2. 開始翻譯 | Translate Text</h3><ul>
+<li><p>範例一：把字串”My name is Steve” 英文翻譯成西班牙文</p>
+</li>
+<li><p><code>TEXT</code>：存放英文字串</p>
+</li>
+<li><p>這裡的空白為 </p>
+<p>  #string<br>  TEXT=”My name is Steve”</p>
+<h1 id="api-request"><a href="#api-request" class="headerlink" title="api request"></a>api request</h1><p>  curl “<a href="https://translation.googleapis.com/language/translate/v2?target=es&amp;key=${API_KEY}&amp;q=${TEXT}&quot;">https://translation.googleapis.com/language/translate/v2?target=es&amp;key=${API_KEY}&amp;q=${TEXT}&quot;</a></p>
+</li>
+<li><p>Response<br>成功幫你翻譯為西文 → “Mi nombre es Steve”</p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+</li>
+</ul>
+<h3 id="3-多國語言翻譯"><a href="#3-多國語言翻譯" class="headerlink" title="3. 多國語言翻譯"></a>3. 多國語言翻譯</h3><p>Translation API  的另一個功能可以協助偵測不同國語言</p>
+<ul>
+<li><p><code>TEXT</code> 這邊設定二組字串有葡萄文跟日文</p>
+</li>
+<li><p><code>&amp;q</code>= 可以吃多個變數，一起使用同一次request，也算是省錢吧!?<br>其實沒有，因為計價的方式來自$20 per million characters*</p>
+<p>  TEXT_ONE=”Meu nome é Steven”<br>  TEXT_TWO=”日本のグーグルのオフィスは、東京の六本木ヒルズにあります”</p>
+</li>
+</ul>
+<pre><code>curl &quot;https://translation.googleapis.com/language/translate/v2/detect?key=${API_KEY}&amp;q=${TEXT_ONE}&amp;q=${TEXT_TWO}&quot;</code></pre><p>結果回傳<code>&quot;pt&quot;</code> 、 <code>&quot;ja&quot;</code> 代表這二組字串分別來葡萄牙語與日文</p>
+<ul>
+<li><p>而語文的簡碼可以參考 <a href="https://zh.wikipedia.org/wiki/ISO_639-1" target="_blank" rel="noopener">ISO-639-1</a> 所定義的各國簡碼</p>
+<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
+<p>  清楚版</p>
+<pre><code>{
+  &quot;data&quot;: {
+    &quot;detections&quot;: [
+      [
+        {
+          &quot;confidence&quot;: 0.20671661198139191,
+          &quot;isReliable&quot;: false,
+          &quot;language&quot;: &quot;pt&quot;
+        }
+      ],
+      [
+        {
+          &quot;confidence&quot;: 0.97750955820083618,
+          &quot;isReliable&quot;: false,
+          &quot;language&quot;: &quot;ja&quot;
+        }
+      ]
+    ]
+  }
+}</code></pre></li>
+</ul>
+<hr>
+<h2 id="▌3-Google-Cloud-API-with-POSTMAN"><a href="#▌3-Google-Cloud-API-with-POSTMAN" class="headerlink" title="▌3. Google Cloud API with POSTMAN"></a>▌3. Google Cloud API with POSTMAN</h2><p>上述的例子都是使用curl直接request，這邊換一個postman來發出request。這邊不同的於curl的方式，我們可以把token存在option中，且json request也可以寫在body當中</p>
+<h3 id="1-POSTMAN-驗證-Authorization"><a href="#1-POSTMAN-驗證-Authorization" class="headerlink" title="1. POSTMAN 驗證 | Authorization"></a>1. POSTMAN 驗證 | Authorization</h3><ul>
+<li><p>Auth類型: API Key<br>作法一樣至Credentials得到一組token</p>
+<ul>
+<li><p>帶入API URI<br><code>https://speech.googleapis.com/v1/speech:recognize?key=AI...........o</code></p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-請求-JSON"><a href="#2-請求-JSON" class="headerlink" title="2. 請求 JSON"></a>2. 請求 JSON</h3><ul>
+<li><p>轉入的 json 可以直接寫在body內，原則上跟上面的例子一樣<br>告知檔案格式與flac的來源與格式</p>
+<pre><code>{
+  &quot;config&quot;: {
+      &quot;encoding&quot;:&quot;FLAC&quot;,
+      &quot;languageCode&quot;: &quot;en-US&quot;
+  },
+  &quot;audio&quot;: {
+      &quot;uri&quot;:&quot;gs://cloud-samples-tests/speech/brooklyn.flac&quot;
+  }
+}</code></pre><p>  Body: JSON</p>
+<ul>
+<li><p>寫入body，記得也要轉換JSON</p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-執行"><a href="#3-執行" class="headerlink" title="3. 執行"></a>3. 執行</h3><ul>
+<li><p>response結果<br>成功將語音轉換成文字</p>
+<p>  <img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ul>
+<hr>
+<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
+<li><p>CURL<br><a href="https://blog.techbridge.cc/2019/02/01/linux-curl-command-tutorial/" target="_blank" rel="noopener">https://blog.techbridge.cc/2019/02/01/linux-curl-command-tutorial/</a></p>
+</li>
+<li><p>Speech to Text Transcription with the Cloud Speech API</p>
+<p> <a href="https://www.qwiklabs.com/focuses/2187?catalog_rank=%7B%22rank%22%3A5%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=4748950" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/2187?catalog_rank=%7B%22rank%22%3A5%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&amp;parent=catalog&amp;search_id=4748950</a></p>
+</li>
+<li><p>翻譯 API | Translate Text with the Cloud Translation API</p>
+<p> <a href="https://google.qwiklabs.com/focuses/697?catalog_rank=%7B%22rank%22%3A2%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=4767216" target="_blank" rel="noopener">Translate Text with the Cloud Translation API | Qwiklabs</a></p>
+</li>
+<li><p>POSTMAN with Speech API</p>
+<p> <a href="https://medium.com/@pnatraj/google-cloud-api-with-postman-f4cf070e665f" target="_blank" rel="noopener">Google Cloud API with POSTMAN</a></p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/" rel="next" title="[Python] PyJWT 加解密模組: encode, decode">
+                <i class="fa fa-chevron-left"></i> [Python] PyJWT 加解密模組: encode, decode
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Google-API-語音轉換、翻譯-API-Speech-to-Text-Transcription-with-the-Cloud-Speech-API"><span class="nav-number">1.</span> <span class="nav-text">[Google API] 語音轉換、翻譯 API | Speech to Text Transcription with the Cloud Speech API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#▌目的"><span class="nav-number">1.1.</span> <span class="nav-text">▌目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌1-語音轉換文字-API-Cloud-Speech-to-Text-API"><span class="nav-number">1.2.</span> <span class="nav-text">▌1. 語音轉換文字 API | Cloud Speech-to-Text API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-建立可以授信的-API-key"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 建立可以授信的 API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-準備一個語音檔Create-your-Speech-API-request"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 準備一個語音檔Create your Speech API request</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cURL-呼叫-Speech-API"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. cURL: 呼叫 Speech API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl-參數說明"><span class="nav-number">1.2.4.</span> <span class="nav-text">curl 參數說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-輸出結果"><span class="nav-number">1.2.5.</span> <span class="nav-text">4. 輸出結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌2-翻譯-API-Cloud-Translation-API"><span class="nav-number">1.3.</span> <span class="nav-text">▌2. 翻譯 API | Cloud Translation API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Create-an-API-Key"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. Create an API Key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-開始翻譯-Translate-Text"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 開始翻譯 | Translate Text</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#api-request"><span class="nav-number">2.</span> <span class="nav-text">api request</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-多國語言翻譯"><span class="nav-number">2.0.1.</span> <span class="nav-text">3. 多國語言翻譯</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌3-Google-Cloud-API-with-POSTMAN"><span class="nav-number">2.1.</span> <span class="nav-text">▌3. Google Cloud API with POSTMAN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-POSTMAN-驗證-Authorization"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. POSTMAN 驗證 | Authorization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-請求-JSON"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 請求 JSON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-執行"><span class="nav-number">2.1.3.</span> <span class="nav-text">3. 執行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌參考"><span class="nav-number">2.2.</span> <span class="nav-text">▌參考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
