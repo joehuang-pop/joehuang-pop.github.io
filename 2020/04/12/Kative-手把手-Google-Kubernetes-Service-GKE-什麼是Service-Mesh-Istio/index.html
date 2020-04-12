@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,kubernetes,istio,service mesh,GKE,Cloud Native,addons,Pilot,Ingress,ingress-gateway,envoy," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, IstioStatus: Completed ▌前言什麼是service mesh？  使用Container的網路服務，背後都會有多個程式做支持，且機會出現大量的存取行為  多版號的Application：拜DevOps精神所賜更版上版的頻率，越來越順暢，因此要在不同的">
+<meta name="keywords" content="GCP,kubernetes,istio,service mesh,GKE,Cloud Native,addons,Pilot,Ingress,ingress-gateway,envoy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, IstioStatus: Completed ▌前言什麼是service mesh？  使用Container的網路服務，背後都會有多個程式做支持，且機會出現大量的存取行為  多版號的Application：拜DevOps精神所賜更版上版的頻率，越來越順暢，因此要在不同的">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled9.png">
+<meta property="og:updated_time" content="2020-04-12T15:08:53.082Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;12&#x2F;Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/04/12/Kative-手把手-Google-Kubernetes-Service-GKE-什麼是Service-Mesh-Istio/"/>
+
+
+
+
+
+  <title>[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/04/12/Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-12T22:55:38+08:00">
+                2020-04-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kative/" itemprop="url" rel="index">
+                    <span itemprop="name">kative</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Kative-手把手-Google-Kubernetes-Service-GKE-什麼是Service-Mesh-Istio"><a href="#Kative-手把手-Google-Kubernetes-Service-GKE-什麼是Service-Mesh-Istio" class="headerlink" title="[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio"></a>[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio</h1><p>Status: Completed</p>
+<h1 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h1><p><strong>什麼是service mesh？</strong> </p>
+<p>使用Container的網路服務，背後都會有多個程式做支持，且機會出現大量的存取行為</p>
+<ul>
+<li>多版號的Application：拜DevOps精神所賜更版上版的頻率，越來越順暢，因此要在不同的服務組合做A/B測試</li>
+<li>負載平衡構成的連線關系：Cloud Native概念下許多的網路服務都會支持自動擴展的能力</li>
+<li>身份驗證：跨服務鏈設置端到端身份驗證</li>
+</ul>
+<blockquote>
+<p>上面幾種行為統稱為service mesh，也就是一個”鏈”<br>那麼…   誰該來管理這些鏈 Service Mesh？</p>
+</blockquote>
+<hr>
+<h1 id="▌安裝-部署"><a href="#▌安裝-部署" class="headerlink" title="▌安裝 / 部署"></a>▌安裝 / 部署</h1><h3 id="Step1-準備-GKE-Cluster"><a href="#Step1-準備-GKE-Cluster" class="headerlink" title="Step1. 準備 GKE Cluster"></a>Step1. 準備 GKE Cluster</h3><ul>
+<li>先指定cluster worker node vm的zone位置</li>
+<li>透過<code>gcloud container clusters</code>建立4個node GKE</li>
+<li>GKE啟用istio非常的容易，加上<code>--addons</code>即可</li>
+</ul>
+<pre><code># 設定vm的zone位置
+gcloud config set compute/zone us-central1-f
+
+# 建立GKE cluster
+# 直接enable addons Istio
+gcloud container clusters create hello-istio \
+    --num-nodes 4 \
+        --enable-basic-auth \
+    --addons=Istio --istio-config=auth=MTLS_STRICT</code></pre><p>部署一個GKE環境</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="Step2-安裝-Istio-Istio-Tools"><a href="#Step2-安裝-Istio-Istio-Tools" class="headerlink" title="Step2. 安裝 Istio, Istio Tools"></a>Step2. 安裝 Istio, Istio Tools</h3><ul>
+<li><p>首先取得Istio client，這邊有指定版號1.2.2</p>
+</li>
+<li><p>安Istio’s 核心元件 ，同時也啟用 <code>mutual TLS</code>(mTLS) 驗證給sidecars使用</p>
+<p>Istio control plane 核心元件有以下</p>
+</li>
+<li><p><em>Pilot</em>: Handles configuration and programming of the proxy sidecars.</p>
+</li>
+<li><p><em>Mixer</em>: Handles policy decisions for your traffic and gathers telemetry.</p>
+</li>
+<li><p><em>Ingress</em>: Handles incoming requests from outside your cluster.</p>
+</li>
+<li><p><em>CA</em>: the Certificate Authority.</p>
+</li>
+</ul>
+<pre><code>#1 取得Istio client
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.2.2 sh -
+
+#2 Add the istioctl client to your PATH:
+export PATH=$PWD/bin:$PATH
+
+#3 安裝Istio components:*Pilot, Mixer, Ingress, CA etc.*
+kubectl apply -f install/kubernetes/istio-auth.yaml
+
+#4 確認Istio 版本, 執行istio pod
+kubectl get svc -n istio-system
+
+kubectl get pods -n istio-system</code></pre><p>取得application sample code, 並測試 istio</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h1 id="▌驗證-測試"><a href="#▌驗證-測試" class="headerlink" title="▌驗證 / 測試"></a>▌驗證 / 測試</h1><h3 id="Step1-部署一個Application"><a href="#Step1-部署一個Application" class="headerlink" title="Step1. 部署一個Application"></a>Step1. 部署一個Application</h3><p>Istio作法是建立proxy sidecar 在每個pod的旁邊，istioctl kube-inject這個動作是透過原有<code>bookinfo.yaml</code>，將原有containers (procdocpage, rankings, detailed etc.)再加上<code>Istio proxy</code>的設定檔</p>
+<ul>
+<li><code>bookinfo.yaml</code> 除了 service 也有 deployment</li>
+<li>這個是手動 inject <code>sidecar</code>，第一行只會顯示在 stdout，而第二行是合成一個指令</li>
+<li>因為沒有在 namespace 下 label 設定 auto-inject，所以是手動inject</li>
+<li>然後要自己先產生包含 sidecar container 的 <code>YAML</code>，再去跑kube apply</li>
+</ul>
+<pre><code>#1 先確認bookinfo.yaml在不在
+ls samples/bookinfo/kube/bookinfo.yaml
+
+#2 kube-inject 只會顯示在 stdout
+istioctl kube-inject -f samples/bookinfo/kube/bookinfo.yaml
+
+#3 合成一個指令，就是將括弧內的輸出當作是檔案，給前面的指令執行
+# 指令說明
+1. &lt;( ) 是個 linux 指令的用法
+是將括弧內的輸出當作是檔案，給前面的指令執行
+2. 原本 -f 後面是接檔案路徑
+
+kubectl apply -f &lt;(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)</code></pre><p>部署istio, 和主要bookinfo application</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<ul>
+<li>檢視已加入istio config<br>發現<code>annotations</code> 足跡，有設定過sidecar.istio.io並給於版號</li>
+<li>annotations 類似於labels，但它是沒有識別用途的標籤</li>
+</ul>
+<pre><code># 找找 Istio sidecar, along with all the configuration
+# 在這個輸出檔 istioctl kube-inject -f samples/bookinfo/kube/bookinfo.yaml
+
+metadata:
+      annotations:
+        sidecar.istio.io/status: &apos;{&quot;version&quot;:&quot;249fe8117967ad89e644f4ee6f775cd76fc32e399ad4faecc9541b9277053d85&quot;,&quot;initContainers&quot;:[&quot;istio-init&quot;],&quot;containers&quot;:[&quot;istio-proxy&quot;],&quot;volumes&quot;:[&quot;istio-envoy&quot;,&quot;istio-certs&quot;],&quot;imagePullSecrets&quot;:null}&apos;</code></pre><ul>
+<li><p>完整istioctl kube-inject -f 內容</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<h3 id="Step2-確認Bookinfo-狀態"><a href="#Step2-確認Bookinfo-狀態" class="headerlink" title="Step2. 確認Bookinfo 狀態"></a>Step2. 確認Bookinfo 狀態</h3><p>確認剛剛的kube apply 有把pods, services 都長出來</p>
+<pre><code># 確認 bookinfo pods, services
+kubectl get services
+
+kubectl get services</code></pre><p>比對一下productpage, ratings, reviews x3都有正常運作</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="Step3-簡介bookinfo-Application"><a href="#Step3-簡介bookinfo-Application" class="headerlink" title="Step3. 簡介bookinfo Application"></a>Step3. 簡介bookinfo Application</h3><p>部署完的<code>bookinfo.yaml，簡介</code>microservices有以下</p>
+<blockquote>
+<p>microservices 有四個有python, Java, Ruby, node.js：</p>
+</blockquote>
+<ul>
+<li><strong>productpage:</strong> calls the details and reviews microservices to populate the page.</li>
+<li><strong>details</strong>: contains book information.</li>
+<li><strong>reviews:</strong> contains book reviews. It also calls the ratings microservice.</li>
+<li><strong>ratings</strong>: contains book ranking information that accompanies a book review.</li>
+</ul>
+<blockquote>
+<p><strong>reviews</strong> microservice 有三種版本：</p>
+</blockquote>
+<ul>
+<li><p>Reviews <strong>v1</strong> doesn’t call the ratings service.</p>
+</li>
+<li><p>Reviews <strong>v2</strong> calls the ratings service, and displays each rating as 1 - 5 black stars.</p>
+</li>
+<li><p>Reviews <strong>v3</strong> calls the ratings service, and displays each rating as 1 - 5 red stars.</p>
+</li>
+<li><p>部署完的bookinfo</p>
+<p>  <img src="Untitled5.png" alt="Untitled5.png"></p>
+</li>
+<li><p>加上Istio (Sidecar injected)<br>加上proxy sidecar 就像圖示中，在每個pod的旁邊多一顆黑色的框</p>
+<p>  <img src="Untitled6.png" alt="Untitled6.png"></p>
+</li>
+<li><p>先前已手動加入<code>kube-inject -f</code>，代表已Istio已啟用了<br>因此完整的圖示如下</p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+</li>
+</ul>
+<h3 id="Step4-透過-Istio-Ingress-Gateway-啟用外部存取"><a href="#Step4-透過-Istio-Ingress-Gateway-啟用外部存取" class="headerlink" title="Step4. 透過 Istio Ingress Gateway 啟用外部存取"></a>Step4. 透過 Istio Ingress Gateway 啟用外部存取</h3><ul>
+<li>目前的<code>bookinfo</code>，只有cluster ip 僅限internal 溝通，若要讓外部可以存取時，需打通對外網路</li>
+<li>Istio Gateway 目的，是讓你允許外部的browser可以存取bookinfo的內容</li>
+<li>使用到的<code>apiVersion:[networking.istio.io/v1alpha3](http://networking.istio.io/v1alpha3)</code>，可以判斷<code>http</code>，裡面的<code>uri</code>內容</li>
+<li><code>apiVersion</code>，同時也可以有<code>route</code>功能 ，因此提供<code>destination、port</code>即可達到<code>docker</code>和docker之間的細微流量管制</li>
+</ul>
+<p>bookinfo-gateway.yaml</p>
+<pre><code># 確認 bookinfo-gateway.yaml 內容
+ls samples/bookinfo/networking/bookinfo-gateway.yaml
+
+# 啟用istio-gateway，使productpage docker可以允許對外存取
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</code></pre><p>bookinfo-gateway.yaml config如下</p>
+<pre><code>apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  hosts:
+  - &quot;*&quot;
+  gateways:
+  - bookinfo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080</code></pre><h3 id="什麼是Envoy"><a href="#什麼是Envoy" class="headerlink" title="什麼是Envoy"></a>什麼是Envoy</h3><p>上述的istio-gateway使用到的功能，其實是源自<code>Envoy</code></p>
+<ul>
+<li>什麼是<code>Envoy proxy</code>，是高效的效能代理程式，功能是調解service mesh內所有的inbound、outbound 的流量</li>
+<li><code>Istio</code>利用<code>Envoy</code>多項內置功能，包括<ol>
+<li>dynamic service discovery / load balancing / TLS termination</li>
+<li>HTTP/2 &amp; gRPC proxying / circuit breakers / health checks</li>
+<li>staged rollouts with %-based traffic split / fault injection / rich metrics.</li>
+</ol>
+</li>
+</ul>
+<h3 id="Step5-連線bookinfo網頁"><a href="#Step5-連線bookinfo網頁" class="headerlink" title="Step5. 連線bookinfo網頁"></a>Step5. 連線bookinfo網頁</h3><ul>
+<li>kubectl get svc 取得ingressgateway IP</li>
+</ul>
+<pre><code># 取得ingressgateway expose serivce IP
+kubectl get svc istio-ingressgateway -n istio-system
+
+# 設定一下個外部IP
+GATEWAY_URL=35.232.223.176
+
+# curl 測試網頁
+curl -I http://${GATEWAY_URL}/productpage</code></pre><p>查看到istio-gateway service、curl 測驗結果</p>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<p>browse 測試結果，也ok</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h1 id="▌後記"><a href="#▌後記" class="headerlink" title="▌後記"></a>▌後記</h1><h3 id="誰該來管理這些鏈-Service-Mesh？"><a href="#誰該來管理這些鏈-Service-Mesh？" class="headerlink" title="誰該來管理這些鏈 Service Mesh？"></a>誰該來管理這些鏈 Service Mesh？</h3><p><code>Service mesh</code>精神就是提倡，管理不應該留給服務本身，過去你可能會在yaml中使用network policy，使用到<code>policyTypes: Ingress</code> 加<code>labels</code>達成流量控管。但是服務和服務之間沒有一個docker能夠勝任這種自上而下的工作，而且這也不應該是他們的工作。</p>
+<p>最好的做法是服務和它們所訪問的網絡之間有一個<strong>獨立的系統</strong>，也就是切割出網路管理責任，把它全都都交給<code>Istio</code>。更重要的是，採用istio之後可以有以下好處</p>
+<ul>
+<li>使服務本身不必處理網絡流量load balance, routing, re-try等的細節</li>
+<li>為管理員提供一個<strong>抽象層：</strong>可以輕鬆地在cluster策略控制，監控和日誌，服務發現</li>
+<li>提升docker安全性：通過<code>TLS</code>進行安全的服務間(docker-to-docker)通信等方面制定有關網絡流量的進階policy</li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h1><p>[1] <a href="https://www.qwiklabs.com/focuses/8460?parent=catalog" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/8460?parent=catalog</a><br>[2] <a href="https://istio.io/docs/examples/bookinfo/" target="_blank" rel="noopener">https://istio.io/docs/examples/bookinfo/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          
+            <a href="/tags/istio/" rel="tag"># istio</a>
+          
+            <a href="/tags/service-mesh/" rel="tag"># service mesh</a>
+          
+            <a href="/tags/GKE/" rel="tag"># GKE</a>
+          
+            <a href="/tags/Cloud-Native/" rel="tag"># Cloud Native</a>
+          
+            <a href="/tags/addons/" rel="tag"># addons</a>
+          
+            <a href="/tags/Pilot/" rel="tag"># Pilot</a>
+          
+            <a href="/tags/Ingress/" rel="tag"># Ingress</a>
+          
+            <a href="/tags/ingress-gateway/" rel="tag"># ingress-gateway</a>
+          
+            <a href="/tags/envoy/" rel="tag"># envoy</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/16/Python-Flask-API-%E5%BE%8C%E7%AB%AF%E5%AF%A6%E4%BD%9C-Flask-API-Backend-Handson/" rel="next" title="[Python] Flask API 後端實作 | Flask API Backend Handson">
+                <i class="fa fa-chevron-left"></i> [Python] Flask API 後端實作 | Flask API Backend Handson
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kative-手把手-Google-Kubernetes-Service-GKE-什麼是Service-Mesh-Istio"><span class="nav-number">1.</span> <span class="nav-text">[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌前言"><span class="nav-number">2.</span> <span class="nav-text">▌前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌安裝-部署"><span class="nav-number">3.</span> <span class="nav-text">▌安裝 / 部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-準備-GKE-Cluster"><span class="nav-number">3.0.1.</span> <span class="nav-text">Step1. 準備 GKE Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-安裝-Istio-Istio-Tools"><span class="nav-number">3.0.2.</span> <span class="nav-text">Step2. 安裝 Istio, Istio Tools</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌驗證-測試"><span class="nav-number">4.</span> <span class="nav-text">▌驗證 / 測試</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-部署一個Application"><span class="nav-number">4.0.1.</span> <span class="nav-text">Step1. 部署一個Application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-確認Bookinfo-狀態"><span class="nav-number">4.0.2.</span> <span class="nav-text">Step2. 確認Bookinfo 狀態</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step3-簡介bookinfo-Application"><span class="nav-number">4.0.3.</span> <span class="nav-text">Step3. 簡介bookinfo Application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step4-透過-Istio-Ingress-Gateway-啟用外部存取"><span class="nav-number">4.0.4.</span> <span class="nav-text">Step4. 透過 Istio Ingress Gateway 啟用外部存取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什麼是Envoy"><span class="nav-number">4.0.5.</span> <span class="nav-text">什麼是Envoy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step5-連線bookinfo網頁"><span class="nav-number">4.0.6.</span> <span class="nav-text">Step5. 連線bookinfo網頁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌後記"><span class="nav-number">5.</span> <span class="nav-text">▌後記</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#誰該來管理這些鏈-Service-Mesh？"><span class="nav-number">5.0.1.</span> <span class="nav-text">誰該來管理這些鏈 Service Mesh？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
