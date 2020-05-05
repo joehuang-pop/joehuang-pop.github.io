@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,Cloud Run,Serverless,Cloud function,Cloud App Engine," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 Serverless(無伺服器)具有易用且快速的特性，讓使用者享managed好處，而不需要理會基礎設施的配置，就能快速的建立應用程式，這點是大家都知道的。 但一般的Serverless也有其限制，包括Runtime支援不足或是遭特定廠商綁住等缺點，這些缺點卻是容器的優點，因容器更具有靈活性與可移植性，而Google的Cloud Run則是結合兩者，讓使用者可以在無伺服器平臺上執行容器。本篇">
+<meta name="keywords" content="GCP,Cloud Run,Serverless,Cloud function,Cloud App Engine">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP] Cloud Run 六個實作: 解析麻雀雖小五臟俱全 | Cloud Run is Small but Complete">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="前言 Serverless(無伺服器)具有易用且快速的特性，讓使用者享managed好處，而不需要理會基礎設施的配置，就能快速的建立應用程式，這點是大家都知道的。 但一般的Serverless也有其限制，包括Runtime支援不足或是遭特定廠商綁住等缺點，這些缺點卻是容器的優點，因容器更具有靈活性與可移植性，而Google的Cloud Run則是結合兩者，讓使用者可以在無伺服器平臺上執行容器。本篇">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled24.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled25.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled26.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled27.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled28.png">
+<meta property="og:updated_time" content="2020-05-05T08:46:37.327Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;05&#x2F;01&#x2F;GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/05/01/GCP-Cloud-Run-六個實作-解析麻雀雖小五臟俱全-Cloud-Run-is-Small-but-Complete/"/>
+
+
+
+
+
+  <title>[GCP] Cloud Run 六個實作: 解析麻雀雖小五臟俱全 | Cloud Run is Small but Complete | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/05/01/GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP] Cloud Run 六個實作: 解析麻雀雖小五臟俱全 | Cloud Run is Small but Complete</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-01T16:40:21+08:00">
+                2020-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><hr>
+<p><code>Serverless</code>(無伺服器)具有易用且快速的特性，讓使用者享<code>managed</code>好處，而不需要理會基礎設施的配置，就能快速的建立應用程式，這點是大家都知道的。</p>
+<p>但一般的Serverless也有其限制，包括Runtime支援不足或是遭特定廠商綁住等缺點，這些缺點卻是容器的優點，因容器更具有靈活性與可移植性，而Google的Cloud Run則是結合兩者，讓使用者可以在無伺服器平臺上執行容器。本篇分享 <code>Cloud Run</code> 一點實作的經驗跟心得，如果要我用一句來形容<code>Cloud Run</code>，我會說「麻雀雖小五臟俱全」，那麼究竟有那五臟呢？</p>
+<h2 id="1-Serverless-Container"><a href="#1-Serverless-Container" class="headerlink" title="1. Serverless + Container"></a>1. Serverless + Container</h2><hr>
+<h3 id="問題-前言"><a href="#問題-前言" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><ul>
+<li><p>過去一般使用<code>Serverless</code>服務時，常會碰到程式語言、程式版本僅有固定版本<br>或是套件不匹配等情況</p>
+</li>
+<li><p>Cloud Run的出現，可以解決原生serverless，對於以上程式與套件的限制<br>官方是這樣描述Cloud Run features</p>
+<blockquote>
+<p>Any language, any library, any binary</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="作法-實做"><a href="#作法-實做" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h3><ul>
+<li>透過docker build，建立自已的docker image</li>
+<li>運行自已的docker image，部署至Cloud Run<br>此時，可以享用google managed platform托管服務，完完全全不理管後台的維護，只需要管好每次的新的docker build 版本</li>
+</ul>
+<p>從下面的示意圖可以看出幾點</p>
+<ul>
+<li><p>來源可以從自已project Cloud Build</p>
+</li>
+<li><p>developer 可以從Trigger動作，或是由 internet 直接操作Cloud Run</p>
+<p>  <img src="Untitled.png" alt="Untitled.png"></p>
+</li>
+</ul>
+<p>Steps1. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建立一個docker build 測試用的image</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">student_00_44cb0fa3b714@cloudshell:$ docker build . --tag=test1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">gcloud builds submit --tag gcr.io/<span class="variable">$&#123;GOOGLE_CLOUD_PROJECT&#125;</span>/monolith:1.0.0 .</span></pre></td></tr></table></figure>
+
+<p>dockerfile 內容</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p>Steps2.  docker build 完成</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<ul>
+<li><p>有docker build, 也有<code>gcloud build</code>阿阿阿</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+<li><p>驗證剛剛build image</p>
+<p>  <img src="Untitled4.png" alt="Untitled4.png"></p>
+</li>
+</ul>
+<p>Steps3. Deploy Container To Cloud Run</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署cloud run</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">gcloud run deploy --image=gcr.io/<span class="variable">$&#123;GOOGLE_CLOUD_PROJECT&#125;</span>/monolith:1.0.0 --platform managed</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h3><ul>
+<li>檢視剛剛生出來的Cloud Run</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># list out current microservice</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">gcloud run services list</span></pre></td></tr></table></figure>
+
+<ul>
+<li><p>一個名為<code>monolith</code> microservice就是剛剛所建立的</p>
+<p>  <img src="Untitled6.png" alt="Untitled6.png"></p>
+</li>
+</ul>
+<p>驗證 Service</p>
+<ul>
+<li><p>取得 URL</p>
+</li>
+<li><p>驗證 microservice 是否works</p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+</li>
+</ul>
+<p>可以看到網頁的結果<br>Welcome to the Fancy Store!</p>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h2 id="2-流量管理：原生功能，不用基於外部Load-Balance"><a href="#2-流量管理：原生功能，不用基於外部Load-Balance" class="headerlink" title="2. 流量管理：原生功能，不用基於外部Load Balance"></a>2. 流量管理：原生功能，不用基於外部Load Balance</h2><hr>
+<h3 id="問題-前言-1"><a href="#問題-前言-1" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><ul>
+<li>如果是使用一般的<code>GCE</code>，都需要搭配Load  Balance才能達到流量管理</li>
+<li>使用Cloud Run 則不用，因為它內建了”流量管理”</li>
+</ul>
+<h3 id="作法-實做-1"><a href="#作法-實做-1" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h3><p>step1. 點選 <code>Actions: traffic</code> 進行流量的管理</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<p>step2. 輸入期望的traffic 百分比</p>
+<p>分流設定: 0001-duk: <code>20%</code></p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<p>step3. 使用<code>Apache ab tool</code> 進行測試</p>
+<ul>
+<li>目標皆為<code>monolith-cjsbhbijjq-de.a.run.app</code></li>
+<li>但實際上會流量會分到二隻microservice <code>001-duk</code>, <code>002-zey</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Apache ab stressking</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">ab -n 10000 -c 10 <span class="variable">$WEB</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="結果-1"><a href="#結果-1" class="headerlink" title="結果"></a>結果</h3><p>打開monitoring檢視</p>
+<ul>
+<li><p>0001-duk, 0002-zey 皆有流量進入</p>
+<p>  <img src="Untitled12.png" alt="Untitled12.png"></p>
+</li>
+</ul>
+<h2 id="3-Cloud-Run-像是更-Free-版的-Cloud-Functions"><a href="#3-Cloud-Run-像是更-Free-版的-Cloud-Functions" class="headerlink" title="3. Cloud Run 像是更 Free 版的 Cloud Functions"></a>3. Cloud Run 像是更 Free 版的 Cloud Functions</h2><hr>
+<h3 id="問題-前言-2"><a href="#問題-前言-2" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><ul>
+<li>一般的<code>Serverless</code>也有其限制，包括<code>Runtime</code>支援不足，這些缺點卻是容器的優點，因為容器更具有靈活性與可移植性，Cloud Run則是<strong>“結合兩者”</strong>，讓使用者可以在無伺服器平臺上執行容器</li>
+<li><code>Cloud Run</code> 適用於任何程式語言，也不會綁死在某雲端平台</li>
+</ul>
+<h3 id="作法-實做-2"><a href="#作法-實做-2" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h3><ul>
+<li>透過docker build, gcloud build的image都可以當作 Cloud Run的<code>runtime</code>的bases</li>
+</ul>
+<p>step1. docker build</p>
+<ul>
+<li>將image，存放在cloud shell之中</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>step2. gcloud build</p>
+<ul>
+<li><p>將image，存放在gcr.io，它是GCP Container Registry位置</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<h3 id="結果-2"><a href="#結果-2" class="headerlink" title="結果"></a>結果</h3><ul>
+<li>Cloud Run 的好處，就是可以選自已build image</li>
+<li>其中gcr.io/qwiklabs-gcp-02-7ef52e609d63/helloworld，是即是GCP Container Registry位置</li>
+<li>部署Cloud Run指令為 gcloud beta run deploy，再加上image位置</li>
+<li>Service名稱和位置是在部署中再補上</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># gcr.io path</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">gcr.io/qwiklabs-gcp-02-7ef52e609d63/helloworld</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># cloud run</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">gcloud beta run deploy --image gcr.io/qwiklabs-gcp-02-7ef52e609d63/helloworld</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 需外額外的參數</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">--platform managed \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">--region us-central1 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">--allow-unauthenticated</span></pre></td></tr></table></figure>
+
+<ul>
+<li><p>hello-v1 service 已成功部署</p>
+</li>
+<li><p>gcloud run 運行時需要提供以下資訊</p>
+<ul>
+<li><p>Service 名稱和位置</p>
+</li>
+<li><p>Unauthenticated 是否允許非驗驗證模式的存取</p>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-Cloud-Functions-可以綁自已的domain"><a href="#4-Cloud-Functions-可以綁自已的domain" class="headerlink" title="4. Cloud Functions 可以綁自已的domain"></a>4. Cloud Functions 可以綁自已的domain</h2><hr>
+<h3 id="問題-前言-3"><a href="#問題-前言-3" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><ul>
+<li><p>Cloud Run 提供的full managed 服務可以直接產出<code>URL</code>，供連線測試</p>
+</li>
+<li><p>但有很多情境會需要使用自已的<code>domain</code></p>
+<p>  e.g. <code>CDN</code>情境就是<code>CNAME</code>也讓CDN幫忙托管，因此流量就可以先經由CDN加速，再到Cloud Run Service</p>
+</li>
+</ul>
+<h2 id="作法-實做-3"><a href="#作法-實做-3" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h2><p>step1. 在原本的URL 旁邊點選<code>Manage custom domains</code></p>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<p>step2. 輸入domain名字，以<a href="http://joehuang.nctu.me/" target="_blank" rel="noopener"><code>joehuang.nctu.me</code></a> 為例</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<p>step3. 驗證domain</p>
+<ul>
+<li><p>小弟使用的免費交通大學二級的<code>DNS</code> <a href="http://joehuang.nctu.me/" target="_blank" rel="noopener">nctu.me</a>.，因此沒有在清單之中<br>(e.g Godday 之類大牌的DNS, 是可以直接以帳密登入做驗證服務)</p>
+</li>
+<li><p>因為沒有在清單之中<br>選擇 <code>other</code> 做驗證，驗證方法有二新增<code>TXT</code>, <code>CNAME</code> 二種</p>
+<ul>
+<li><p>a. 新增TXT<br>Add the TXT record below to the DNS configuration for <a href="http://joehuang.nctu.me/" target="_blank" rel="noopener">joehuang.nctu.me</a>.</p>
+<p>  <img src="Untitled16.png" alt="Untitled16.png"></p>
+</li>
+</ul>
+</li>
+<li><p>b. 新增 CNAME</p>
+<p>  <img src="Untitled17.png" alt="Untitled17.png"></p>
+</li>
+</ul>
+<p>step4. 確認domain 是否驗證成功</p>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<p>step5. 增加<code>hello-run-v1</code> 在<a href="http://joehuang.nctu.me/" target="_blank" rel="noopener"><code>joehuang.nctu.me</code></a> 這個網域</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<p>step6. 驗證DNS 同步</p>
+<p>a. dig</p>
+<ul>
+<li><p>使用<code>dig</code>, 第一要確認的是<code>status</code> 是否為NOERROR</p>
+</li>
+<li><p>再確認, <code>[ghs.googlehosted.com](http://ghs.googlehosted.com)</code> ，有沒有解析出 IP(216.58.200.51)</p>
+<p>  <img src="Untitled19.png" alt="Untitled19.png"></p>
+</li>
+</ul>
+<p>b. DNSCHECKER</p>
+<ul>
+<li><p>如果覺得本機<code>dig</code>，會有cache影響</p>
+</li>
+<li><p>可以選用<code>DNSCHECKER</code>，去除本機cahce的影響<br>結果在各國DNS都可以解析到<a href="http://joehuang.nctu.me/" target="_blank" rel="noopener"><code>hello-run-v1.oehuang.nctu.me</code></a></p>
+<p>  <img src="Untitled20.png" alt="Untitled20.png"></p>
+</li>
+</ul>
+<p>c. 檢視Cloud Run: <code>DNS Records</code></p>
+<ul>
+<li><p>可以看到hello-run-v1 已經有被<code>ghs.googlehosted.com</code>托管</p>
+<p>  <img src="Untitled21.png" alt="Untitled21.png"></p>
+</li>
+</ul>
+<h3 id="結果-3"><a href="#結果-3" class="headerlink" title="結果"></a>結果</h3><ul>
+<li><p>現在可以連線新的domain</p>
+<p>  在browser 上連線<a href="http://joehuang.nctu.me/" target="_blank" rel="noopener"><code>hello-run-v1.oehuang.nctu.me</code></a><br>  可以看到與原本<a href="https://hello-run-v1-ve3udnlh4q-uc.a.run.app/" target="_blank" rel="noopener"><code>hello-run-v1-ve3udnlh4q-uc.a.run.app</code></a>看到的頁面是一樣的</p>
+<p>  <img src="Untitled22.png" alt="Untitled22.png"></p>
+</li>
+</ul>
+<h2 id="5-Cloud-Run-還有跟-GAE-一樣的”版本切換”-比-Cloud-Functions-有更多的彈性"><a href="#5-Cloud-Run-還有跟-GAE-一樣的”版本切換”-比-Cloud-Functions-有更多的彈性" class="headerlink" title="5. Cloud Run 還有跟 GAE 一樣的”版本切換” 比 Cloud Functions 有更多的彈性"></a>5. Cloud Run 還有跟 GAE 一樣的”版本切換” 比 Cloud Functions 有更多的彈性</h2><hr>
+<h3 id="問題-前言-4"><a href="#問題-前言-4" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><p>Cloud Run承習<code>Cloud App Engine (GAE)</code> 二個特性<br>Cloud Run 還有跟 GAE 一樣的版本切換、流量管理功能，因此在管理上比 <code>Cloud Functions</code> 有更多的彈性</p>
+<ul>
+<li><p><strong>應用程式版本設定</strong></p>
+<p>  輕鬆託管應用程式的各種不同版本，讓user不費吹灰之力即可建立開發、測試、準備和實際工作環境</p>
+</li>
+<li><p><strong>流量拆分</strong></p>
+<p>  將連入要求導向不同的應用程式版本、快速執行 A/B 測試，並以漸進方式發布功能</p>
+</li>
+</ul>
+<h3 id="作法-實做-4"><a href="#作法-實做-4" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h3><ul>
+<li>直接部署新版，比方說新上版服務，或是改了新的<code>dockerfile</code></li>
+<li>可以直接用更版過的<code>image</code></li>
+</ul>
+<p>step1. 直接餵新的image</p>
+<p>Container image URL 餵更版過的<code>image</code>, 可以部署在相同的managed service</p>
+<ul>
+<li>優勢一：可以延用<code>endpoint</code>，不會作任何的更動</li>
+<li>優勢二：直接100% 切換至新版的service</li>
+</ul>
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<h3 id="結果-4"><a href="#結果-4" class="headerlink" title="結果"></a>結果</h3><ul>
+<li><p>延用<code>endpoint</code>，直接100% 切換流量至新版的microservice</p>
+</li>
+<li><p>如此就很方便developer做 <code>A/B</code> 測試</p>
+<p>  <img src="Untitled24.png" alt="Untitled24.png"></p>
+</li>
+</ul>
+<h2 id="6-支援混雲合-Anthos環境"><a href="#6-支援混雲合-Anthos環境" class="headerlink" title="6. 支援混雲合 Anthos環境"></a>6. 支援混雲合 Anthos環境</h2><hr>
+<h3 id="問題-前言-5"><a href="#問題-前言-5" class="headerlink" title="問題 / 前言"></a>問題 / 前言</h3><ul>
+<li><p>原生的Cloud Run 也有其限制，CPU 2核心、memroy上限是2GB</p>
+</li>
+<li><p>如果想要保留移植性，並解決運算資源的限制，要怎麼做呢？</p>
+<p>  答案就是啟用<code>Anthos</code>，它是Google混合雲的solution</p>
+</li>
+<li><p>讓Cloud Run原本部署為full managed，增加了<code>多雲</code>的選擇</p>
+<p>  多雲可以是</p>
+<ul>
+<li>是雲上的<code>Google Kubernetes Engine (GKE)</code></li>
+<li>更可以是地端的<code>Anthos (GKE on-prem)</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="作法-實做-5"><a href="#作法-實做-5" class="headerlink" title="作法 / 實做"></a>作法 / 實做</h3><p>二個步驟</p>
+<ul>
+<li>第一host 端：也就是Google Kubernetes Engine(GKE)，<code>**啟用Anthos</code>**</li>
+<li>第二deploy端：Cloud Run上的設定，選擇<strong>部署在<code>Anthos</code></strong></li>
+</ul>
+<p>step1. 雲上的<code>GKE</code>：GKE的設定</p>
+<ul>
+<li><p>GKE 環境中，啟用Cloud Run for Anthos即可</p>
+<p>  <img src="Untitled25.png" alt="Untitled25.png"></p>
+</li>
+</ul>
+<p>step2. Cloud Run</p>
+<ul>
+<li>環境部署：選擇<code>現有的GKE環境</code>，依圖示有偵測到<code>run-gke2-us-central1-a</code> 這個cluster有啟用<code>Anthos</code> (Cloud Run for Anthos)</li>
+<li>docker image：選用demo hello</li>
+</ul>
+<p><img src="Untitled26.png" alt="Untitled26.png"></p>
+<ul>
+<li>在選定啟用 Anthos GKE環境後，再選用demo hello image</li>
+</ul>
+<p><img src="Untitled27.png" alt="Untitled27.png"></p>
+<h3 id="結果-5"><a href="#結果-5" class="headerlink" title="結果"></a>結果</h3><ul>
+<li>思考一下，原本是以上面的實驗都是<code>managed</code>全托管的服務</li>
+<li>但現在，郤可以在其它你選擇的kubernetes環境，是不是很酷！</li>
+</ul>
+<p>檢視一下hello app workload</p>
+<ul>
+<li><p>Cloud Run 成功部署一個 application GKE <code>run-gke2-us-central1-a</code> cluster</p>
+<p>  <img src="Untitled28.png" alt="Untitled28.png"></p>
+</li>
+</ul>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><hr>
+<ol>
+<li>Deploy Your Website on Cloud Run<br>[<a href="https://www.qwiklabs.com/focuses/10445?catalog_rank={&quot;rank&quot;%3A1%2C&quot;num_filters&quot;%3A0%2C&quot;has_search&quot;%3Atrue}&amp;parent=catalog&amp;search_id=5043953]" target="_blank" rel="noopener">https://www.qwiklabs.com/focuses/10445?catalog_rank={&quot;rank&quot;%3A1%2C&quot;num_filters&quot;%3A0%2C&quot;has_search&quot;%3Atrue}&amp;parent=catalog&amp;search_id=5043953]</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/Cloud-Run/" rel="tag"># Cloud Run</a>
+          
+            <a href="/tags/Serverless/" rel="tag"># Serverless</a>
+          
+            <a href="/tags/Cloud-function/" rel="tag"># Cloud function</a>
+          
+            <a href="/tags/Cloud-App-Engine/" rel="tag"># Cloud App Engine</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/26/GCP-Stackdriver%E7%9C%81%E9%8C%A2%E5%A5%BD%E7%B0%A1%E5%96%AE-%E4%BD%BF%E7%94%A8Logs-Exclusions%E7%9C%81%E6%88%90%E6%9C%AC-Stackdriver-Adopting-Logs-Exclusions-to-Save-Costs/" rel="next" title="[GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs">
+                <i class="fa fa-chevron-left"></i> [GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Serverless-Container"><span class="nav-number">2.</span> <span class="nav-text">1. Serverless + Container</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言"><span class="nav-number">2.1.</span> <span class="nav-text">問題 / 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作法-實做"><span class="nav-number">2.2.</span> <span class="nav-text">作法 / 實做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結果"><span class="nav-number">2.3.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-流量管理：原生功能，不用基於外部Load-Balance"><span class="nav-number">3.</span> <span class="nav-text">2. 流量管理：原生功能，不用基於外部Load Balance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言-1"><span class="nav-number">3.1.</span> <span class="nav-text">問題 / 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作法-實做-1"><span class="nav-number">3.2.</span> <span class="nav-text">作法 / 實做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結果-1"><span class="nav-number">3.3.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Cloud-Run-像是更-Free-版的-Cloud-Functions"><span class="nav-number">4.</span> <span class="nav-text">3. Cloud Run 像是更 Free 版的 Cloud Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言-2"><span class="nav-number">4.1.</span> <span class="nav-text">問題 / 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作法-實做-2"><span class="nav-number">4.2.</span> <span class="nav-text">作法 / 實做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結果-2"><span class="nav-number">4.3.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Cloud-Functions-可以綁自已的domain"><span class="nav-number">5.</span> <span class="nav-text">4. Cloud Functions 可以綁自已的domain</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言-3"><span class="nav-number">5.1.</span> <span class="nav-text">問題 / 前言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作法-實做-3"><span class="nav-number">6.</span> <span class="nav-text">作法 / 實做</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#結果-3"><span class="nav-number">6.1.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Cloud-Run-還有跟-GAE-一樣的”版本切換”-比-Cloud-Functions-有更多的彈性"><span class="nav-number">7.</span> <span class="nav-text">5. Cloud Run 還有跟 GAE 一樣的”版本切換” 比 Cloud Functions 有更多的彈性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言-4"><span class="nav-number">7.1.</span> <span class="nav-text">問題 / 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作法-實做-4"><span class="nav-number">7.2.</span> <span class="nav-text">作法 / 實做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結果-4"><span class="nav-number">7.3.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-支援混雲合-Anthos環境"><span class="nav-number">8.</span> <span class="nav-text">6. 支援混雲合 Anthos環境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題-前言-5"><span class="nav-number">8.1.</span> <span class="nav-text">問題 / 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作法-實做-5"><span class="nav-number">8.2.</span> <span class="nav-text">作法 / 實做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結果-5"><span class="nav-number">8.3.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">9.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

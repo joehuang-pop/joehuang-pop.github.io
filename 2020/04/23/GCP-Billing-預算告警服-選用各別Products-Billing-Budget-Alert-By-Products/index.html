@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Billing,Billing Budget Alert,Cost down," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By ProductsStatus: Completed ▌前言  很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。 但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話   我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD  因此節流是一種方式，">
+<meta name="keywords" content="Billing,Billing Budget Alert,Cost down">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By ProductsStatus: Completed ▌前言  很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。 但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話   我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD  因此節流是一種方式，">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled4.png">
+<meta property="og:updated_time" content="2020-05-05T08:37:04.161Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;04&#x2F;23&#x2F;GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/04/23/GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products/"/>
+
+
+
+
+
+  <title>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/04/23/GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-23T16:33:33+08:00">
+                2020-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><a href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products" class="headerlink" title="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products"></a>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1><p>Status: Completed</p>
+<h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
+<ul>
+<li>很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。</li>
+<li>但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話</li>
+</ul>
+<blockquote>
+<p>我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD</p>
+</blockquote>
+<p>因此節流是一種方式，另外我們也要設定Budget alter，也就是預算告警！以GCP為例，Billing Alert 可以針對Products來設定告警，這點非常的貼心</p>
+<h2 id="▌操作步驟"><a href="#▌操作步驟" class="headerlink" title="▌操作步驟"></a>▌操作步驟</h2><hr>
+<ul>
+<li>建立Budget alert之前，請先確認帳號是否擁有Billing Account Administrator權限[1][2]</li>
+<li>完整說明與操作請參考[2]</li>
+</ul>
+<p><strong>Step1. 請進入Budgets &amp; alerts 頁面</strong></p>
+<ul>
+<li><p>建立一筆 Budget</p>
+<p>  <img src="Untitled.png" alt="Untitled.png"></p>
+</li>
+</ul>
+<p><strong>Step2. Budget alert 可以針對特定product進行告警</strong></p>
+<ul>
+<li><p>以stackdriver為例，加入products清單</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+</ul>
+<p><strong>Step3. 設定預算比較值</strong></p>
+<ul>
+<li>Budget type 說明<ul>
+<li>Specified amount：先設置一個固定金額，之後每月支出會比較這筆固定金額</li>
+<li>Last month’s spend：是根據上個月的支出，當作每月比較的基準金額</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p><strong>Step4. 設定門檻水準</strong></p>
+<p> <strong>Trigger on說明</strong></p>
+<ul>
+<li><p><strong>Actual：觸發是依照實際使用值</strong><br>當預算期間內累積的累計費用超過門檻值時，實際成本門檻值規則將發送通知。<br>(ex. 如果您為$ 100的預算設置了50％的實際支出警報，那麼當您在預算期內支出了$ 50時，您將收到警報通知)</p>
+</li>
+<li><p><strong>Forecasted ：觸發會依照系統預測使用量</strong><br>當預測使用量超過門檻時，將發送通知。<br>(ex. 如果設定$ 100的預算，並設置了110％的預測費用警報，當系統預測預算將支出超過$ 110時，將收到警報通知)</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<p><strong>Step5. 檢視並確認Budget是否設定成功</strong></p>
+<ul>
+<li>確認Logging Budget 建立完成</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><hr>
+<p>[1] <a href="https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in</a></p>
+<p>[2] <a href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/budgets</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Billing/" rel="tag"># Billing</a>
+          
+            <a href="/tags/Billing-Budget-Alert/" rel="tag"># Billing Budget Alert</a>
+          
+            <a href="/tags/Cost-down/" rel="tag"># Cost down</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/12/Kative-%E6%89%8B%E6%8A%8A%E6%89%8B-Google-Kubernetes-Service-GKE-%E4%BB%80%E9%BA%BC%E6%98%AFService-Mesh-Istio/" rel="next" title="[Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio">
+                <i class="fa fa-chevron-left"></i> [Kative] 手把手 Google Kubernetes Service(GKE)  | 什麼是Service Mesh, Istio
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/26/Linux-%E5%85%A7%E6%A0%B8%E8%99%9B%E6%93%ACBridge-veth%E5%8E%9F%E7%90%86%E8%88%87%E5%AF%A6%E4%BD%9C-Hands-on-Linux-Kernel-bridge-veth/" rel="prev" title="[Linux] 內核虛擬Bridge, veth原理與實作 | Hands on Linux Kernel: bridge, veth">
+                [Linux] 內核虛擬Bridge, veth原理與實作 | Hands on Linux Kernel: bridge, veth <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><span class="nav-number">1.</span> <span class="nav-text">[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#▌前言"><span class="nav-number">1.1.</span> <span class="nav-text">▌前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#▌操作步驟"><span class="nav-number">1.2.</span> <span class="nav-text">▌操作步驟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">1.3.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
