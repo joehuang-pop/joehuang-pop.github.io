@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,API,texttospeech," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什麼是 Text-to-Speech (TTS)俗稱的TTS，從演進來看通常會有二種，第一類傳統作法已經行之有年，就像你常聽到的google小姐的聲音，第二類是拜於深度神經網路的發達，透過Convolutional Neural Network(CNN)來合成語音，這項技術比較多是運用在圖像的辨識上面，但Google將它轉向生成語音，成效相當很驚人！ 1. Basic 傳統作法傳統上常見語音合成的">
+<meta name="keywords" content="GCP,API,texttospeech">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Google API] Google 語音生成 API 實作 | Google Text-to-Speech">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="什麼是 Text-to-Speech (TTS)俗稱的TTS，從演進來看通常會有二種，第一類傳統作法已經行之有年，就像你常聽到的google小姐的聲音，第二類是拜於深度神經網路的發達，透過Convolutional Neural Network(CNN)來合成語音，這項技術比較多是運用在圖像的辨識上面，但Google將它轉向生成語音，成效相當很驚人！ 1. Basic 傳統作法傳統上常見語音合成的">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled7.png">
+<meta property="og:updated_time" content="2020-07-02T12:21:09.501Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;06&#x2F;25&#x2F;Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/06/25/Google-API-Google-語音生成-API-實作-Google-Text-to-Speech/"/>
+
+
+
+
+
+  <title>[Google API] Google 語音生成 API 實作 | Google Text-to-Speech | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/06/25/Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Google API] Google 語音生成 API 實作 | Google Text-to-Speech</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-25T20:04:18+08:00">
+                2020-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP-API/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP API</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什麼是-Text-to-Speech-TTS"><a href="#什麼是-Text-to-Speech-TTS" class="headerlink" title="什麼是 Text-to-Speech (TTS)"></a>什麼是 Text-to-Speech (TTS)</h1><p>俗稱的TTS，從演進來看通常會有二種，第一類傳統作法已經行之有年，就像你常聽到的google小姐的聲音，第二類是拜於深度神經網路的發達，透過Convolutional Neural Network(CNN)來合成語音，這項技術比較多是運用在圖像的辨識上面，但Google將它轉向生成語音，成效相當很驚人！</p>
+<h3 id="1-Basic-傳統作法"><a href="#1-Basic-傳統作法" class="headerlink" title="1. Basic 傳統作法"></a>1. Basic 傳統作法</h3><p>傳統上常見語音合成的方法有拼接生成又稱串接生成(Concatenative synthesis)及統計參數化法(StatisticalParametric method)等。拼接生成是透過<code>事先錄製多段聲音來拼接合成目標語句</code>；參數化法則是用模型生成聲音特徵的參數，再經由<code>聲碼器合成聲音</code>重新建構出聲音的波形。</p>
+<p>簡單說，拼接生成最爆力的方式，直接找真人錄一大堆的句子、單字或一個字，建構起一個龐大的資料庫，然後看使用者打的是那一種單字，就從資料庫中去抓取並唸出來，重新拼接出來你要的句子，所以拼接起來會讓人覺得斷斷續續、怪怪的，因為很平淡沒有什麼抑揚頓挫(intonation)</p>
+<h3 id="2-WaveNet"><a href="#2-WaveNet" class="headerlink" title="2. WaveNet"></a>2. <strong>WaveNet</strong></h3><p><strong>WaveNet中文稱為</strong>(波網)是一個用於<code>直接生成聲音訊號的[人工神經網路]</code>。是由倫敦人工智慧公司<a href="https://zh.wikipedia.org/wiki/DeepMind" target="_blank" rel="noopener">DeepMind</a>的研究人員於2016發表的。WaveNet強大的地方是通過使用用<strong><code>真實語音記錄訓練的神經網絡</code></strong>方法直接模擬波形，能夠生成聽起來相對<code>真實的人類聲音</code>。除了人類<a href="https://zh.wikipedia.org/wiki/%E8%AA%9E%E9%9F%B3%E5%90%88%E6%88%90" target="_blank" rel="noopener">語音合成</a>外，WaveNet也能應用在音樂生成以及語音辨識等領域。<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-2" target="_blank" rel="noopener">[2]</a></p>
+<p>2018年，<a href="https://zh.wikipedia.org/wiki/Google" target="_blank" rel="noopener">Google</a>在其雲端語音合成服務(Google Cloud Text-to-Speech)<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-3" target="_blank" rel="noopener">[3]</a>提供了基於WaveNet的語音合成<a href="https://zh.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a><a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-API-4" target="_blank" rel="noopener">[4]</a>。截至2019年，該產品提供了32種語言以及多種不同音色的語音合成服務，且基於WaveNet的合成結果在自然度上相比傳統方法更接近人類語音。</p>
+<h1 id="實作Text-to-Speech"><a href="#實作Text-to-Speech" class="headerlink" title="實作Text-to-Speech"></a>實作Text-to-Speech</h1><h3 id="Step1-Enable-API"><a href="#Step1-Enable-API" class="headerlink" title="Step1. Enable API"></a>Step1. Enable API</h3><ul>
+<li>在Google Project上啟用<code>Text-to-Speech</code>這隻API</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="Step-2-Create-a-service-account"><a href="#Step-2-Create-a-service-account" class="headerlink" title="Step 2. Create a service account"></a>Step 2. Create a service account</h3><ul>
+<li>建立個服務帳戶</li>
+<li>把服務帳戶輸出為JWT檔，供程式呼叫驗證：<code>tts-qwiklab.json</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud iam service-accounts create tts-qwiklab</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PROJECT_ID=$(gcloud config get-value project 2&gt; /dev/null)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	gcloud iam service-accounts keys create tts-qwiklab.json --iam-account tts-qwiklab@<span class="variable">$PROJECT_ID</span>.iam.gserviceaccount.com</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> GOOGLE_APPLICATION_CREDENTIALS=tts-qwiklab.json</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="Step-3-Create-synthetic-speech-from-text"><a href="#Step-3-Create-synthetic-speech-from-text" class="headerlink" title="Step 3. Create synthetic speech from text"></a>Step 3. Create synthetic speech from text</h3><ul>
+<li><p>Token準備：使用當前auth token<br>gcloud auth application-default print-access-token</p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+<li><p>選擇發音的語系voice source，可以參考以下<br><a href="https://cloud.google.com/text-to-speech/docs/voices" target="_blank" rel="noopener">https://cloud.google.com/text-to-speech/docs/voices</a></p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+<li><p>再來就是最重要的部驟，需要生成一個json檔：<code>synthesize-text.json</code></p>
+<p>  其中JSON-formatted 參數值如下，分成三大塊</p>
+<ol>
+<li><code>input</code> 主要生成語音的文字內容</li>
+<li><code>voice</code> 生成聲音的語言、發音版本、是否使用SSML</li>
+<li><code>audioConfig</code> 聲音編碼的格式</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'input'</span>:&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        <span class="string">'text'</span>:<span class="string">'Cloud Text-to-Speech API allows developers to include</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">           natural-sounding, synthetic human speech as playable audio in</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="string">           their applications. The Text-to-Speech API converts text or</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">           Speech Synthesis Markup Language (SSML) input into audio data</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="string">           like MP3 or LINEAR16 (the encoding used in WAV files).'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'voice'</span>:&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        <span class="string">'languageCode'</span>:<span class="string">'en-gb'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        <span class="string">'name'</span>:<span class="string">'en-GB-Standard-A'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        <span class="string">'ssmlGender'</span>:<span class="string">'FEMALE'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    <span class="string">'audioConfig'</span>:&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">        <span class="string">'audioEncoding'</span>:<span class="string">'MP3'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<h3 id="Step-4-完成curl-json"><a href="#Step-4-完成curl-json" class="headerlink" title="Step 4. 完成curl + json"></a>Step 4. 完成curl + json</h3><ul>
+<li>傳送 <code>synthesize-text.txt</code> 檔案給Google Text-to-Speech API 生成語音檔</li>
+<li>使用的API Endpoint: <code>https://texttospeech.googleapis.com/v1/text:synthesize</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">"Authorization: Bearer "</span>$(gcloud auth application-default <span class="built_in">print</span>-access-token) \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  -H <span class="string">"Content-Type: application/json; charset=utf-8"</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  -d @synthesize-text.json <span class="string">"https://texttospeech.googleapis.com/v1/text:synthesize"</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  &gt; synthesize-text.txt</span></pre></td></tr></table></figure>
+
+<ul>
+<li>運行結果<br>你會發現結果會以 base64-encoded 加密的文字呈現，這個其實是語音的內容(audioContent field)，因此我們需要decode text</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="Step-5-把text轉成mp3檔"><a href="#Step-5-把text轉成mp3檔" class="headerlink" title="Step 5. 把text轉成mp3檔"></a>Step 5. 把text轉成mp3檔</h3><ul>
+<li>這邊準備一隻程式tts_decode.py，可以把decode text轉換成 .mp3</li>
+<li>decode的函式<code>new_file.write(decodebytes(audio_data.encode(&#39;utf-8&#39;)))</code>，最後再轉換成語音</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">python tts_decode.py --input <span class="string">"synthesize-text.txt"</span> --output <span class="string">"synthesize-text-audio.mp3"</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li>運行結果</li>
+</ul>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="Step-6-驗證"><a href="#Step-6-驗證" class="headerlink" title="Step 6. 驗證"></a>Step 6. 驗證</h3><ul>
+<li>開一個網頁來聽mp3， index.html</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Cloud Text-to-Speech codelab<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  Output from synthesizing text:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">audio</span> <span class="attr">controls</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"synthesize-text-audio.mp3"</span> /&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li><p>run web-server<br>python -m http.server 8080</p>
+<p>  <img src="Untitled6.png" alt="Untitled6.png"></p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/WaveNet" target="_blank" rel="noopener">WaveNet Wiki</a></li>
+<li><a href="https://www.qwiklabs.com/focuses/1290?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=6083809" target="_blank" rel="noopener">It Speaks! Create Synthetic Speech Using Cloud Text-to-Speech</a></li>
+<li><a href="https://cloud.google.com/text-to-speech/" target="_blank" rel="noopener">Google Text-to-Speech</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/API/" rel="tag"># API</a>
+          
+            <a href="/tags/texttospeech/" rel="tag"># texttospeech</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/24/GCP-%E9%80%8F%E9%81%8EContent-Header-%E7%A2%BA%E8%AA%8D-Cloud-CDN-Cache-%E5%8A%A0%E9%80%9F-Through-Content-Header-Ensoure-CDN-Speed-up/" rel="next" title="[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up">
+                <i class="fa fa-chevron-left"></i> [GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/02/Google-API-%E6%9C%89%E9%9D%88%E9%AD%82%E7%9A%84Google%E5%B0%8F%E5%A7%90%EF%BC%8C%E4%BD%BF%E7%94%A8-SSML%E6%8A%80%E8%A1%93%E5%BC%B7%E5%8C%96Text-to-Speech/" rel="prev" title="[Google API] 有靈魂的Google小姐，使用 SSML技術強化Text-to-Speech">
+                [Google API] 有靈魂的Google小姐，使用 SSML技術強化Text-to-Speech <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是-Text-to-Speech-TTS"><span class="nav-number">1.</span> <span class="nav-text">什麼是 Text-to-Speech (TTS)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Basic-傳統作法"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. Basic 傳統作法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-WaveNet"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. WaveNet</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#實作Text-to-Speech"><span class="nav-number">2.</span> <span class="nav-text">實作Text-to-Speech</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-Enable-API"><span class="nav-number">2.0.1.</span> <span class="nav-text">Step1. Enable API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-Create-a-service-account"><span class="nav-number">2.0.2.</span> <span class="nav-text">Step 2. Create a service account</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-Create-synthetic-speech-from-text"><span class="nav-number">2.0.3.</span> <span class="nav-text">Step 3. Create synthetic speech from text</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4-完成curl-json"><span class="nav-number">2.0.4.</span> <span class="nav-text">Step 4. 完成curl + json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5-把text轉成mp3檔"><span class="nav-number">2.0.5.</span> <span class="nav-text">Step 5. 把text轉成mp3檔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-6-驗證"><span class="nav-number">2.0.6.</span> <span class="nav-text">Step 6. 驗證</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">3.</span> <span class="nav-text">References:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
