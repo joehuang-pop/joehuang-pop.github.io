@@ -168,6 +168,72 @@ WHERE date_formatted = &apos;2017-07-08&apos;</code></pre><ul>
       </tags>
   </entry>
   <entry>
+    <title>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</title>
+    <url>/2020/04/23/GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products/</url>
+    <content><![CDATA[<h1 id="GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><a href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products" class="headerlink" title="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products"></a>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1><p>Status: Completed</p>
+<h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
+<ul>
+<li>很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。</li>
+<li>但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話</li>
+</ul>
+<blockquote>
+<p>我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD</p>
+</blockquote>
+<p>因此節流是一種方式，另外我們也要設定Budget alter，也就是預算告警！以GCP為例，Billing Alert 可以針對Products來設定告警，這點非常的貼心</p>
+<h2 id="▌操作步驟"><a href="#▌操作步驟" class="headerlink" title="▌操作步驟"></a>▌操作步驟</h2><hr>
+<ul>
+<li>建立Budget alert之前，請先確認帳號是否擁有Billing Account Administrator權限[1][2]</li>
+<li>完整說明與操作請參考[2]</li>
+</ul>
+<p><strong>Step1. 請進入Budgets &amp; alerts 頁面</strong></p>
+<ul>
+<li><p>建立一筆 Budget</p>
+<p>  <img src="Untitled.png" alt="Untitled.png"></p>
+</li>
+</ul>
+<p><strong>Step2. Budget alert 可以針對特定product進行告警</strong></p>
+<ul>
+<li><p>以stackdriver為例，加入products清單</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+</ul>
+<p><strong>Step3. 設定預算比較值</strong></p>
+<ul>
+<li>Budget type 說明<ul>
+<li>Specified amount：先設置一個固定金額，之後每月支出會比較這筆固定金額</li>
+<li>Last month’s spend：是根據上個月的支出，當作每月比較的基準金額</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p><strong>Step4. 設定門檻水準</strong></p>
+<p> <strong>Trigger on說明</strong></p>
+<ul>
+<li><p><strong>Actual：觸發是依照實際使用值</strong><br>當預算期間內累積的累計費用超過門檻值時，實際成本門檻值規則將發送通知。<br>(ex. 如果您為$ 100的預算設置了50％的實際支出警報，那麼當您在預算期內支出了$ 50時，您將收到警報通知)</p>
+</li>
+<li><p><strong>Forecasted ：觸發會依照系統預測使用量</strong><br>當預測使用量超過門檻時，將發送通知。<br>(ex. 如果設定$ 100的預算，並設置了110％的預測費用警報，當系統預測預算將支出超過$ 110時，將收到警報通知)</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<p><strong>Step5. 檢視並確認Budget是否設定成功</strong></p>
+<ul>
+<li>確認Logging Budget 建立完成</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><hr>
+<p>[1] <a href="https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in</a></p>
+<p>[2] <a href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/budgets</a></p>
+]]></content>
+      <categories>
+        <category>GCP</category>
+      </categories>
+      <tags>
+        <tag>Billing</tag>
+        <tag>Billing Budget Alert</tag>
+        <tag>Cost down</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[GCP] Cloud Run 六個實作: 解析麻雀雖小五臟俱全 | Cloud Run is Small but Complete</title>
     <url>/2020/05/01/GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><hr>
@@ -449,69 +515,214 @@ WHERE date_formatted = &apos;2017-07-08&apos;</code></pre><ul>
       </tags>
   </entry>
   <entry>
-    <title>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</title>
-    <url>/2020/04/23/GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products/</url>
-    <content><![CDATA[<h1 id="GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><a href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products" class="headerlink" title="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products"></a>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1><p>Status: Completed</p>
-<h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
-<ul>
-<li>很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。</li>
-<li>但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話</li>
-</ul>
+    <title>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</title>
+    <url>/2020/02/12/GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost/</url>
+    <content><![CDATA[<h1 id="GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost"><a href="#GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost" class="headerlink" title="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost"></a>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</h1><h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><hr>
+<h2 id="前題"><a href="#前題" class="headerlink" title="前題"></a>前題</h2><p>要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機</p>
 <blockquote>
-<p>我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD</p>
+<p>不過用不同的關機指令或方法，有不同的關機速度像是OS level、Instance console，因為每台VM Instances內服務不同，關閉的速度當然也不同<br>因此本實作透過console level 著手達成<em>統一關機的動作</em></p>
 </blockquote>
-<p>因此節流是一種方式，另外我們也要設定Budget alter，也就是預算告警！以GCP為例，Billing Alert 可以針對Products來設定告警，這點非常的貼心</p>
-<h2 id="▌操作步驟"><a href="#▌操作步驟" class="headerlink" title="▌操作步驟"></a>▌操作步驟</h2><hr>
-<ul>
-<li>建立Budget alert之前，請先確認帳號是否擁有Billing Account Administrator權限[1][2]</li>
-<li>完整說明與操作請參考[2]</li>
-</ul>
-<p><strong>Step1. 請進入Budgets &amp; alerts 頁面</strong></p>
-<ul>
-<li><p>建立一筆 Budget</p>
-<p>  <img src="Untitled.png" alt="Untitled.png"></p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>說明instance對於各種action的反應時間(by: GCP VM instance Modules)</p>
+<h3 id="Console-Stop-關機方式"><a href="#Console-Stop-關機方式" class="headerlink" title="Console Stop 關機方式"></a>Console Stop 關機方式</h3><p>今天要使用的是Console Stop方式，停止執行個體會導致 Compute Engine 將 <code>ACPI</code> 關機訊號傳送至執行個體。現行訪客作業系統都設定為在關機之前執行乾淨關機作業以回應關機訊號。 Compute Engine 會等待一小段時間，讓訪客完成關機，然後將執行個體轉換至 <code>TERMINATED</code> 狀態</p>
+<h3 id="OS-層級Shutdown-VM-instance"><a href="#OS-層級Shutdown-VM-instance" class="headerlink" title="OS 層級Shutdown VM instance"></a>OS 層級Shutdown VM instance</h3><pre><code>sudo shutdown -h now</code></pre><h3 id="使用Cloud-Scheduler來協助關機"><a href="#使用Cloud-Scheduler來協助關機" class="headerlink" title="使用Cloud Scheduler來協助關機"></a>使用Cloud Scheduler來協助關機</h3><p>簡單說它就是在GCP上的crontab，對instance來說是外部的<strong>鬧鐘</strong>。它的好處是你可以統一對GCP上所有的instance做一次性的操作。要完成這個實作，我們還需要結合<strong>Cloud Pub/Sub、Cloud Function</strong>來完整自動化開機/關機的程序</p>
+<hr>
+<h2 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h2><ol>
+<li>指定VM Instance 設定<code>label</code>，設定Cloud  Pub/Sub topic</li>
+<li>部署Cloud Function，使用<code>Nodo.js</code> code 去控制你的VM Instances</li>
+<li>透過Cloud Scheduler建立一個時間表，使VM Instances按時間開關機</li>
+</ol>
+<h3 id="架構圖說明"><a href="#架構圖說明" class="headerlink" title="架構圖說明"></a>架構圖說明</h3><ul>
+<li><p><a href="https://cloud.google.com/compute/docs/instances/" target="_blank" rel="noopener">Compute Engine Instance</a>：最右邊是接受控管VM Instances</p>
 </li>
-</ul>
-<p><strong>Step2. Budget alert 可以針對特定product進行告警</strong></p>
-<ul>
-<li><p>以stackdriver為例，加入products清單</p>
+<li><p><a href="https://cloud.google.com/functions/docs/concepts/overview" target="_blank" rel="noopener">Cloud Functions functions</a>：承載一個簡單函式，執行開/關機程式</p>
+</li>
+<li><p><a href="https://cloud.google.com/pubsub/docs/overview" target="_blank" rel="noopener">Pub/Sub messages</a>：訊息傳送的角色，把VM上的label 傳送給Cloud function</p>
+</li>
+<li><p><a href="https://cloud.google.com/scheduler/docs/" target="_blank" rel="noopener">Cloud Scheduler jobs</a>：GCP上的定時器，時間一到會執行目標上的Cloud function</p>
 <p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
 </li>
 </ul>
-<p><strong>Step3. 設定預算比較值</strong></p>
-<ul>
-<li>Budget type 說明<ul>
-<li>Specified amount：先設置一個固定金額，之後每月支出會比較這筆固定金額</li>
-<li>Last month’s spend：是根據上個月的支出，當作每月比較的基準金額</li>
-</ul>
-</li>
-</ul>
+<hr>
+<h2 id="啟用Cloud-Scheduler-API-amp-Cloud-Function-API"><a href="#啟用Cloud-Scheduler-API-amp-Cloud-Function-API" class="headerlink" title="啟用Cloud Scheduler API &amp; Cloud Function API"></a>啟用Cloud Scheduler API &amp; Cloud Function API</h2><p>首先，要使用之前我們要先產出<code>credential</code> 給Cloud function API 和Cloud Scheduler API做使用</p>
+<pre><code># Enable API
+$gcloud services enable &lt;SERVICE_NAME&gt;
+- cloudfunctions.googleapis.com
+- cloudscheduler.googleapis.com
+
+$gcloud services enable cloudfunctions.googleapis.com
+$gcloud services enable cloudscheduler.googleapis.com
+
+# Check Enabled Current API
+$ gcloud services list --available | grep -E &apos;Scheduler | Functions&apos;
+cloudfunctions.googleapis.com                         Cloud Functions API
+cloudscheduler.googleapis.com                         Cloud Scheduler API</code></pre><p>執行結果看到 Scheduler, Functions都是<code>available</code></p>
 <p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p><strong>Step4. 設定門檻水準</strong></p>
-<p> <strong>Trigger on說明</strong></p>
+<p>你可以到GCP Console 進行設定<br>路徑如下： IAM → APIs &amp; Services → Credentials</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h2 id="怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels"><a href="#怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels" class="headerlink" title="怎麼樣讓Cloud Function認得你的機器呢？ →  Labels"></a>怎麼樣讓Cloud Function認得你的機器呢？ →  Labels</h2><p>這裡使用的方法是在指定的VM Instances，加上<code>labels</code>，它是一個<code>**key:value**</code>格式<br>我的要控制的cluster是kubernetes cluster，因此使用 <code>env:k8s</code> 當作labels</p>
 <ul>
-<li><p><strong>Actual：觸發是依照實際使用值</strong><br>當預算期間內累積的累計費用超過門檻值時，實際成本門檻值規則將發送通知。<br>(ex. 如果您為$ 100的預算設置了50％的實際支出警報，那麼當您在預算期內支出了$ 50時，您將收到警報通知)</p>
+<li><p>使用cloud shell 新增labels，並篩選機器 label 為 <code>env:k8s</code></p>
 </li>
-<li><p><strong>Forecasted ：觸發會依照系統預測使用量</strong><br>當預測使用量超過門檻時，將發送通知。<br>(ex. 如果設定$ 100的預算，並設置了110％的預測費用警報，當系統預測預算將支出超過$ 110時，將收到警報通知)</p>
-<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+<li><p>Kubernetes一共有3台instance，記得都要上<code>labels</code></p>
+</li>
+<li><p>補充一下<code>labels</code>和<code>metadata</code>是不一樣的東西喔</p>
+<h1 id="Sample"><a href="#Sample" class="headerlink" title="Sample"></a>Sample</h1><h1 id="Labels-can-be-used-to-identify-the-instance-and-to-filter-them"><a href="#Labels-can-be-used-to-identify-the-instance-and-to-filter-them" class="headerlink" title="Labels can be used to identify the instance and to filter them."></a>Labels can be used to identify the instance and to filter them.</h1><h1 id="To-find-a-instance-labeled-with-key-value-pair-k1-v2"><a href="#To-find-a-instance-labeled-with-key-value-pair-k1-v2" class="headerlink" title="To find a instance labeled with key-value pair k1, v2"></a>To find a instance labeled with key-value pair k1, v2</h1><h1 id="可以先讀一下範例說明"><a href="#可以先讀一下範例說明" class="headerlink" title="可以先讀一下範例說明"></a>可以先讀一下範例說明</h1><p>  $gcloud beta compute instances add-labels example-instance \</p>
+<pre><code>--labels=k0=v0,k1=v1</code></pre><p>  $gcloud compute instances list –filter=’labels.k1:v2’</p>
+<h1 id="Label-env-k8s"><a href="#Label-env-k8s" class="headerlink" title="Label env=k8s"></a>Label env=k8s</h1><h1 id="label套用到我的環境"><a href="#label套用到我的環境" class="headerlink" title="label套用到我的環境"></a>label套用到我的環境</h1><p>  $gcloud beta compute instances add-labels k8s-master \</p>
+<pre><code>--zone=us-central1-a \
+--labels=env=k8s</code></pre><p>  $gcloud compute instances list –filter=’labels.env:k8s’</p>
 </li>
 </ul>
-<p><strong>Step5. 檢視並確認Budget是否設定成功</strong></p>
-<ul>
-<li>確認Logging Budget 建立完成</li>
-</ul>
+<p>執行結果看到<br>透過<code>labels.env:k8s</code>篩選出我們要看的VM Instance</p>
 <p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><hr>
-<p>[1] <a href="https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in</a></p>
-<p>[2] <a href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/budgets</a></p>
+<p>你可以到GCP Console 進行檢查<code>Labels</code></p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h2 id="建立-Pub-Sub-topics"><a href="#建立-Pub-Sub-topics" class="headerlink" title="建立  Pub/Sub topics"></a>建立  Pub/Sub topics</h2><p>建立二筆topic，一個給開機用另一則是關機用，名字分別為<code>start-instance-event</code>、<code>stop-instance-event</code></p>
+<pre><code># 建立二個 topics: start &amp; stop
+$gcloud pubsub topics create start-instance-event
+$gcloud pubsub topics create stop-instance-event
+
+# 檢視現有的topic
+$gcloud pubsub topics list
+---
+name: projects/tw-rd-ca-joe-huang/topics/start-instance-event
+---
+name: projects/tw-rd-ca-joe-huang/topics/stop-instance-event</code></pre><p>建好之後，檢視Pub/Sub發現有二筆<code>topic</code></p>
+<p>代表建立成功</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h2 id="建立Start-and-Stop-Cloud-Functions"><a href="#建立Start-and-Stop-Cloud-Functions" class="headerlink" title="建立Start and Stop Cloud Functions"></a>建立Start and Stop Cloud Functions</h2><ul>
+<li><p>先下載Git，看他的程式碼邏輯跟剛才測試的<code>labels</code>是一樣的</p>
+</li>
+<li><p>用預寫好的node.js 部署<code>Cloud Function</code></p>
+<h1 id="下載-node-js-code"><a href="#下載-node-js-code" class="headerlink" title="下載 node.js code"></a>下載 node.js code</h1><h1 id="裡面有控制function-可以對instance開關機"><a href="#裡面有控制function-可以對instance開關機" class="headerlink" title="裡面有控制function 可以對instance開關機"></a>裡面有控制function 可以對instance開關機</h1><p>  git clone <a href="https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git</a></p>
+</li>
+</ul>
+<pre><code># 切換正確目錄
+cd nodejs-docs-samples/functions/scheduleinstance/
+
+# 部署Cloud Function
+gcloud functions deploy startInstancePubSub \
+    --trigger-topic start-instance-event \
+    --runtime nodejs8</code></pre><p><code>node.js</code> 部份功能</p>
+<pre><code>exports.startInstancePubSub = async (event, context, callback) =&gt; {
+  try {
+    const payload = _validatePayload(
+      JSON.parse(Buffer.from(event.data, &apos;base64&apos;).toString())
+    );
+    const options = {filter: `labels.${payload.label}`}; # 用label篩選指定的vm
+    const [vms] = await compute.getVMs(options);
+    await Promise.all(
+      vms.map(async instance =&gt; {
+        if (payload.zone === instance.zone.id) {
+          const [operation] = await compute
+            .zone(payload.zone)
+            .vm(instance.name)
+            .start();                                    # start()函數來啟動vm
+
+          // Operation pending
+          return operation.promise();
+        }
+      })
+    );</code></pre><ul>
+<li><h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><h3 id="Multi-Payload"><a href="#Multi-Payload" class="headerlink" title="Multi Payload"></a>Multi Payload</h3><p>  看看能不能管理多個lael，意思就是可以管理不多的instances</p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+<h2 id="node-js-6-BUG"><a href="#node-js-6-BUG" class="headerlink" title="node.js 6 BUG"></a>node.js 6 BUG</h2><p>  <strong>Error message: Code in file index.js can’t be loaded</strong></p>
+<p>  <a href="https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m" target="_blank" rel="noopener">https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m</a></p>
+<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
+</li>
+</ul>
+<h2 id="設定Cloud-Scheduler"><a href="#設定Cloud-Scheduler" class="headerlink" title="設定Cloud Scheduler"></a>設定Cloud Scheduler</h2><p>如何定義一個排程時間，設定日期的規則很像<a href="http://linux.vbird.org/linux_basic/0430cron.php" target="_blank" rel="noopener">Linux crontab</a></p>
+<p><a href="https://cloud.google.com/scheduler/index" target="_blank" rel="noopener">Cloud Schedule</a>列出5個欄位「分」、「時」、「天」、「月」、「週」</p>
+<p><img src="https://cloud.google.com/scheduler/docs/images/schedule-fields.png" alt="https://cloud.google.com/scheduler/docs/images/schedule-fields.png"></p>
+<h3 id="Cloud-Scheduler-設定例子"><a href="#Cloud-Scheduler-設定例子" class="headerlink" title="Cloud Scheduler 設定例子"></a>Cloud Scheduler 設定<strong>例子</strong></h3><ul>
+<li>每分鐘執行：<code>* * * * *</code></li>
+<li>每週一早上九點執行：<code>0 9 * * 1</code></li>
+<li>每週早上九點執行：<code>0 9 * *</code></li>
+<li>每3小時執行：<code>0 */3 * * *</code></li>
+<li>每週一早上十點40分執行：<code>40 10 * * 1</code></li>
+<li>每週早上十點40分執行：<code>40 10 * * *</code></li>
+<li>上班工作日開機，下班時間請執行： <code>0 7,18 * * 1-5</code></li>
+</ul>
+<h3 id="手動測試"><a href="#手動測試" class="headerlink" title="手動測試"></a>手動測試</h3><p>建議在使用Cloud Scheduler之前，可以先手動觸發Cloud function<br>如此可以減少Scheduler設定錯誤，而造成時間等待的浪費</p>
+<ul>
+<li><p>注意這邊傳入function的值需要經過加密，因此使用<code>base64</code></p>
+</li>
+<li><p>把加密過的值帶入 —data{<code>encrpted data</code>}</p>
+<h1 id="因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub"><a href="#因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub" class="headerlink" title="因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub"></a>因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub</h1><p>  $echo ‘{“zone”:”us-central1-a”, “label”:”env=k8s”}’ | base64<br>  eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=</p>
+<h1 id="直接手動觸發-開機"><a href="#直接手動觸發-開機" class="headerlink" title="直接手動觸發(開機)"></a>直接手動觸發(開機)</h1><p>  $gcloud functions call startInstancePubSub \</p>
+<pre><code>--data &apos;{&quot;data&quot;:&quot;eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=&quot;}&apos;</code></pre><p>  executionId: e7o6dafufthu</p>
+<h1 id="執行function成功，幫我們開機"><a href="#執行function成功，幫我們開機" class="headerlink" title="執行function成功，幫我們開機"></a>執行function成功，幫我們開機</h1><p>  result: Successfully started instance(s)</p>
+<h1 id="檢視機器狀態"><a href="#檢視機器狀態" class="headerlink" title="檢視機器狀態"></a>檢視機器狀態</h1><p>  $for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \</p>
+<pre><code>--zone us-central1-a \
+| grep status; done</code></pre><p>  status: RUNNING<br>  status: RUNNING<br>  status: RUNNING</p>
+</li>
+</ul>
+<p>執行結果看到，三台VM Instance有正常運行中</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<ul>
+<li><p>先看現況VM的狀態(關機)</p>
+<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:29:39] C:1
+$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
+    --zone us-central1-a \
+    | grep status; done
+status: RUNNING
+status: RUNNING
+status: RUNNING</code></pre><p>  <img src="Untitled10.png" alt="Untitled10.png"></p>
+<p>  <img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ul>
+<h3 id="正式測試"><a href="#正式測試" class="headerlink" title="正式測試"></a>正式測試</h3><ul>
+<li>透過Cloud Scheduler 自動觸發 stop-dev-instances</li>
+<li>方才我們驗證了Cloud function 可以正常工作， 與辨識VM Instance label: <code>env:k8s</code></li>
+<li>再來就是要驗證Scheduler + Cloud function，把時間設定為<code>期望的時間</code></li>
+</ul>
+<blockquote>
+<p>注意：<br>現在時間是<code>10:37</code>且VM處於開機狀態，我們要設定10:48 <code>關機</code></p>
+</blockquote>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<p>Cloud Shell 範本</p>
+<pre><code># Sample
+gcloud beta scheduler jobs create pubsub startup-dev-instances \
+    --schedule &apos;0 9 * * 1-5&apos; \
+    --topic start-instance-event \
+    --message-body &apos;{&quot;zone&quot;:&quot;us-west1-b&quot;, &quot;label&quot;:&quot;env=dev&quot;}&apos; \
+    --time-zone &apos;America/Los_Angeles&apos;
+
+# 設定 10點48分鐘關機
+gcloud beta scheduler jobs create pubsub stop-dev-instances \
+    --schedule &apos;48 10 * * *&apos; \
+    --topic start-instance-event \
+    --message-body &apos;{&quot;zone&quot;:&quot;us-central1-a&quot;, &quot;label&quot;:&quot;env=k8s&quot;}&apos; \
+    --time-zone &apos;Asia/Taipei&apos;</code></pre><p>確實執行完task喔</p>
+<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:47:20]
+$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
+    --zone us-central1-a \
+    | grep status; done
+status: TERMINATED
+status: TERMINATED
+status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已被終止運行</p>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<h2 id="查看Cloud-Scheduler-Job-Log"><a href="#查看Cloud-Scheduler-Job-Log" class="headerlink" title="查看Cloud Scheduler Job Log"></a>查看Cloud Scheduler Job Log</h2><p>最後我們查看log，看看他的執行的過程</p>
+<p>我們可以看到10:48香港時間，執行了<strong>stop-dev-instances</strong></p>
+<ul>
+<li>type: “type.googleapis.com/google.cloud.scheduler.logging.AttemptFinished”</li>
+<li>jobName: “projects/tw-rd-ca-joe-huang/locations/asia-east2/jobs/start-stop-vm”</li>
+<li>pubsubTopic: “projects/tw-rd-ca-joe-huang/topics/<code>stop-instance-event</code>“</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
+<li><strong><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-ushttps://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">Cloud scheduler</a></strong><br><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us</a></li>
+<li><strong><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labelshttps://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">Instances add-labels</a></strong><br><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels</a></li>
+</ol>
 ]]></content>
       <categories>
         <category>GCP</category>
       </categories>
       <tags>
-        <tag>Billing</tag>
-        <tag>Billing Budget Alert</tag>
-        <tag>Cost down</tag>
+        <tag>GCP</tag>
+        <tag>Cloud Scheduler</tag>
+        <tag>Google Pubsub</tag>
       </tags>
   </entry>
   <entry>
@@ -683,44 +894,6 @@ WHERE date_formatted = &apos;2017-07-08&apos;</code></pre><ul>
         <tag>Stackdriver</tag>
         <tag>Logs Exclusions</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up</title>
-    <url>/2020/05/24/GCP-%E9%80%8F%E9%81%8EContent-Header-%E7%A2%BA%E8%AA%8D-Cloud-CDN-Cache-%E5%8A%A0%E9%80%9F-Through-Content-Header-Ensoure-CDN-Speed-up/</url>
-    <content><![CDATA[<h1 id="GCP-透過Content-Header-確認-Cloud-CDN-Cache-加速-Through-Content-Header-Ensoure-CDN-Speed-up"><a href="#GCP-透過Content-Header-確認-Cloud-CDN-Cache-加速-Through-Content-Header-Ensoure-CDN-Speed-up" class="headerlink" title="[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up"></a>[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up</h1><p>Status: Completed</p>
-<h2 id="Cloud-CDN-Cache"><a href="#Cloud-CDN-Cache" class="headerlink" title="Cloud CDN Cache"></a>Cloud CDN Cache</h2><ul>
-<li><p>根據<a href="https://cloud.google.com/cdn/docs/caching?hl=zh-tw" target="_blank" rel="noopener">Cloud CDN</a>[1] 文件，web header需要符合以下條件才能被cache</p>
-</li>
-<li><p>因此，CDN 沒有針對特別檔案或副檔名啟用cache功能與否，特別要注意的是<code>Cache directive</code>這個值要為<code>public</code>，對應curl -v 結果可以看到header content-control，此欄位應有<code>public</code>才能被cache</p>
-</li>
-<li><p>另外，如果要讓伺服務response header 符合<code>cacheable content</code>，請確認web server設定，response header 必需加上Cache-Control → <code>public</code></p>
-</li>
-</ul>
-<p><a href="https://blog.confirm.ch/adding-and-removing-nginx-response-headers/" target="_blank" rel="noopener">以ngnix為例</a>[2]</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Adding response headers</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">add_header X-Frame-Options SAMEORIGIN;</span></pre></td></tr><tr><td class="code"><pre><span class="line">add_header X-Content-Type-Options nosniff;</span></pre></td></tr></table></figure>
-
-<p>Cloud CDN文件[1]</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h2 id="Header-驗證"><a href="#Header-驗證" class="headerlink" title="Header 驗證"></a>Header 驗證</h2><ul>
-<li>察看<code>curl -v</code> 結果<ul>
-<li>使用 <code>-v</code> 是為了輸出更多的結果以利了解header情況</li>
-<li>-v / <code>--verbose</code> 輸出更多的訊息方便 debug</li>
-</ul>
-</li>
-</ul>
-<p><strong>Finding1</strong></p>
-<ul>
-<li>發現這個網站<code>header</code>沒有 <code>public</code>，因此即使使用了CDN，這個網頁也不會享有cache加速</li>
-</ul>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p><strong>Finding2</strong></p>
-<ul>
-<li><a href="http://istio.io" target="_blank" rel="noopener">istio.io</a> 網站<code>header顯示</code> <code>public</code>，因此可以正常使用cache加速</li>
-</ul>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p>[1] <a href="https://cloud.google.com/cdn/docs/caching?hl=zh-tw" target="_blank" rel="noopener">https://cloud.google.com/cdn/docs/caching?hl=zh-tw</a></p>
-<p>[2] <a href="https://blog.confirm.ch/adding-and-removing-nginx-response-headers/" target="_blank" rel="noopener">https://blog.confirm.ch/adding-and-removing-nginx-response-headers/</a></p>
-]]></content>
   </entry>
   <entry>
     <title>[GCP] 只要懂SQL 即刻打通 BigQuery ML 任督二脈 |  BigQuery ML Hands-on</title>
@@ -934,6 +1107,127 @@ fullVisitorId</code></pre><p>  FROM</p>
         <tag>BigQuery</tag>
         <tag>BigQueryML</tag>
         <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up</title>
+    <url>/2020/05/24/GCP-%E9%80%8F%E9%81%8EContent-Header-%E7%A2%BA%E8%AA%8D-Cloud-CDN-Cache-%E5%8A%A0%E9%80%9F-Through-Content-Header-Ensoure-CDN-Speed-up/</url>
+    <content><![CDATA[<h1 id="GCP-透過Content-Header-確認-Cloud-CDN-Cache-加速-Through-Content-Header-Ensoure-CDN-Speed-up"><a href="#GCP-透過Content-Header-確認-Cloud-CDN-Cache-加速-Through-Content-Header-Ensoure-CDN-Speed-up" class="headerlink" title="[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up"></a>[GCP] 透過Content Header 確認 Cloud CDN Cache 加速 | Through Content Header Ensoure CDN Speed up</h1><p>Status: Completed</p>
+<h2 id="Cloud-CDN-Cache"><a href="#Cloud-CDN-Cache" class="headerlink" title="Cloud CDN Cache"></a>Cloud CDN Cache</h2><ul>
+<li><p>根據<a href="https://cloud.google.com/cdn/docs/caching?hl=zh-tw" target="_blank" rel="noopener">Cloud CDN</a>[1] 文件，web header需要符合以下條件才能被cache</p>
+</li>
+<li><p>因此，CDN 沒有針對特別檔案或副檔名啟用cache功能與否，特別要注意的是<code>Cache directive</code>這個值要為<code>public</code>，對應curl -v 結果可以看到header content-control，此欄位應有<code>public</code>才能被cache</p>
+</li>
+<li><p>另外，如果要讓伺服務response header 符合<code>cacheable content</code>，請確認web server設定，response header 必需加上Cache-Control → <code>public</code></p>
+</li>
+</ul>
+<p><a href="https://blog.confirm.ch/adding-and-removing-nginx-response-headers/" target="_blank" rel="noopener">以ngnix為例</a>[2]</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Adding response headers</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">add_header X-Frame-Options SAMEORIGIN;</span></pre></td></tr><tr><td class="code"><pre><span class="line">add_header X-Content-Type-Options nosniff;</span></pre></td></tr></table></figure>
+
+<p>Cloud CDN文件[1]</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h2 id="Header-驗證"><a href="#Header-驗證" class="headerlink" title="Header 驗證"></a>Header 驗證</h2><ul>
+<li>察看<code>curl -v</code> 結果<ul>
+<li>使用 <code>-v</code> 是為了輸出更多的結果以利了解header情況</li>
+<li>-v / <code>--verbose</code> 輸出更多的訊息方便 debug</li>
+</ul>
+</li>
+</ul>
+<p><strong>Finding1</strong></p>
+<ul>
+<li>發現這個網站<code>header</code>沒有 <code>public</code>，因此即使使用了CDN，這個網頁也不會享有cache加速</li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p><strong>Finding2</strong></p>
+<ul>
+<li><a href="http://istio.io" target="_blank" rel="noopener">istio.io</a> 網站<code>header顯示</code> <code>public</code>，因此可以正常使用cache加速</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p>[1] <a href="https://cloud.google.com/cdn/docs/caching?hl=zh-tw" target="_blank" rel="noopener">https://cloud.google.com/cdn/docs/caching?hl=zh-tw</a></p>
+<p>[2] <a href="https://blog.confirm.ch/adding-and-removing-nginx-response-headers/" target="_blank" rel="noopener">https://blog.confirm.ch/adding-and-removing-nginx-response-headers/</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>[Google API] Google 語音生成 API 實作 | Google Text-to-Speech</title>
+    <url>/2020/06/25/Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech/</url>
+    <content><![CDATA[<h1 id="什麼是-Text-to-Speech-TTS"><a href="#什麼是-Text-to-Speech-TTS" class="headerlink" title="什麼是 Text-to-Speech (TTS)"></a>什麼是 Text-to-Speech (TTS)</h1><p>俗稱的TTS，從演進來看通常會有二種，第一類傳統作法已經行之有年，就像你常聽到的google小姐的聲音，第二類是拜於深度神經網路的發達，透過Convolutional Neural Network(CNN)來合成語音，這項技術比較多是運用在圖像的辨識上面，但Google將它轉向生成語音，成效相當很驚人！</p>
+<h3 id="1-Basic-傳統作法"><a href="#1-Basic-傳統作法" class="headerlink" title="1. Basic 傳統作法"></a>1. Basic 傳統作法</h3><p>傳統上常見語音合成的方法有拼接生成又稱串接生成(Concatenative synthesis)及統計參數化法(StatisticalParametric method)等。拼接生成是透過<code>事先錄製多段聲音來拼接合成目標語句</code>；參數化法則是用模型生成聲音特徵的參數，再經由<code>聲碼器合成聲音</code>重新建構出聲音的波形。</p>
+<p>簡單說，拼接生成最爆力的方式，直接找真人錄一大堆的句子、單字或一個字，建構起一個龐大的資料庫，然後看使用者打的是那一種單字，就從資料庫中去抓取並唸出來，重新拼接出來你要的句子，所以拼接起來會讓人覺得斷斷續續、怪怪的，因為很平淡沒有什麼抑揚頓挫(intonation)</p>
+<h3 id="2-WaveNet"><a href="#2-WaveNet" class="headerlink" title="2. WaveNet"></a>2. <strong>WaveNet</strong></h3><p><strong>WaveNet中文稱為</strong>(波網)是一個用於<code>直接生成聲音訊號的[人工神經網路]</code>。是由倫敦人工智慧公司<a href="https://zh.wikipedia.org/wiki/DeepMind" target="_blank" rel="noopener">DeepMind</a>的研究人員於2016發表的。WaveNet強大的地方是通過使用用<strong><code>真實語音記錄訓練的神經網絡</code></strong>方法直接模擬波形，能夠生成聽起來相對<code>真實的人類聲音</code>。除了人類<a href="https://zh.wikipedia.org/wiki/%E8%AA%9E%E9%9F%B3%E5%90%88%E6%88%90" target="_blank" rel="noopener">語音合成</a>外，WaveNet也能應用在音樂生成以及語音辨識等領域。<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-2" target="_blank" rel="noopener">[2]</a></p>
+<p>2018年，<a href="https://zh.wikipedia.org/wiki/Google" target="_blank" rel="noopener">Google</a>在其雲端語音合成服務(Google Cloud Text-to-Speech)<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-3" target="_blank" rel="noopener">[3]</a>提供了基於WaveNet的語音合成<a href="https://zh.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a><a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-API-4" target="_blank" rel="noopener">[4]</a>。截至2019年，該產品提供了32種語言以及多種不同音色的語音合成服務，且基於WaveNet的合成結果在自然度上相比傳統方法更接近人類語音。</p>
+<h1 id="實作Text-to-Speech"><a href="#實作Text-to-Speech" class="headerlink" title="實作Text-to-Speech"></a>實作Text-to-Speech</h1><h3 id="Step1-Enable-API"><a href="#Step1-Enable-API" class="headerlink" title="Step1. Enable API"></a>Step1. Enable API</h3><ul>
+<li>在Google Project上啟用<code>Text-to-Speech</code>這隻API</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="Step-2-Create-a-service-account"><a href="#Step-2-Create-a-service-account" class="headerlink" title="Step 2. Create a service account"></a>Step 2. Create a service account</h3><ul>
+<li>建立個服務帳戶</li>
+<li>把服務帳戶輸出為JWT檔，供程式呼叫驗證：<code>tts-qwiklab.json</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcloud iam service-accounts create tts-qwiklab</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PROJECT_ID=$(gcloud config get-value project 2&gt; /dev/null)</span></pre></td></tr><tr><td class="code"><pre><span class="line">	gcloud iam service-accounts keys create tts-qwiklab.json --iam-account tts-qwiklab@<span class="variable">$PROJECT_ID</span>.iam.gserviceaccount.com</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> GOOGLE_APPLICATION_CREDENTIALS=tts-qwiklab.json</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="Step-3-Create-synthetic-speech-from-text"><a href="#Step-3-Create-synthetic-speech-from-text" class="headerlink" title="Step 3. Create synthetic speech from text"></a>Step 3. Create synthetic speech from text</h3><ul>
+<li><p>Token準備：使用當前auth token<br>gcloud auth application-default print-access-token</p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+<li><p>選擇發音的語系voice source，可以參考以下<br><a href="https://cloud.google.com/text-to-speech/docs/voices" target="_blank" rel="noopener">https://cloud.google.com/text-to-speech/docs/voices</a></p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+<li><p>再來就是最重要的部驟，需要生成一個json檔：<code>synthesize-text.json</code></p>
+<p>  其中JSON-formatted 參數值如下，分成三大塊</p>
+<ol>
+<li><code>input</code> 主要生成語音的文字內容</li>
+<li><code>voice</code> 生成聲音的語言、發音版本、是否使用SSML</li>
+<li><code>audioConfig</code> 聲音編碼的格式</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'input'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'text'</span>:<span class="string">'Cloud Text-to-Speech API allows developers to include</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           natural-sounding, synthetic human speech as playable audio in</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           their applications. The Text-to-Speech API converts text or</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           Speech Synthesis Markup Language (SSML) input into audio data</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           like MP3 or LINEAR16 (the encoding used in WAV files).'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'voice'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'languageCode'</span>:<span class="string">'en-gb'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'name'</span>:<span class="string">'en-GB-Standard-A'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'ssmlGender'</span>:<span class="string">'FEMALE'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'audioConfig'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'audioEncoding'</span>:<span class="string">'MP3'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<h3 id="Step-4-完成curl-json"><a href="#Step-4-完成curl-json" class="headerlink" title="Step 4. 完成curl + json"></a>Step 4. 完成curl + json</h3><ul>
+<li>傳送 <code>synthesize-text.txt</code> 檔案給Google Text-to-Speech API 生成語音檔</li>
+<li>使用的API Endpoint: <code>https://texttospeech.googleapis.com/v1/text:synthesize</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">"Authorization: Bearer "</span>$(gcloud auth application-default <span class="built_in">print</span>-access-token) \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -H <span class="string">"Content-Type: application/json; charset=utf-8"</span> \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -d @synthesize-text.json <span class="string">"https://texttospeech.googleapis.com/v1/text:synthesize"</span> \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  &gt; synthesize-text.txt</span></pre></td></tr></table></figure>
+
+<ul>
+<li>運行結果<br>你會發現結果會以 base64-encoded 加密的文字呈現，這個其實是語音的內容(audioContent field)，因此我們需要decode text</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="Step-5-把text轉成mp3檔"><a href="#Step-5-把text轉成mp3檔" class="headerlink" title="Step 5. 把text轉成mp3檔"></a>Step 5. 把text轉成mp3檔</h3><ul>
+<li>這邊準備一隻程式tts_decode.py，可以把decode text轉換成 .mp3</li>
+<li>decode的函式<code>new_file.write(decodebytes(audio_data.encode(&#39;utf-8&#39;)))</code>，最後再轉換成語音</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python tts_decode.py --input <span class="string">"synthesize-text.txt"</span> --output <span class="string">"synthesize-text-audio.mp3"</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li>運行結果</li>
+</ul>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="Step-6-驗證"><a href="#Step-6-驗證" class="headerlink" title="Step 6. 驗證"></a>Step 6. 驗證</h3><ul>
+<li>開一個網頁來聽mp3， index.html</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Cloud Text-to-Speech codelab<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  Output from synthesizing text:</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">audio</span> <span class="attr">controls</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"synthesize-text-audio.mp3"</span> /&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li><p>run web-server<br>python -m http.server 8080</p>
+<p>  <img src="Untitled6.png" alt="Untitled6.png"></p>
+<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/WaveNet" target="_blank" rel="noopener">WaveNet Wiki</a></li>
+<li><a href="https://www.qwiklabs.com/focuses/1290?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=6083809" target="_blank" rel="noopener">It Speaks! Create Synthetic Speech Using Cloud Text-to-Speech</a></li>
+<li><a href="https://cloud.google.com/text-to-speech/" target="_blank" rel="noopener">Google Text-to-Speech</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>GCP API</category>
+      </categories>
+      <tags>
+        <tag>GCP</tag>
+        <tag>API</tag>
+        <tag>texttospeech</tag>
       </tags>
   </entry>
   <entry>
@@ -1554,102 +1848,6 @@ curl -I http://${GATEWAY_URL}/productpage</code></pre><p>查看到istio-gateway 
       </tags>
   </entry>
   <entry>
-    <title>[Linux]遺失pam_tally.so 造成ssh登入失敗</title>
-    <url>/2019/09/11/Linux-%E9%81%BA%E5%A4%B1pam-tally-so-%E9%80%A0%E6%88%90ssh%E7%99%BB%E5%85%A5%E5%A4%B1%E6%95%97/</url>
-    <content><![CDATA[<h1 id="Linux-遺失pam-tally-so-造成ssh登入失敗"><a href="#Linux-遺失pam-tally-so-造成ssh登入失敗" class="headerlink" title="[Linux]遺失pam_tally.so 造成ssh登入失敗"></a>[Linux]遺失pam_tally.so 造成ssh登入失敗</h1><h2 id="Linux-PAM-Issue-Lock-ssh-Login"><a href="#Linux-PAM-Issue-Lock-ssh-Login" class="headerlink" title="[ Linux ] PAM Issue Lock ssh Login"></a>[ Linux ] PAM Issue Lock ssh Login</h2><h3 id="1-Error-message"><a href="#1-Error-message" class="headerlink" title="1. Error message"></a>1. Error message</h3><p>客戶用即有 disk開一台vm，無法正常ssh<br>使用serial port 連線和logging，觀察到gcp一直嘗試把itsupport寫入group-sudoers，但無法正常ssh  (上圖是開serial port，下圖ssh error)，經檢查網路與防火牆皆正常</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h3 id="PAM-unable-to-open"><a href="#PAM-unable-to-open" class="headerlink" title="PAM unable to open"></a>PAM unable to open</h3><p>訊息指出PAM unable to open <code>/usr/lib64/security/pam_tally.so</code> </p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h3 id="參考文件"><a href="#參考文件" class="headerlink" title="參考文件"></a>參考文件</h3><ol>
-<li><p><strong>RHEL Resolution</strong></p>
-<p> Redhat Solution 也對passwd: PAM unable to dlopen(/lib/security/pam_tally.so) 此提供解法<br> 對目標是<code>**passwd**</code></p>
-<p> <a href="https://access.redhat.com/solutions/34749" target="_blank" rel="noopener">Login fails for non-root users with error message “passwd: PAM unable to dlopen(/lib/security/pam_tally.so) - Red Hat Customer Portal</a></p>
-</li>
-<li><p><strong>內地簡書對於pam linux登入失敗的處理</strong></p>
-<p> 直接使用<code>pam_tally --user</code>對user解鎖</p>
-<p> <a href="https://www.jianshu.com/p/3cee7c58a283" target="_blank" rel="noopener">Linux登陆失败处理功能</a></p>
-</li>
-</ol>
-<h3 id="2-History-Trace"><a href="#2-History-Trace" class="headerlink" title="2. History Trace"></a>2. History Trace</h3><p>出問題的<code>open-vas vm</code> 關機，將<code>disk</code>掛載到其它的vm進行檢測</p>
-<p>發現有對pam.d 調整，推斷出是PAM導致ssh錯誤</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<h3 id="3-補齊PAM-so檔"><a href="#3-補齊PAM-so檔" class="headerlink" title="3. 補齊PAM .so檔"></a>3. 補齊PAM .so檔</h3><h3 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h3><ol>
-<li>檢查系統報錯的檔案<code>pam_tally.so</code> ，確實缺少此檔案</li>
-<li>我們檢查過disk有中有相同的so檔，名為<code>pam_tally2.so</code> </li>
-<li>建立檔案連結，把<code>pam_tally2.so</code> 指給 <code>pam_tally.so</code></li>
-<li>完成連結後，umount disk，在新開vm並使用即有disk</li>
-<li>開機正常可正常ssh</li>
-</ol>
-<p>Step1:<br>檢查檔案</p>
-<pre><code># 取得disk資訊，sdb是新掛進來的disk
-# 而sdb1是有經過format的partition
-# 我們要把/dev/sdb1 掛在新的系統上
-
-$lsblk 
-
-$mkdir -p /ossec
-$mount /dev/sdb1 /ossec
-
-# 設定新的根目錄
-# 用意是把舊的disk當作系統碟的意思，才能對此partition進行檢測
-# 切換命令提示會變成root
-# 如擷圖 root@test-107
-
-$chroot /ossec
-
-# 根據報錯的訊息檢查pam_tally.so 檔案
-# 發現遺失此檔案
-
-$ls /usr/lib64/security/pam_tally.so</code></pre><p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>$lsblk</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>To check pam_tally.so</p>
-<p>Step2:<br>建立檔案連結<code>ln</code></p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<p>Step3:<br>確認剛才建立的連結檔<code>pam_tally.so</code></p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<p>Step4:</p>
-<pre><code># 退出chroot，回到原本的系統
-# 注意user變成 itsupport@test-107
-$exit
-
-# OS 層級的umount
-$sudo umount /ossec
-
-# 再進GCP console把physical disk刪除掉
-# 或使用detach-disk
-
-gcloud compute instances detach-disk &lt;YOUR_INSTANCE&gt; --disk=&lt;YOUR_DISK&gt; --zone=&lt;YOUR_ZONE&gt;</code></pre><p><img src="Untitled7.png" alt="Untitled7.png"></p>
-<p>Step5:</p>
-<p>可以正常ssh 連線了</p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>PAM是保護ssh的第三把鎖，但也有可能設定不當造成ssh失效</p>
-<hr>
-<h2 id="Firewall-Bastion-linux-RDP-Issue"><a href="#Firewall-Bastion-linux-RDP-Issue" class="headerlink" title="[ Firewall ] Bastion-linux RDP Issue"></a>[ Firewall ] Bastion-linux RDP Issue</h2><h3 id="Firewall-套用模式有三種"><a href="#Firewall-套用模式有三種" class="headerlink" title="Firewall 套用模式有三種"></a>Firewall 套用模式有三種</h3><ol>
-<li>網路中所有instance</li>
-<li>指定的目標標記</li>
-<li>指定的服務帳戶</li>
-</ol>
-<h3 id="作法-1"><a href="#作法-1" class="headerlink" title="作法"></a>作法</h3><ol>
-<li>檢查這條policy是採用<code>指定的目標標記</code></li>
-<li>因此vm也要套用上對應的<code>tag</code>: <code>prod-allow-rdp</code> 此firewall才會生效</li>
-</ol>
-<p>Step1</p>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
-<p>Step2</p>
-<p><img src="Untitled10.png" alt="Untitled10.png"></p>
-<h3 id="結論-："><a href="#結論-：" class="headerlink" title="結論 ："></a>結論 ：</h3><p>firewall使用的目標最用方式有三種，在現在production目前都有使用中</p>
-<p>要注意instance與firewall彼此的對應關系</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>SSH</tag>
-        <tag>pam_tally.so</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[Linux] 內核虛擬Bridge, veth原理與實作 | Hands on Linux Kernel: bridge, veth</title>
     <url>/2020/04/26/Linux-%E5%85%A7%E6%A0%B8%E8%99%9B%E6%93%ACBridge-veth%E5%8E%9F%E7%90%86%E8%88%87%E5%AF%A6%E4%BD%9C-Hands-on-Linux-Kernel-bridge-veth/</url>
     <content><![CDATA[<h1 id="Linux-內核虛擬Bridge-veth原理與實作-Hands-on-Linux-Kernel-bridge-veth"><a href="#Linux-內核虛擬Bridge-veth原理與實作-Hands-on-Linux-Kernel-bridge-veth" class="headerlink" title="[Linux] 內核虛擬Bridge, veth原理與實作 | Hands on Linux Kernel: bridge, veth"></a>[Linux] 內核虛擬Bridge, veth原理與實作 | Hands on Linux Kernel: bridge, veth</h1><h1 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h1><blockquote>
@@ -1755,6 +1953,184 @@ gcloud compute instances detach-disk &lt;YOUR_INSTANCE&gt; --disk=&lt;YOUR_DISK&
         <tag>docker</tag>
         <tag>bridge</tag>
         <tag>linux kernel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Linux]遺失pam_tally.so 造成ssh登入失敗</title>
+    <url>/2019/09/11/Linux-%E9%81%BA%E5%A4%B1pam-tally-so-%E9%80%A0%E6%88%90ssh%E7%99%BB%E5%85%A5%E5%A4%B1%E6%95%97/</url>
+    <content><![CDATA[<h1 id="Linux-遺失pam-tally-so-造成ssh登入失敗"><a href="#Linux-遺失pam-tally-so-造成ssh登入失敗" class="headerlink" title="[Linux]遺失pam_tally.so 造成ssh登入失敗"></a>[Linux]遺失pam_tally.so 造成ssh登入失敗</h1><h2 id="Linux-PAM-Issue-Lock-ssh-Login"><a href="#Linux-PAM-Issue-Lock-ssh-Login" class="headerlink" title="[ Linux ] PAM Issue Lock ssh Login"></a>[ Linux ] PAM Issue Lock ssh Login</h2><h3 id="1-Error-message"><a href="#1-Error-message" class="headerlink" title="1. Error message"></a>1. Error message</h3><p>客戶用即有 disk開一台vm，無法正常ssh<br>使用serial port 連線和logging，觀察到gcp一直嘗試把itsupport寫入group-sudoers，但無法正常ssh  (上圖是開serial port，下圖ssh error)，經檢查網路與防火牆皆正常</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="PAM-unable-to-open"><a href="#PAM-unable-to-open" class="headerlink" title="PAM unable to open"></a>PAM unable to open</h3><p>訊息指出PAM unable to open <code>/usr/lib64/security/pam_tally.so</code> </p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="參考文件"><a href="#參考文件" class="headerlink" title="參考文件"></a>參考文件</h3><ol>
+<li><p><strong>RHEL Resolution</strong></p>
+<p> Redhat Solution 也對passwd: PAM unable to dlopen(/lib/security/pam_tally.so) 此提供解法<br> 對目標是<code>**passwd**</code></p>
+<p> <a href="https://access.redhat.com/solutions/34749" target="_blank" rel="noopener">Login fails for non-root users with error message “passwd: PAM unable to dlopen(/lib/security/pam_tally.so) - Red Hat Customer Portal</a></p>
+</li>
+<li><p><strong>內地簡書對於pam linux登入失敗的處理</strong></p>
+<p> 直接使用<code>pam_tally --user</code>對user解鎖</p>
+<p> <a href="https://www.jianshu.com/p/3cee7c58a283" target="_blank" rel="noopener">Linux登陆失败处理功能</a></p>
+</li>
+</ol>
+<h3 id="2-History-Trace"><a href="#2-History-Trace" class="headerlink" title="2. History Trace"></a>2. History Trace</h3><p>出問題的<code>open-vas vm</code> 關機，將<code>disk</code>掛載到其它的vm進行檢測</p>
+<p>發現有對pam.d 調整，推斷出是PAM導致ssh錯誤</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h3 id="3-補齊PAM-so檔"><a href="#3-補齊PAM-so檔" class="headerlink" title="3. 補齊PAM .so檔"></a>3. 補齊PAM .so檔</h3><h3 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h3><ol>
+<li>檢查系統報錯的檔案<code>pam_tally.so</code> ，確實缺少此檔案</li>
+<li>我們檢查過disk有中有相同的so檔，名為<code>pam_tally2.so</code> </li>
+<li>建立檔案連結，把<code>pam_tally2.so</code> 指給 <code>pam_tally.so</code></li>
+<li>完成連結後，umount disk，在新開vm並使用即有disk</li>
+<li>開機正常可正常ssh</li>
+</ol>
+<p>Step1:<br>檢查檔案</p>
+<pre><code># 取得disk資訊，sdb是新掛進來的disk
+# 而sdb1是有經過format的partition
+# 我們要把/dev/sdb1 掛在新的系統上
+
+$lsblk 
+
+$mkdir -p /ossec
+$mount /dev/sdb1 /ossec
+
+# 設定新的根目錄
+# 用意是把舊的disk當作系統碟的意思，才能對此partition進行檢測
+# 切換命令提示會變成root
+# 如擷圖 root@test-107
+
+$chroot /ossec
+
+# 根據報錯的訊息檢查pam_tally.so 檔案
+# 發現遺失此檔案
+
+$ls /usr/lib64/security/pam_tally.so</code></pre><p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>$lsblk</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p>To check pam_tally.so</p>
+<p>Step2:<br>建立檔案連結<code>ln</code></p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<p>Step3:<br>確認剛才建立的連結檔<code>pam_tally.so</code></p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<p>Step4:</p>
+<pre><code># 退出chroot，回到原本的系統
+# 注意user變成 itsupport@test-107
+$exit
+
+# OS 層級的umount
+$sudo umount /ossec
+
+# 再進GCP console把physical disk刪除掉
+# 或使用detach-disk
+
+gcloud compute instances detach-disk &lt;YOUR_INSTANCE&gt; --disk=&lt;YOUR_DISK&gt; --zone=&lt;YOUR_ZONE&gt;</code></pre><p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>Step5:</p>
+<p>可以正常ssh 連線了</p>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>PAM是保護ssh的第三把鎖，但也有可能設定不當造成ssh失效</p>
+<hr>
+<h2 id="Firewall-Bastion-linux-RDP-Issue"><a href="#Firewall-Bastion-linux-RDP-Issue" class="headerlink" title="[ Firewall ] Bastion-linux RDP Issue"></a>[ Firewall ] Bastion-linux RDP Issue</h2><h3 id="Firewall-套用模式有三種"><a href="#Firewall-套用模式有三種" class="headerlink" title="Firewall 套用模式有三種"></a>Firewall 套用模式有三種</h3><ol>
+<li>網路中所有instance</li>
+<li>指定的目標標記</li>
+<li>指定的服務帳戶</li>
+</ol>
+<h3 id="作法-1"><a href="#作法-1" class="headerlink" title="作法"></a>作法</h3><ol>
+<li>檢查這條policy是採用<code>指定的目標標記</code></li>
+<li>因此vm也要套用上對應的<code>tag</code>: <code>prod-allow-rdp</code> 此firewall才會生效</li>
+</ol>
+<p>Step1</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<p>Step2</p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h3 id="結論-："><a href="#結論-：" class="headerlink" title="結論 ："></a>結論 ：</h3><p>firewall使用的目標最用方式有三種，在現在production目前都有使用中</p>
+<p>要注意instance與firewall彼此的對應關系</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>SSH</tag>
+        <tag>pam_tally.so</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Python] PyJWT 加解密模組: encode, decode</title>
+    <url>/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/</url>
+    <content><![CDATA[<h1 id="Python-PyJWT-加解密模組-encode-decode"><a href="#Python-PyJWT-加解密模組-encode-decode" class="headerlink" title="[Python] PyJWT 加解密模組: encode, decode"></a>[Python] PyJWT 加解密模組: encode, decode</h1><h2 id="▌Python-JWT-Token"><a href="#▌Python-JWT-Token" class="headerlink" title="▌Python JWT Token"></a>▌Python JWT Token</h2><p><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">Welcome to PyJWT - PyJWT 1.7.1 documentation</a></p>
+<p>PyJWT工具是用來encode、decode的加解密工具，使用jwt module。</p>
+<p>即使Token，被擷取了也不用擔心，因為擷取的人沒有<code>SECRET</code>做decode的動作</p>
+<p>使用前先導入jwt module，再傳入json格式，一個<code>key</code>、一個<code>value</code>，還有一個加密的算法<code>SECRET</code>，最後會幫你算出一個Token。</p>
+<h3 id="範例1：官方入門"><a href="#範例1：官方入門" class="headerlink" title="範例1：官方入門"></a>範例1：官方入門</h3><ul>
+<li>key = k123</li>
+<li>value = v123</li>
+<li>secret = secret</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()會幫你產出一組token</p>
+<pre><code># Sample1
+# encoded_jwt
+
+import jwt
+
+encoded_jwt = jwt.encode({&apos;k123&apos;: &apos;v123&apos;}, &apos;secret&apos;, algorithm=&apos;HS256&apos;)
+encoded_jwt
+
+jwt.decode(encoded_jwt, &apos;secret&apos;, algorithm=[&apos;HS256&apos;])</code></pre><h3 id="輸出1"><a href="#輸出1" class="headerlink" title="輸出1"></a>輸出1</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值{k123 : v123}</li>
+</ol>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<hr>
+<h3 id="範例2：帳密加密應用"><a href="#範例2：帳密加密應用" class="headerlink" title="範例2：帳密加密應用"></a>範例2：帳密加密應用</h3><ul>
+<li>k = username</li>
+<li>v = joe</li>
+<li>secret = mykey123</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()產出另一組token</p>
+<pre><code># Sample2
+# Token with account, passwd
+
+token = jwt.encode({&quot;username&quot;:&quot;joe&quot;}, &quot;mykey123&quot;, algorithm=&apos;HS256&apos;)
+token
+jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123= key,value; k=mykey123</code></pre><h3 id="輸出2"><a href="#輸出2" class="headerlink" title="輸出2"></a>輸出2</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></li>
+</ol>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<hr>
+<h3 id="範例3：Token-Expiration"><a href="#範例3：Token-Expiration" class="headerlink" title="範例3：Token Expiration"></a>範例3：Token Expiration</h3><p>上面的範例產出的token都是永久有效的，但這邊存在一個風險。只要對方拿到token後，在慢慢try secret，終究是可以得到明碼的帳密。因此需要設計成一個有效期限，若送出request超時再取token的時候系統就會報錯。</p>
+<p>因此token的使用，設定在一個有效的時間區間內。如果超過這個時間，token就等於無效的。</p>
+<p>如果要在次使用token時，就得再次輸入帳密</p>
+<ul>
+<li>使用時間模組<code>datetime</code>  <code>timedelta</code></li>
+<li>在json格式中，放進特殊的key:value → <code>{exp : date}</code><ul>
+<li>超時與時間描述，提供具體的有效期間</li>
+<li>“exp”: datetime.utcnow() + timedelta(minutes=1) → <code>utcnow</code> 當前時間 + <code>timedelta</code> 累加時間為1分鐘<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Sample3</span></pre></td></tr><tr><td class="code"><pre><span class="line"># Experiation</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">from datetime import datetime, timedelta</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"># add specific k &amp; value for exp</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp &#x3D; jwt.encode(&#123;&quot;username&quot;:&quot;joe&quot;, &quot;exp&quot;: datetime.utcnow() + timedelta(minutes&#x3D;1)&#125;, &quot;mykey123&quot;, algorithm&#x3D;&#39;HS256&#39;)</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">jwt.decode(token_exp, &quot;mykey123&quot;, algorithe&#x3D;[&#39;HS256&#39;])</span></pre></td></tr></table></figure>
+<h3 id="輸出3"><a href="#輸出3" class="headerlink" title="輸出3"></a>輸出3</h3></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>decode( ), 第一次解碼encode的json內容，在一分鐘之內可以解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></p>
+<p> <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+<li><p>decode( ), 第二次解碼，已超過一分鐘的區間，故報錯回應 → <code>ExpiredSignatureError</code></p>
+<p> <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ol>
+<h2 id="▌結論："><a href="#▌結論：" class="headerlink" title="▌結論："></a>▌結論：</h2><p>應用上會將jwt包成一個API，讓user login時，而他傳入的body即是account/passwd，正確的話即可以產生一組Token，供系統登入</p>
+<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
+<li><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pyjwt.readthedocs.io/en/latest/</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Coding</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+        <tag>python</tag>
+        <tag>modules</tag>
+        <tag>pyjwt</tag>
+        <tag>jwt</tag>
       </tags>
   </entry>
   <entry>
@@ -1917,88 +2293,6 @@ def get_df():
         <tag>得到App</tag>
         <tag>吳軍</tag>
         <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[Python] PyJWT 加解密模組: encode, decode</title>
-    <url>/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/</url>
-    <content><![CDATA[<h1 id="Python-PyJWT-加解密模組-encode-decode"><a href="#Python-PyJWT-加解密模組-encode-decode" class="headerlink" title="[Python] PyJWT 加解密模組: encode, decode"></a>[Python] PyJWT 加解密模組: encode, decode</h1><h2 id="▌Python-JWT-Token"><a href="#▌Python-JWT-Token" class="headerlink" title="▌Python JWT Token"></a>▌Python JWT Token</h2><p><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">Welcome to PyJWT - PyJWT 1.7.1 documentation</a></p>
-<p>PyJWT工具是用來encode、decode的加解密工具，使用jwt module。</p>
-<p>即使Token，被擷取了也不用擔心，因為擷取的人沒有<code>SECRET</code>做decode的動作</p>
-<p>使用前先導入jwt module，再傳入json格式，一個<code>key</code>、一個<code>value</code>，還有一個加密的算法<code>SECRET</code>，最後會幫你算出一個Token。</p>
-<h3 id="範例1：官方入門"><a href="#範例1：官方入門" class="headerlink" title="範例1：官方入門"></a>範例1：官方入門</h3><ul>
-<li>key = k123</li>
-<li>value = v123</li>
-<li>secret = secret</li>
-<li>演算法 = HS256</li>
-</ul>
-<p>→ 將以上參數包成一個json格式放進encode()，encode()會幫你產出一組token</p>
-<pre><code># Sample1
-# encoded_jwt
-
-import jwt
-
-encoded_jwt = jwt.encode({&apos;k123&apos;: &apos;v123&apos;}, &apos;secret&apos;, algorithm=&apos;HS256&apos;)
-encoded_jwt
-
-jwt.decode(encoded_jwt, &apos;secret&apos;, algorithm=[&apos;HS256&apos;])</code></pre><h3 id="輸出1"><a href="#輸出1" class="headerlink" title="輸出1"></a>輸出1</h3><ol>
-<li>encode( )執行產出token</li>
-<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值{k123 : v123}</li>
-</ol>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<hr>
-<h3 id="範例2：帳密加密應用"><a href="#範例2：帳密加密應用" class="headerlink" title="範例2：帳密加密應用"></a>範例2：帳密加密應用</h3><ul>
-<li>k = username</li>
-<li>v = joe</li>
-<li>secret = mykey123</li>
-<li>演算法 = HS256</li>
-</ul>
-<p>→ 將以上參數包成一個json格式放進encode()，encode()產出另一組token</p>
-<pre><code># Sample2
-# Token with account, passwd
-
-token = jwt.encode({&quot;username&quot;:&quot;joe&quot;}, &quot;mykey123&quot;, algorithm=&apos;HS256&apos;)
-token
-jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123= key,value; k=mykey123</code></pre><h3 id="輸出2"><a href="#輸出2" class="headerlink" title="輸出2"></a>輸出2</h3><ol>
-<li>encode( )執行產出token</li>
-<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></li>
-</ol>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<hr>
-<h3 id="範例3：Token-Expiration"><a href="#範例3：Token-Expiration" class="headerlink" title="範例3：Token Expiration"></a>範例3：Token Expiration</h3><p>上面的範例產出的token都是永久有效的，但這邊存在一個風險。只要對方拿到token後，在慢慢try secret，終究是可以得到明碼的帳密。因此需要設計成一個有效期限，若送出request超時再取token的時候系統就會報錯。</p>
-<p>因此token的使用，設定在一個有效的時間區間內。如果超過這個時間，token就等於無效的。</p>
-<p>如果要在次使用token時，就得再次輸入帳密</p>
-<ul>
-<li>使用時間模組<code>datetime</code>  <code>timedelta</code></li>
-<li>在json格式中，放進特殊的key:value → <code>{exp : date}</code><ul>
-<li>超時與時間描述，提供具體的有效期間</li>
-<li>“exp”: datetime.utcnow() + timedelta(minutes=1) → <code>utcnow</code> 當前時間 + <code>timedelta</code> 累加時間為1分鐘<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Sample3</span></pre></td></tr><tr><td class="code"><pre><span class="line"># Experiation</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">from datetime import datetime, timedelta</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"># add specific k &amp; value for exp</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp &#x3D; jwt.encode(&#123;&quot;username&quot;:&quot;joe&quot;, &quot;exp&quot;: datetime.utcnow() + timedelta(minutes&#x3D;1)&#125;, &quot;mykey123&quot;, algorithm&#x3D;&#39;HS256&#39;)</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">jwt.decode(token_exp, &quot;mykey123&quot;, algorithe&#x3D;[&#39;HS256&#39;])</span></pre></td></tr></table></figure>
-<h3 id="輸出3"><a href="#輸出3" class="headerlink" title="輸出3"></a>輸出3</h3></li>
-</ul>
-</li>
-</ul>
-<ol>
-<li><p>decode( ), 第一次解碼encode的json內容，在一分鐘之內可以解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></p>
-<p> <img src="Untitled2.png" alt="Untitled2.png"></p>
-</li>
-<li><p>decode( ), 第二次解碼，已超過一分鐘的區間，故報錯回應 → <code>ExpiredSignatureError</code></p>
-<p> <img src="Untitled3.png" alt="Untitled3.png"></p>
-</li>
-</ol>
-<h2 id="▌結論："><a href="#▌結論：" class="headerlink" title="▌結論："></a>▌結論：</h2><p>應用上會將jwt包成一個API，讓user login時，而他傳入的body即是account/passwd，正確的話即可以產生一組Token，供系統登入</p>
-<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
-<li><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pyjwt.readthedocs.io/en/latest/</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Coding</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
-        <tag>python</tag>
-        <tag>modules</tag>
-        <tag>pyjwt</tag>
-        <tag>jwt</tag>
       </tags>
   </entry>
   <entry>
@@ -2166,60 +2460,6 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
       </tags>
   </entry>
   <entry>
-    <title>[啟發] 偽工作者 | Pseudo Worker</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/</url>
-    <content><![CDATA[<h1 id="啟發-偽工作者-Pseudo-Worker"><a href="#啟發-偽工作者-Pseudo-Worker" class="headerlink" title="[啟發] 偽工作者 | Pseudo Worker"></a>[啟發] 偽工作者 | Pseudo Worker</h1><p>Status: Published Medium</p>
-<p>想在年前想要有個漂亮的收尾，今天分享工作效率方面的話題，來自得到App | 吳軍 | 矽谷來信 | 第001封信，不作一個偽工作者</p>
-<p>很多人會覺得每天的事情太多，總是做不完，是現代人遇到的一個普遍問題，尤其是發展特別快的行業裡 (比如IT領域)的人或者創業者。唯一的解決方法恐怕就是一些事情不要做了，而不是把所有的事情湊合做完了(學習減法的智慧)，我們先來看看一個在Google的工作智慧</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>img from: <a href="https://www.euronews.com/2019/04/22/two-google-employees-say-company-retaliated-after-they-organized-walkout-n997266" target="_blank" rel="noopener">euronews.com</a></p>
-<h2 id="故事一"><a href="#故事一" class="headerlink" title="故事一"></a>故事一</h2><p>Google在2006年成立了中國分公司後，而Google總部一開始對中國研發團隊的評價相當低，遲遲未得到Google總部的認可，這段過程非常漫長。最初，北京3、4工程師抵不上Google Google總部的1個工程師，主要的原因就是工作沒效率。</p>
-<blockquote>
-<p>吳軍先生分享當時的情況：「我經過訪談，並協助分析原因。發現北京工程師們其實也挺忙的，但是產出卻不高，他們自己也很焦慮。我把一些工程師叫到會議室，讓他們把手中的工作都列了出來，他們每個人列出4~5項要做的工作，有的人可能更多一點。</p>
-</blockquote>
-<p>然後我問他們，如果完成了其中的一半，你們是否就不再那麼焦慮了。他們大部分人都給我肯定的回答，這也合情合理，工作少了一半，壓力也應該少一半。我告訴他們，當他們完成了兩三項任務後(一半工作)，他們手上 的任務依然是四五項，不會減少，甚至可能更多，因為新的任務又了。<br>因為這個行業行業發展太快，這和傳統軟體公司情況不一樣。」</p>
-<h2 id="認真工作的認知"><a href="#認真工作的認知" class="headerlink" title="認真工作的認知"></a>認真工作的認知</h2><ul>
-<li><p>傳統的軟體開發中：任務是事先定義清楚的，雖然在開發的過程中有所變動，但是變動不大，你只要在規定的時間前完成自己的模塊就可以了，隨著時間的推移，剩下的工作是越來越少。</p>
-</li>
-<li><p>網路公司的產品：開發則不同，它的產品是一個動態迭代的過程。無法清晰定義一個靜態的版本，新的問題總是不斷地湧現，每一個問題似乎都有必要立即解決，因此不存在一個把工作隊列清空的可能性。</p>
-</li>
-</ul>
-<blockquote>
-<p>在這樣的大背景下，一個人所追求的不應該是完成了%之幾，或者%幾十的工作，<strong><em>而是做完了哪幾件重要的事情</em></strong>。一個聰明的工作者，應該善於找到最重要的工作，並且優先完成它們 → 這是所有新員工都欠缺的技能，也是大家對於%的迷思。</p>
-</blockquote>
-<p>簡單的說：就是當處於工作永遠做不完的處境時，先把那些最重要的完成了。試試看，這樣你的工作狀態會不會發生改變？</p>
-<p>在Google總部，新員工永遠只佔一小部分，因此很容易在有經驗的員工帶動下比較快地掌握工作 技能。而在中國，幾乎所有的工程師都是剛畢業的學生，沒有人告訴他們該怎樣工作，因此雖然大家很忙，但是卻沒有對公司的發展產生什麼重大效果。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="什麼是偽工作者-Pseudo-Worker"><a href="#什麼是偽工作者-Pseudo-Worker" class="headerlink" title="什麼是偽工作者 | Pseudo Worker"></a>什麼是偽工作者 | Pseudo Worker</h2><p>前一陣Yahoo被<code>Verizon</code>收購了，標誌著一個時代的結束。Yahoo這個曾經被看作是網路的代名詞的公司，走到今天悲慘的地步有很多原因，其中一條就是<strong><em>他們的員工做了太多的偽工 作</em></strong>。只要看看他們產品的變化就能知道這一點，他們產品不斷地改版， 其實這些改版也不增加新功能，也沒有讓人覺得更好用，另外一方面它們也很少開發新的產品。</p>
-<p>在Google內，上述這種每天應付事務性工作的人被稱為Pseudo Worker，後來Facebook學習Google的很多管理方法，也使用這種說法，而Pseudo Worker直譯出來就是…</p>
-<blockquote>
-<p><strong>“偽工作者” ：</strong>這些人每天 把自己搞得很忙，他們所做的工作可能也是公司裡面存在的工作。但是那些工作(也被稱為偽工作)不產生什麼效果。</p>
-</blockquote>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>img from: [Flickriver]( Flickriver pseudo worker - a photo on Flickriver)</p>
-<h2 id="如何防止偽工作者呢"><a href="#如何防止偽工作者呢" class="headerlink" title="如何防止偽工作者呢?"></a>如何防止偽工作者呢?</h2><p>怎樣才能防止員工成為偽工作者呢？有二個方針：</p>
-<ul>
-<li>管理者要讓員工站在「做什麼事情能讓公司最大獲益」的基礎上去工作。如此，<strong>他們在做不完的工作中，才能動腦筋去尋找那些對公司最有幫助的事情去做</strong>，而不是簡單應付老板派下來的工作，然後向老闆交差。在一個知識型企業中，管理者不可能對員工進行事無巨細的管理，因此員工的主動性很重要。</li>
-<li><strong>管理者要讓員工明白，<em>他們積極工作 (而不是消極完成任務)，最大的受益方是他們自己</em></strong>。公司裡不免有員工對自己對處境、周圍人的態度、所給予的機會等等，有不滿意的時候，這種時候，他們會消極對待工作，不自覺地成為一個不動腦筋的偽工作者。<br>有些鬼精的人，甚至會表現出一種任勞任怨的態度，也不和老闆爭執，被動地從老闆指派的工作中找一些容易的工作來做，而不是那些有挑戰的任務。當被問起為何不接有困難的任務時，他們總是推脫說時間不夠。</li>
-</ul>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>在一間公司待一年左右，對於那些鬼精的同事總是會浮現出來，公司面對這樣的人，一般老闆還真拿他們沒有辦法，在考評時只好讓他及格。但是這些人實際上在坑自己，因為那些<strong><em>偽工作</em></strong>做得越多，個人進步就越慢，甚至能力還會倒退。這樣想或許對自已會些安慰，也算是一種警愓，另外一種打算就是快離開那裡。</p>
-<p>有些時候需要換一個角度來審視我們所做的事情，就會發現，捨棄一些事情也未嘗不可。<br>再寬泛地講，其實很多人在生活中，也是不斷地把時間浪費在那些其實可做可不做的事情<br>上。最後，我想說的真的有自知的員工(我指的是那些會善用時間讓自已成長的朋友)，</p>
-<p>會不停地追求有價值的事情，反而忽略那些鬼精的同仁們</p>
-<blockquote>
-<p>所以每當你因為總是幹也幹不完的工作而焦慮時<br>不妨試試先停下來，重新梳理一遍手邊的工作</p>
-</blockquote>
-<p>→ 主動地站在對公司業務幫助最大的角度！<br>→ 主動站在提升自己能力的角度！</p>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[啟發] 主觀不比客觀差 | Subjective is more Valuable</title>
     <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E4%B8%BB%E8%A7%80%E4%B8%8D%E6%AF%94%E5%AE%A2%E8%A7%80%E5%B7%AE-Subjective-is-more-Valuable/</url>
     <content><![CDATA[<h1 id="啟發-主觀不比客觀差-Subjective-is-more-Valuable"><a href="#啟發-主觀不比客觀差-Subjective-is-more-Valuable" class="headerlink" title="[啟發] 主觀不比客觀差 | Subjective is more Valuable"></a>[啟發] 主觀不比客觀差 | Subjective is more Valuable</h1><p>Status: Published</p>
@@ -2338,53 +2578,49 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
       </tags>
   </entry>
   <entry>
-    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
-    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
-<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
-<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
-<blockquote>
-<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
-</blockquote>
+    <title>[啟發] 偽工作者 | Pseudo Worker</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%81%BD%E5%B7%A5%E4%BD%9C%E8%80%85-Pseudo-Worker/</url>
+    <content><![CDATA[<h1 id="啟發-偽工作者-Pseudo-Worker"><a href="#啟發-偽工作者-Pseudo-Worker" class="headerlink" title="[啟發] 偽工作者 | Pseudo Worker"></a>[啟發] 偽工作者 | Pseudo Worker</h1><p>Status: Published Medium</p>
+<p>想在年前想要有個漂亮的收尾，今天分享工作效率方面的話題，來自得到App | 吳軍 | 矽谷來信 | 第001封信，不作一個偽工作者</p>
+<p>很多人會覺得每天的事情太多，總是做不完，是現代人遇到的一個普遍問題，尤其是發展特別快的行業裡 (比如IT領域)的人或者創業者。唯一的解決方法恐怕就是一些事情不要做了，而不是把所有的事情湊合做完了(學習減法的智慧)，我們先來看看一個在Google的工作智慧</p>
 <p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
-<hr>
-<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
+<p>img from: <a href="https://www.euronews.com/2019/04/22/two-google-employees-say-company-retaliated-after-they-organized-walkout-n997266" target="_blank" rel="noopener">euronews.com</a></p>
+<h2 id="故事一"><a href="#故事一" class="headerlink" title="故事一"></a>故事一</h2><p>Google在2006年成立了中國分公司後，而Google總部一開始對中國研發團隊的評價相當低，遲遲未得到Google總部的認可，這段過程非常漫長。最初，北京3、4工程師抵不上Google Google總部的1個工程師，主要的原因就是工作沒效率。</p>
 <blockquote>
-<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
+<p>吳軍先生分享當時的情況：「我經過訪談，並協助分析原因。發現北京工程師們其實也挺忙的，但是產出卻不高，他們自己也很焦慮。我把一些工程師叫到會議室，讓他們把手中的工作都列了出來，他們每個人列出4~5項要做的工作，有的人可能更多一點。</p>
 </blockquote>
-<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
-<blockquote>
-<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
-</blockquote>
-<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
-<ul>
-<li>醫療：連續處方箋的藥可以自動續領</li>
-<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
-<li>用餐：送餐服務也可以幫你採購食材</li>
-<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
+<p>然後我問他們，如果完成了其中的一半，你們是否就不再那麼焦慮了。他們大部分人都給我肯定的回答，這也合情合理，工作少了一半，壓力也應該少一半。我告訴他們，當他們完成了兩三項任務後(一半工作)，他們手上 的任務依然是四五項，不會減少，甚至可能更多，因為新的任務又了。<br>因為這個行業行業發展太快，這和傳統軟體公司情況不一樣。」</p>
+<h2 id="認真工作的認知"><a href="#認真工作的認知" class="headerlink" title="認真工作的認知"></a>認真工作的認知</h2><ul>
+<li><p>傳統的軟體開發中：任務是事先定義清楚的，雖然在開發的過程中有所變動，但是變動不大，你只要在規定的時間前完成自己的模塊就可以了，隨著時間的推移，剩下的工作是越來越少。</p>
+</li>
+<li><p>網路公司的產品：開發則不同，它的產品是一個動態迭代的過程。無法清晰定義一個靜態的版本，新的問題總是不斷地湧現，每一個問題似乎都有必要立即解決，因此不存在一個把工作隊列清空的可能性。</p>
+</li>
 </ul>
-<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
-<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
-<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
 <blockquote>
-<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
+<p>在這樣的大背景下，一個人所追求的不應該是完成了%之幾，或者%幾十的工作，<strong><em>而是做完了哪幾件重要的事情</em></strong>。一個聰明的工作者，應該善於找到最重要的工作，並且優先完成它們 → 這是所有新員工都欠缺的技能，也是大家對於%的迷思。</p>
+</blockquote>
+<p>簡單的說：就是當處於工作永遠做不完的處境時，先把那些最重要的完成了。試試看，這樣你的工作狀態會不會發生改變？</p>
+<p>在Google總部，新員工永遠只佔一小部分，因此很容易在有經驗的員工帶動下比較快地掌握工作 技能。而在中國，幾乎所有的工程師都是剛畢業的學生，沒有人告訴他們該怎樣工作，因此雖然大家很忙，但是卻沒有對公司的發展產生什麼重大效果。</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h2 id="什麼是偽工作者-Pseudo-Worker"><a href="#什麼是偽工作者-Pseudo-Worker" class="headerlink" title="什麼是偽工作者 | Pseudo Worker"></a>什麼是偽工作者 | Pseudo Worker</h2><p>前一陣Yahoo被<code>Verizon</code>收購了，標誌著一個時代的結束。Yahoo這個曾經被看作是網路的代名詞的公司，走到今天悲慘的地步有很多原因，其中一條就是<strong><em>他們的員工做了太多的偽工 作</em></strong>。只要看看他們產品的變化就能知道這一點，他們產品不斷地改版， 其實這些改版也不增加新功能，也沒有讓人覺得更好用，另外一方面它們也很少開發新的產品。</p>
+<p>在Google內，上述這種每天應付事務性工作的人被稱為Pseudo Worker，後來Facebook學習Google的很多管理方法，也使用這種說法，而Pseudo Worker直譯出來就是…</p>
+<blockquote>
+<p><strong>“偽工作者” ：</strong>這些人每天 把自己搞得很忙，他們所做的工作可能也是公司裡面存在的工作。但是那些工作(也被稱為偽工作)不產生什麼效果。</p>
 </blockquote>
 <p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
+<p>img from: [Flickriver]( Flickriver pseudo worker - a photo on Flickriver)</p>
+<h2 id="如何防止偽工作者呢"><a href="#如何防止偽工作者呢" class="headerlink" title="如何防止偽工作者呢?"></a>如何防止偽工作者呢?</h2><p>怎樣才能防止員工成為偽工作者呢？有二個方針：</p>
+<ul>
+<li>管理者要讓員工站在「做什麼事情能讓公司最大獲益」的基礎上去工作。如此，<strong>他們在做不完的工作中，才能動腦筋去尋找那些對公司最有幫助的事情去做</strong>，而不是簡單應付老板派下來的工作，然後向老闆交差。在一個知識型企業中，管理者不可能對員工進行事無巨細的管理，因此員工的主動性很重要。</li>
+<li><strong>管理者要讓員工明白，<em>他們積極工作 (而不是消極完成任務)，最大的受益方是他們自己</em></strong>。公司裡不免有員工對自己對處境、周圍人的態度、所給予的機會等等，有不滿意的時候，這種時候，他們會消極對待工作，不自覺地成為一個不動腦筋的偽工作者。<br>有些鬼精的人，甚至會表現出一種任勞任怨的態度，也不和老闆爭執，被動地從老闆指派的工作中找一些容易的工作來做，而不是那些有挑戰的任務。當被問起為何不接有困難的任務時，他們總是推脫說時間不夠。</li>
+</ul>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>在一間公司待一年左右，對於那些鬼精的同事總是會浮現出來，公司面對這樣的人，一般老闆還真拿他們沒有辦法，在考評時只好讓他及格。但是這些人實際上在坑自己，因為那些<strong><em>偽工作</em></strong>做得越多，個人進步就越慢，甚至能力還會倒退。這樣想或許對自已會些安慰，也算是一種警愓，另外一種打算就是快離開那裡。</p>
+<p>有些時候需要換一個角度來審視我們所做的事情，就會發現，捨棄一些事情也未嘗不可。<br>再寬泛地講，其實很多人在生活中，也是不斷地把時間浪費在那些其實可做可不做的事情<br>上。最後，我想說的真的有自知的員工(我指的是那些會善用時間讓自已成長的朋友)，</p>
+<p>會不停地追求有價值的事情，反而忽略那些鬼精的同仁們</p>
 <blockquote>
-<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
+<p>所以每當你因為總是幹也幹不完的工作而焦慮時<br>不妨試試先停下來，重新梳理一遍手邊的工作</p>
 </blockquote>
-<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
-<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
-<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<hr>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
-<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
-<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
+<p>→ 主動地站在對公司業務幫助最大的角度！<br>→ 主動站在提升自己能力的角度！</p>
 ]]></content>
       <categories>
         <category>啟發</category>
@@ -2466,6 +2702,64 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
       </tags>
   </entry>
   <entry>
+    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
+    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
+<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
+<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
+<blockquote>
+<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
+</blockquote>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
+<hr>
+<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
+<blockquote>
+<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
+</blockquote>
+<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
+<blockquote>
+<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
+</blockquote>
+<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
+<ul>
+<li>醫療：連續處方箋的藥可以自動續領</li>
+<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
+<li>用餐：送餐服務也可以幫你採購食材</li>
+<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
+</ul>
+<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
+<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
+<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
+<blockquote>
+<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
+</blockquote>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
+<blockquote>
+<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
+</blockquote>
+<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
+<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
+<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<hr>
+<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
+<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
+<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[啟發] 為什麼投資會賺錢</title>
     <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E7%82%BA%E4%BB%80%E9%BA%BC%E6%8A%95%E8%B3%87%E6%9C%83%E8%B3%BA%E9%8C%A2/</url>
     <content><![CDATA[<h1 id="啟發-為什麼投資會賺錢"><a href="#啟發-為什麼投資會賺錢" class="headerlink" title="[啟發] 為什麼投資會賺錢"></a>[啟發] 為什麼投資會賺錢</h1><p>Status: Published Medium</p>
@@ -2525,6 +2819,57 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
 </ul>
 <p>由於產業更新非常快，一個公司能夠20年經營得不錯都是件非常困難的事情，因此，沒有淘汰機制的股市表現一定好不了。</p>
 <p>理解了投資會有回報的本質，你就應該對(債</p>
+<hr>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/</url>
+    <content><![CDATA[<h1 id="啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening"><a href="#啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening" class="headerlink" title="[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening"></a>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</h1><p>Status: Published Medium</p>
+<h2 id="常言道：一日之計在於晨"><a href="#常言道：一日之計在於晨" class="headerlink" title="常言道：一日之計在於晨"></a>常言道：一日之計在於晨</h2><p>世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，<strong>一日之計在於晨</strong>，說得是學習和工作一定要抓緊早上的時光。可是早上覺得有精神到底是一種感覺呢，還是真有什麼明顯的影響呢？</p>
+<p>光有知道這個道理是不行的，我們還需要知道這個道理重要程度，是不是真值得我們調整做事的優先級別，因此你需要有實證有量化分析，這就是</p>
+<blockquote>
+<p><strong>科學方法</strong> 和傳統智慧的差別</p>
+</blockquote>
+<p>本文是讀完&lt;得到&gt;app | 萬維鋼老師的 | &lt;見機&gt; 這門課心得，課堂參考2018出版的&lt;見機：完美的科學秘密&gt; (When The Scientific Secrets of Perfect Timing)內容，作者透過大量數據來解釋人們如何使用的時間，並提醒人們使用時間才有效率</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p><a href="https://www.books.com.tw/products/F014128997" target="_blank" rel="noopener">https://www.books.com.tw/products/F014128997</a></p>
+<h2 id="一日之中的高低潮"><a href="#一日之中的高低潮" class="headerlink" title="一日之中的高低潮"></a>一日之中的高低潮</h2><p>下圖是紐約時報的報導，X軸是一天之中的時刻，Y軸代表的是情緒，總得來說人們在週未的情緒普遍上較好，另外一個觀察是不論是那一天，情緒變化的曲線型狀都非常相似</p>
+<p>早上起來七八點鐘是情緒的高峰，這時候大家說話比較正面，之後人們的情緒變化會慢慢變低落，到下午五點左右達到最低潮(等下班)。而晚上，人們的情緒又開始回升，到了午夜又達到一個高峰，您不妨可以檢視自已是有吻合這樣的情緒浮動</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study</a></p>
+<h2 id="研究指出：情緒變化三個時段"><a href="#研究指出：情緒變化三個時段" class="headerlink" title="研究指出：情緒變化三個時段"></a>研究指出：情緒變化三個時段</h2><p>人的下丘腦之中有個視交叉核，負責整個不同時段的荷爾蒙分佈，其實這就是我們的生理時鐘。而情緒，顯然是受到時生理時鐘的影響。</p>
+<p>總結來說，我們可以把一天的之中的情緒變化分為三段：</p>
+<blockquote>
+<p>上午達到高峰，下午經歷低潮，晚上出現反彈</p>
+</blockquote>
+<h2 id="集中精神的時機點"><a href="#集中精神的時機點" class="headerlink" title="集中精神的時機點"></a>集中精神的時機點</h2><p><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">大腦有二種思維模式</a>：一種是<strong>集中思維</strong>，需要你嚴格按照規則執行，比如說做數學題。集中思維要求大腦處於機靈的狀態，集中注意力。另一種是<strong>發散思維</strong>，適合創造性的活動，注意力不集，混亂一點反而更好。若依照上面的統計結果：<strong>你最好在上午從事集中思維，下午從事發散思維</strong>。</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>「專注模式」和「發散模式」 <a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">https://www.thenewslens.com/article/88323</a></p>
+<h2 id="粹鍊過的大數據結論"><a href="#粹鍊過的大數據結論" class="headerlink" title="粹鍊過的大數據結論"></a>粹鍊過的大數據結論</h2><p>相信或不相信科學結果是主觀的決定。但你都不知道的生理反應，數據則會說話。會有人說，難到我早上自已起來精力好不好，什麼時候適合做什麼自已還不知道嗎？為什麼要聽研究報告說的話？</p>
+<p>你可能真的不知道，但你肯定有個印象，你沒做過量化分析，也許你感覺上午精力更好，但是你不知道有多少，你不知道值不值得為此改變作習，改變工作安排</p>
+<h2 id="量化應用在運動"><a href="#量化應用在運動" class="headerlink" title="量化應用在運動"></a>量化應用在運動</h2><p>現在很流行的量化自我的運動，誰誰誰每天跑了幾公里，把距離分享到社交網路，還要和朋友比較一驟。但社交可不是量化自我的真正的本義，量化自我是一種科學的方法，它的真正目的是為了了解自已、研究自已、對自已做出更好的安排</p>
+<h2 id="高手善於觀察自已"><a href="#高手善於觀察自已" class="headerlink" title="高手善於觀察自已"></a>高手善於觀察自已</h2><p>科學的價值是什麼。別人是用分析了四億條twitter和26000個con-call才得出這些結論，而且給你提供了一個度。有這個度(量)，我們才談得上是科學決策</p>
+<p>量化分析是高手必備的能力。你到底是白天雲雀還是夜間貓頭鷹？自已做個量化分析，看看你在一天中的高峰，低潮和反彈期到底是在什麼時候，並好好的利你的有限時間吧</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>不管心情怎麼變化，都要認識、掌握自已 photo by medium.com</p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>人的情緒和認知能力在一天之中有明顯的變化，可以分為高峰、低潮和反彈三個時段。你必須</p>
+<blockquote>
+<p>了解自已的這三個時間都在什麼候，對各種任務給予合理的安排</p>
+</blockquote>
+<h3 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h3><ul>
+<li>&lt;得到&gt;app | 萬維鋼老師 | &lt;見機&gt;</li>
+<li><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">Moods on Twitter Follow Biological Rhythms, Study Find - NYTimes.com</a></li>
+<li><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">《深度學習的技術》：從「專注模式」切換到「發散模式」</a></li>
+</ul>
 <hr>
 ]]></content>
       <categories>
@@ -2614,57 +2959,6 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
 <p><img src="Untitled7.png" alt="Untitled7.png"></p>
 <p><img src="Untitled8.png" alt="Untitled8.png"></p>
 <h2 id="失去自主能力的感覺-2"><a href="#失去自主能力的感覺-2" class="headerlink" title="失去自主能力的感覺"></a>失去自主能力的感覺</h2><p>&lt;不滑手機會怎樣嗎？&gt; 這篇文章很深刻了記錄滑手機時的前後心境，我們不房來看看：「人到中年之後，當你的生活有了擺脫不了的壓力，突破不了的困難，每當想逃避時，有樣東西能讓你暫時忘記煩憂，就很容易對不好的東西上癮，<strong>一種失去自主能力的感覺</strong>，這也就是我們中年人常常看起來很廢的原因吧！」</p>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/</url>
-    <content><![CDATA[<h1 id="啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening"><a href="#啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening" class="headerlink" title="[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening"></a>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</h1><p>Status: Published Medium</p>
-<h2 id="常言道：一日之計在於晨"><a href="#常言道：一日之計在於晨" class="headerlink" title="常言道：一日之計在於晨"></a>常言道：一日之計在於晨</h2><p>世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，<strong>一日之計在於晨</strong>，說得是學習和工作一定要抓緊早上的時光。可是早上覺得有精神到底是一種感覺呢，還是真有什麼明顯的影響呢？</p>
-<p>光有知道這個道理是不行的，我們還需要知道這個道理重要程度，是不是真值得我們調整做事的優先級別，因此你需要有實證有量化分析，這就是</p>
-<blockquote>
-<p><strong>科學方法</strong> 和傳統智慧的差別</p>
-</blockquote>
-<p>本文是讀完&lt;得到&gt;app | 萬維鋼老師的 | &lt;見機&gt; 這門課心得，課堂參考2018出版的&lt;見機：完美的科學秘密&gt; (When The Scientific Secrets of Perfect Timing)內容，作者透過大量數據來解釋人們如何使用的時間，並提醒人們使用時間才有效率</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p><a href="https://www.books.com.tw/products/F014128997" target="_blank" rel="noopener">https://www.books.com.tw/products/F014128997</a></p>
-<h2 id="一日之中的高低潮"><a href="#一日之中的高低潮" class="headerlink" title="一日之中的高低潮"></a>一日之中的高低潮</h2><p>下圖是紐約時報的報導，X軸是一天之中的時刻，Y軸代表的是情緒，總得來說人們在週未的情緒普遍上較好，另外一個觀察是不論是那一天，情緒變化的曲線型狀都非常相似</p>
-<p>早上起來七八點鐘是情緒的高峰，這時候大家說話比較正面，之後人們的情緒變化會慢慢變低落，到下午五點左右達到最低潮(等下班)。而晚上，人們的情緒又開始回升，到了午夜又達到一個高峰，您不妨可以檢視自已是有吻合這樣的情緒浮動</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study</a></p>
-<h2 id="研究指出：情緒變化三個時段"><a href="#研究指出：情緒變化三個時段" class="headerlink" title="研究指出：情緒變化三個時段"></a>研究指出：情緒變化三個時段</h2><p>人的下丘腦之中有個視交叉核，負責整個不同時段的荷爾蒙分佈，其實這就是我們的生理時鐘。而情緒，顯然是受到時生理時鐘的影響。</p>
-<p>總結來說，我們可以把一天的之中的情緒變化分為三段：</p>
-<blockquote>
-<p>上午達到高峰，下午經歷低潮，晚上出現反彈</p>
-</blockquote>
-<h2 id="集中精神的時機點"><a href="#集中精神的時機點" class="headerlink" title="集中精神的時機點"></a>集中精神的時機點</h2><p><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">大腦有二種思維模式</a>：一種是<strong>集中思維</strong>，需要你嚴格按照規則執行，比如說做數學題。集中思維要求大腦處於機靈的狀態，集中注意力。另一種是<strong>發散思維</strong>，適合創造性的活動，注意力不集，混亂一點反而更好。若依照上面的統計結果：<strong>你最好在上午從事集中思維，下午從事發散思維</strong>。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>「專注模式」和「發散模式」 <a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">https://www.thenewslens.com/article/88323</a></p>
-<h2 id="粹鍊過的大數據結論"><a href="#粹鍊過的大數據結論" class="headerlink" title="粹鍊過的大數據結論"></a>粹鍊過的大數據結論</h2><p>相信或不相信科學結果是主觀的決定。但你都不知道的生理反應，數據則會說話。會有人說，難到我早上自已起來精力好不好，什麼時候適合做什麼自已還不知道嗎？為什麼要聽研究報告說的話？</p>
-<p>你可能真的不知道，但你肯定有個印象，你沒做過量化分析，也許你感覺上午精力更好，但是你不知道有多少，你不知道值不值得為此改變作習，改變工作安排</p>
-<h2 id="量化應用在運動"><a href="#量化應用在運動" class="headerlink" title="量化應用在運動"></a>量化應用在運動</h2><p>現在很流行的量化自我的運動，誰誰誰每天跑了幾公里，把距離分享到社交網路，還要和朋友比較一驟。但社交可不是量化自我的真正的本義，量化自我是一種科學的方法，它的真正目的是為了了解自已、研究自已、對自已做出更好的安排</p>
-<h2 id="高手善於觀察自已"><a href="#高手善於觀察自已" class="headerlink" title="高手善於觀察自已"></a>高手善於觀察自已</h2><p>科學的價值是什麼。別人是用分析了四億條twitter和26000個con-call才得出這些結論，而且給你提供了一個度。有這個度(量)，我們才談得上是科學決策</p>
-<p>量化分析是高手必備的能力。你到底是白天雲雀還是夜間貓頭鷹？自已做個量化分析，看看你在一天中的高峰，低潮和反彈期到底是在什麼時候，並好好的利你的有限時間吧</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>不管心情怎麼變化，都要認識、掌握自已 photo by medium.com</p>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>人的情緒和認知能力在一天之中有明顯的變化，可以分為高峰、低潮和反彈三個時段。你必須</p>
-<blockquote>
-<p>了解自已的這三個時間都在什麼候，對各種任務給予合理的安排</p>
-</blockquote>
-<h3 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h3><ul>
-<li>&lt;得到&gt;app | 萬維鋼老師 | &lt;見機&gt;</li>
-<li><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">Moods on Twitter Follow Biological Rhythms, Study Find - NYTimes.com</a></li>
-<li><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">《深度學習的技術》：從「專注模式」切換到「發散模式」</a></li>
-</ul>
-<hr>
 ]]></content>
       <categories>
         <category>啟發</category>
@@ -3043,300 +3337,6 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
         <tag>得到App</tag>
         <tag>吳軍</tag>
         <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[Google API] Google 語音生成 API 實作 | Google Text-to-Speech</title>
-    <url>/2020/06/25/Google-API-Google-%E8%AA%9E%E9%9F%B3%E7%94%9F%E6%88%90-API-%E5%AF%A6%E4%BD%9C-Google-Text-to-Speech/</url>
-    <content><![CDATA[<h1 id="什麼是-Text-to-Speech-TTS"><a href="#什麼是-Text-to-Speech-TTS" class="headerlink" title="什麼是 Text-to-Speech (TTS)"></a>什麼是 Text-to-Speech (TTS)</h1><p>俗稱的TTS，從演進來看通常會有二種，第一類傳統作法已經行之有年，就像你常聽到的google小姐的聲音，第二類是拜於深度神經網路的發達，透過Convolutional Neural Network(CNN)來合成語音，這項技術比較多是運用在圖像的辨識上面，但Google將它轉向生成語音，成效相當很驚人！</p>
-<h3 id="1-Basic-傳統作法"><a href="#1-Basic-傳統作法" class="headerlink" title="1. Basic 傳統作法"></a>1. Basic 傳統作法</h3><p>傳統上常見語音合成的方法有拼接生成又稱串接生成(Concatenative synthesis)及統計參數化法(StatisticalParametric method)等。拼接生成是透過<code>事先錄製多段聲音來拼接合成目標語句</code>；參數化法則是用模型生成聲音特徵的參數，再經由<code>聲碼器合成聲音</code>重新建構出聲音的波形。</p>
-<p>簡單說，拼接生成最爆力的方式，直接找真人錄一大堆的句子、單字或一個字，建構起一個龐大的資料庫，然後看使用者打的是那一種單字，就從資料庫中去抓取並唸出來，重新拼接出來你要的句子，所以拼接起來會讓人覺得斷斷續續、怪怪的，因為很平淡沒有什麼抑揚頓挫(intonation)</p>
-<h3 id="2-WaveNet"><a href="#2-WaveNet" class="headerlink" title="2. WaveNet"></a>2. <strong>WaveNet</strong></h3><p><strong>WaveNet中文稱為</strong>(波網)是一個用於<code>直接生成聲音訊號的[人工神經網路]</code>。是由倫敦人工智慧公司<a href="https://zh.wikipedia.org/wiki/DeepMind" target="_blank" rel="noopener">DeepMind</a>的研究人員於2016發表的。WaveNet強大的地方是通過使用用<strong><code>真實語音記錄訓練的神經網絡</code></strong>方法直接模擬波形，能夠生成聽起來相對<code>真實的人類聲音</code>。除了人類<a href="https://zh.wikipedia.org/wiki/%E8%AA%9E%E9%9F%B3%E5%90%88%E6%88%90" target="_blank" rel="noopener">語音合成</a>外，WaveNet也能應用在音樂生成以及語音辨識等領域。<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-2" target="_blank" rel="noopener">[2]</a></p>
-<p>2018年，<a href="https://zh.wikipedia.org/wiki/Google" target="_blank" rel="noopener">Google</a>在其雲端語音合成服務(Google Cloud Text-to-Speech)<a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-3" target="_blank" rel="noopener">[3]</a>提供了基於WaveNet的語音合成<a href="https://zh.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a><a href="https://zh.wikipedia.org/wiki/WaveNet#cite_note-API-4" target="_blank" rel="noopener">[4]</a>。截至2019年，該產品提供了32種語言以及多種不同音色的語音合成服務，且基於WaveNet的合成結果在自然度上相比傳統方法更接近人類語音。</p>
-<h1 id="實作Text-to-Speech"><a href="#實作Text-to-Speech" class="headerlink" title="實作Text-to-Speech"></a>實作Text-to-Speech</h1><h3 id="Step1-Enable-API"><a href="#Step1-Enable-API" class="headerlink" title="Step1. Enable API"></a>Step1. Enable API</h3><ul>
-<li>在Google Project上啟用<code>Text-to-Speech</code>這隻API</li>
-</ul>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h3 id="Step-2-Create-a-service-account"><a href="#Step-2-Create-a-service-account" class="headerlink" title="Step 2. Create a service account"></a>Step 2. Create a service account</h3><ul>
-<li>建立個服務帳戶</li>
-<li>把服務帳戶輸出為JWT檔，供程式呼叫驗證：<code>tts-qwiklab.json</code></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcloud iam service-accounts create tts-qwiklab</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PROJECT_ID=$(gcloud config get-value project 2&gt; /dev/null)</span></pre></td></tr><tr><td class="code"><pre><span class="line">	gcloud iam service-accounts keys create tts-qwiklab.json --iam-account tts-qwiklab@<span class="variable">$PROJECT_ID</span>.iam.gserviceaccount.com</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> GOOGLE_APPLICATION_CREDENTIALS=tts-qwiklab.json</span></pre></td></tr></table></figure>
-
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h3 id="Step-3-Create-synthetic-speech-from-text"><a href="#Step-3-Create-synthetic-speech-from-text" class="headerlink" title="Step 3. Create synthetic speech from text"></a>Step 3. Create synthetic speech from text</h3><ul>
-<li><p>Token準備：使用當前auth token<br>gcloud auth application-default print-access-token</p>
-<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
-</li>
-<li><p>選擇發音的語系voice source，可以參考以下<br><a href="https://cloud.google.com/text-to-speech/docs/voices" target="_blank" rel="noopener">https://cloud.google.com/text-to-speech/docs/voices</a></p>
-<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
-</li>
-<li><p>再來就是最重要的部驟，需要生成一個json檔：<code>synthesize-text.json</code></p>
-<p>  其中JSON-formatted 參數值如下，分成三大塊</p>
-<ol>
-<li><code>input</code> 主要生成語音的文字內容</li>
-<li><code>voice</code> 生成聲音的語言、發音版本、是否使用SSML</li>
-<li><code>audioConfig</code> 聲音編碼的格式</li>
-</ol>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'input'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'text'</span>:<span class="string">'Cloud Text-to-Speech API allows developers to include</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           natural-sounding, synthetic human speech as playable audio in</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           their applications. The Text-to-Speech API converts text or</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           Speech Synthesis Markup Language (SSML) input into audio data</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">           like MP3 or LINEAR16 (the encoding used in WAV files).'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'voice'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'languageCode'</span>:<span class="string">'en-gb'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'name'</span>:<span class="string">'en-GB-Standard-A'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'ssmlGender'</span>:<span class="string">'FEMALE'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="string">'audioConfig'</span>:&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="string">'audioEncoding'</span>:<span class="string">'MP3'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<h3 id="Step-4-完成curl-json"><a href="#Step-4-完成curl-json" class="headerlink" title="Step 4. 完成curl + json"></a>Step 4. 完成curl + json</h3><ul>
-<li>傳送 <code>synthesize-text.txt</code> 檔案給Google Text-to-Speech API 生成語音檔</li>
-<li>使用的API Endpoint: <code>https://texttospeech.googleapis.com/v1/text:synthesize</code></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">"Authorization: Bearer "</span>$(gcloud auth application-default <span class="built_in">print</span>-access-token) \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -H <span class="string">"Content-Type: application/json; charset=utf-8"</span> \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -d @synthesize-text.json <span class="string">"https://texttospeech.googleapis.com/v1/text:synthesize"</span> \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  &gt; synthesize-text.txt</span></pre></td></tr></table></figure>
-
-<ul>
-<li>運行結果<br>你會發現結果會以 base64-encoded 加密的文字呈現，這個其實是語音的內容(audioContent field)，因此我們需要decode text</li>
-</ul>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<h3 id="Step-5-把text轉成mp3檔"><a href="#Step-5-把text轉成mp3檔" class="headerlink" title="Step 5. 把text轉成mp3檔"></a>Step 5. 把text轉成mp3檔</h3><ul>
-<li>這邊準備一隻程式tts_decode.py，可以把decode text轉換成 .mp3</li>
-<li>decode的函式<code>new_file.write(decodebytes(audio_data.encode(&#39;utf-8&#39;)))</code>，最後再轉換成語音</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python tts_decode.py --input <span class="string">"synthesize-text.txt"</span> --output <span class="string">"synthesize-text-audio.mp3"</span></span></pre></td></tr></table></figure>
-
-<ul>
-<li>運行結果</li>
-</ul>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<h3 id="Step-6-驗證"><a href="#Step-6-驗證" class="headerlink" title="Step 6. 驗證"></a>Step 6. 驗證</h3><ul>
-<li>開一個網頁來聽mp3， index.html</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Cloud Text-to-Speech codelab<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  Output from synthesizing text:</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">audio</span> <span class="attr">controls</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">"synthesize-text-audio.mp3"</span> /&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></pre></td></tr></table></figure>
-
-<ul>
-<li><p>run web-server<br>python -m http.server 8080</p>
-<p>  <img src="Untitled6.png" alt="Untitled6.png"></p>
-<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
-</li>
-</ul>
-<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/WaveNet" target="_blank" rel="noopener">WaveNet Wiki</a></li>
-<li><a href="https://www.qwiklabs.com/focuses/1290?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=6083809" target="_blank" rel="noopener">It Speaks! Create Synthetic Speech Using Cloud Text-to-Speech</a></li>
-<li><a href="https://cloud.google.com/text-to-speech/" target="_blank" rel="noopener">Google Text-to-Speech</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>GCP API</category>
-      </categories>
-      <tags>
-        <tag>GCP</tag>
-        <tag>API</tag>
-        <tag>texttospeech</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</title>
-    <url>/2020/02/12/GCP-Cloud-Scheduler-%E7%B5%B1%E4%B8%80%E9%97%9C%E6%A9%9FVM-Instance-Cloud-Scheduler-Saving-GCP-Cost/</url>
-    <content><![CDATA[<h1 id="GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost"><a href="#GCP-Cloud-Scheduler-統一關機VM-Instance-Cloud-Scheduler-Saving-GCP-Cost" class="headerlink" title="[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost"></a>[GCP] Cloud Scheduler 統一關機VM Instance | Cloud Scheduler Saving GCP Cost</h1><h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><hr>
-<h2 id="前題"><a href="#前題" class="headerlink" title="前題"></a>前題</h2><p>要讓機器自動關機的方法很多，linux crontab是一種，但仔細想想它是適用於單一台機器。假設我們的情況是一個cluster，它運行多台，你當然可以寫script都讓他們自動關機</p>
-<blockquote>
-<p>不過用不同的關機指令或方法，有不同的關機速度像是OS level、Instance console，因為每台VM Instances內服務不同，關閉的速度當然也不同<br>因此本實作透過console level 著手達成<em>統一關機的動作</em></p>
-</blockquote>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>說明instance對於各種action的反應時間(by: GCP VM instance Modules)</p>
-<h3 id="Console-Stop-關機方式"><a href="#Console-Stop-關機方式" class="headerlink" title="Console Stop 關機方式"></a>Console Stop 關機方式</h3><p>今天要使用的是Console Stop方式，停止執行個體會導致 Compute Engine 將 <code>ACPI</code> 關機訊號傳送至執行個體。現行訪客作業系統都設定為在關機之前執行乾淨關機作業以回應關機訊號。 Compute Engine 會等待一小段時間，讓訪客完成關機，然後將執行個體轉換至 <code>TERMINATED</code> 狀態</p>
-<h3 id="OS-層級Shutdown-VM-instance"><a href="#OS-層級Shutdown-VM-instance" class="headerlink" title="OS 層級Shutdown VM instance"></a>OS 層級Shutdown VM instance</h3><pre><code>sudo shutdown -h now</code></pre><h3 id="使用Cloud-Scheduler來協助關機"><a href="#使用Cloud-Scheduler來協助關機" class="headerlink" title="使用Cloud Scheduler來協助關機"></a>使用Cloud Scheduler來協助關機</h3><p>簡單說它就是在GCP上的crontab，對instance來說是外部的<strong>鬧鐘</strong>。它的好處是你可以統一對GCP上所有的instance做一次性的操作。要完成這個實作，我們還需要結合<strong>Cloud Pub/Sub、Cloud Function</strong>來完整自動化開機/關機的程序</p>
-<hr>
-<h2 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h2><ol>
-<li>指定VM Instance 設定<code>label</code>，設定Cloud  Pub/Sub topic</li>
-<li>部署Cloud Function，使用<code>Nodo.js</code> code 去控制你的VM Instances</li>
-<li>透過Cloud Scheduler建立一個時間表，使VM Instances按時間開關機</li>
-</ol>
-<h3 id="架構圖說明"><a href="#架構圖說明" class="headerlink" title="架構圖說明"></a>架構圖說明</h3><ul>
-<li><p><a href="https://cloud.google.com/compute/docs/instances/" target="_blank" rel="noopener">Compute Engine Instance</a>：最右邊是接受控管VM Instances</p>
-</li>
-<li><p><a href="https://cloud.google.com/functions/docs/concepts/overview" target="_blank" rel="noopener">Cloud Functions functions</a>：承載一個簡單函式，執行開/關機程式</p>
-</li>
-<li><p><a href="https://cloud.google.com/pubsub/docs/overview" target="_blank" rel="noopener">Pub/Sub messages</a>：訊息傳送的角色，把VM上的label 傳送給Cloud function</p>
-</li>
-<li><p><a href="https://cloud.google.com/scheduler/docs/" target="_blank" rel="noopener">Cloud Scheduler jobs</a>：GCP上的定時器，時間一到會執行目標上的Cloud function</p>
-<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
-</li>
-</ul>
-<hr>
-<h2 id="啟用Cloud-Scheduler-API-amp-Cloud-Function-API"><a href="#啟用Cloud-Scheduler-API-amp-Cloud-Function-API" class="headerlink" title="啟用Cloud Scheduler API &amp; Cloud Function API"></a>啟用Cloud Scheduler API &amp; Cloud Function API</h2><p>首先，要使用之前我們要先產出<code>credential</code> 給Cloud function API 和Cloud Scheduler API做使用</p>
-<pre><code># Enable API
-$gcloud services enable &lt;SERVICE_NAME&gt;
-- cloudfunctions.googleapis.com
-- cloudscheduler.googleapis.com
-
-$gcloud services enable cloudfunctions.googleapis.com
-$gcloud services enable cloudscheduler.googleapis.com
-
-# Check Enabled Current API
-$ gcloud services list --available | grep -E &apos;Scheduler | Functions&apos;
-cloudfunctions.googleapis.com                         Cloud Functions API
-cloudscheduler.googleapis.com                         Cloud Scheduler API</code></pre><p>執行結果看到 Scheduler, Functions都是<code>available</code></p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>你可以到GCP Console 進行設定<br>路徑如下： IAM → APIs &amp; Services → Credentials</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<h2 id="怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels"><a href="#怎麼樣讓Cloud-Function認得你的機器呢？-→-Labels" class="headerlink" title="怎麼樣讓Cloud Function認得你的機器呢？ →  Labels"></a>怎麼樣讓Cloud Function認得你的機器呢？ →  Labels</h2><p>這裡使用的方法是在指定的VM Instances，加上<code>labels</code>，它是一個<code>**key:value**</code>格式<br>我的要控制的cluster是kubernetes cluster，因此使用 <code>env:k8s</code> 當作labels</p>
-<ul>
-<li><p>使用cloud shell 新增labels，並篩選機器 label 為 <code>env:k8s</code></p>
-</li>
-<li><p>Kubernetes一共有3台instance，記得都要上<code>labels</code></p>
-</li>
-<li><p>補充一下<code>labels</code>和<code>metadata</code>是不一樣的東西喔</p>
-<h1 id="Sample"><a href="#Sample" class="headerlink" title="Sample"></a>Sample</h1><h1 id="Labels-can-be-used-to-identify-the-instance-and-to-filter-them"><a href="#Labels-can-be-used-to-identify-the-instance-and-to-filter-them" class="headerlink" title="Labels can be used to identify the instance and to filter them."></a>Labels can be used to identify the instance and to filter them.</h1><h1 id="To-find-a-instance-labeled-with-key-value-pair-k1-v2"><a href="#To-find-a-instance-labeled-with-key-value-pair-k1-v2" class="headerlink" title="To find a instance labeled with key-value pair k1, v2"></a>To find a instance labeled with key-value pair k1, v2</h1><h1 id="可以先讀一下範例說明"><a href="#可以先讀一下範例說明" class="headerlink" title="可以先讀一下範例說明"></a>可以先讀一下範例說明</h1><p>  $gcloud beta compute instances add-labels example-instance \</p>
-<pre><code>--labels=k0=v0,k1=v1</code></pre><p>  $gcloud compute instances list –filter=’labels.k1:v2’</p>
-<h1 id="Label-env-k8s"><a href="#Label-env-k8s" class="headerlink" title="Label env=k8s"></a>Label env=k8s</h1><h1 id="label套用到我的環境"><a href="#label套用到我的環境" class="headerlink" title="label套用到我的環境"></a>label套用到我的環境</h1><p>  $gcloud beta compute instances add-labels k8s-master \</p>
-<pre><code>--zone=us-central1-a \
---labels=env=k8s</code></pre><p>  $gcloud compute instances list –filter=’labels.env:k8s’</p>
-</li>
-</ul>
-<p>執行結果看到<br>透過<code>labels.env:k8s</code>篩選出我們要看的VM Instance</p>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>你可以到GCP Console 進行檢查<code>Labels</code></p>
-<p><img src="Untitled5.png" alt="Untitled5.png"></p>
-<h2 id="建立-Pub-Sub-topics"><a href="#建立-Pub-Sub-topics" class="headerlink" title="建立  Pub/Sub topics"></a>建立  Pub/Sub topics</h2><p>建立二筆topic，一個給開機用另一則是關機用，名字分別為<code>start-instance-event</code>、<code>stop-instance-event</code></p>
-<pre><code># 建立二個 topics: start &amp; stop
-$gcloud pubsub topics create start-instance-event
-$gcloud pubsub topics create stop-instance-event
-
-# 檢視現有的topic
-$gcloud pubsub topics list
----
-name: projects/tw-rd-ca-joe-huang/topics/start-instance-event
----
-name: projects/tw-rd-ca-joe-huang/topics/stop-instance-event</code></pre><p>建好之後，檢視Pub/Sub發現有二筆<code>topic</code></p>
-<p>代表建立成功</p>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
-<h2 id="建立Start-and-Stop-Cloud-Functions"><a href="#建立Start-and-Stop-Cloud-Functions" class="headerlink" title="建立Start and Stop Cloud Functions"></a>建立Start and Stop Cloud Functions</h2><ul>
-<li><p>先下載Git，看他的程式碼邏輯跟剛才測試的<code>labels</code>是一樣的</p>
-</li>
-<li><p>用預寫好的node.js 部署<code>Cloud Function</code></p>
-<h1 id="下載-node-js-code"><a href="#下載-node-js-code" class="headerlink" title="下載 node.js code"></a>下載 node.js code</h1><h1 id="裡面有控制function-可以對instance開關機"><a href="#裡面有控制function-可以對instance開關機" class="headerlink" title="裡面有控制function 可以對instance開關機"></a>裡面有控制function 可以對instance開關機</h1><p>  git clone <a href="https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git</a></p>
-</li>
-</ul>
-<pre><code># 切換正確目錄
-cd nodejs-docs-samples/functions/scheduleinstance/
-
-# 部署Cloud Function
-gcloud functions deploy startInstancePubSub \
-    --trigger-topic start-instance-event \
-    --runtime nodejs8</code></pre><p><code>node.js</code> 部份功能</p>
-<pre><code>exports.startInstancePubSub = async (event, context, callback) =&gt; {
-  try {
-    const payload = _validatePayload(
-      JSON.parse(Buffer.from(event.data, &apos;base64&apos;).toString())
-    );
-    const options = {filter: `labels.${payload.label}`}; # 用label篩選指定的vm
-    const [vms] = await compute.getVMs(options);
-    await Promise.all(
-      vms.map(async instance =&gt; {
-        if (payload.zone === instance.zone.id) {
-          const [operation] = await compute
-            .zone(payload.zone)
-            .vm(instance.name)
-            .start();                                    # start()函數來啟動vm
-
-          // Operation pending
-          return operation.promise();
-        }
-      })
-    );</code></pre><ul>
-<li><h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><h3 id="Multi-Payload"><a href="#Multi-Payload" class="headerlink" title="Multi Payload"></a>Multi Payload</h3><p>  看看能不能管理多個lael，意思就是可以管理不多的instances</p>
-<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
-<h2 id="node-js-6-BUG"><a href="#node-js-6-BUG" class="headerlink" title="node.js 6 BUG"></a>node.js 6 BUG</h2><p>  <strong>Error message: Code in file index.js can’t be loaded</strong></p>
-<p>  <a href="https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m" target="_blank" rel="noopener">https://stackoverflow.com/questions/56571460/cloud-functions-deployment-fails-function-failed-on-loading-user-code-error-m</a></p>
-<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
-</li>
-</ul>
-<h2 id="設定Cloud-Scheduler"><a href="#設定Cloud-Scheduler" class="headerlink" title="設定Cloud Scheduler"></a>設定Cloud Scheduler</h2><p>如何定義一個排程時間，設定日期的規則很像<a href="http://linux.vbird.org/linux_basic/0430cron.php" target="_blank" rel="noopener">Linux crontab</a></p>
-<p><a href="https://cloud.google.com/scheduler/index" target="_blank" rel="noopener">Cloud Schedule</a>列出5個欄位「分」、「時」、「天」、「月」、「週」</p>
-<p><img src="https://cloud.google.com/scheduler/docs/images/schedule-fields.png" alt="https://cloud.google.com/scheduler/docs/images/schedule-fields.png"></p>
-<h3 id="Cloud-Scheduler-設定例子"><a href="#Cloud-Scheduler-設定例子" class="headerlink" title="Cloud Scheduler 設定例子"></a>Cloud Scheduler 設定<strong>例子</strong></h3><ul>
-<li>每分鐘執行：<code>* * * * *</code></li>
-<li>每週一早上九點執行：<code>0 9 * * 1</code></li>
-<li>每週早上九點執行：<code>0 9 * *</code></li>
-<li>每3小時執行：<code>0 */3 * * *</code></li>
-<li>每週一早上十點40分執行：<code>40 10 * * 1</code></li>
-<li>每週早上十點40分執行：<code>40 10 * * *</code></li>
-<li>上班工作日開機，下班時間請執行： <code>0 7,18 * * 1-5</code></li>
-</ul>
-<h3 id="手動測試"><a href="#手動測試" class="headerlink" title="手動測試"></a>手動測試</h3><p>建議在使用Cloud Scheduler之前，可以先手動觸發Cloud function<br>如此可以減少Scheduler設定錯誤，而造成時間等待的浪費</p>
-<ul>
-<li><p>注意這邊傳入function的值需要經過加密，因此使用<code>base64</code></p>
-</li>
-<li><p>把加密過的值帶入 —data{<code>encrpted data</code>}</p>
-<h1 id="因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub"><a href="#因為現在是關機的狀態，要使用Cloud-functions-call-startInstancePubSub" class="headerlink" title="因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub"></a>因為現在是關機的狀態，要使用Cloud functions call startInstancePubSub</h1><p>  $echo ‘{“zone”:”us-central1-a”, “label”:”env=k8s”}’ | base64<br>  eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=</p>
-<h1 id="直接手動觸發-開機"><a href="#直接手動觸發-開機" class="headerlink" title="直接手動觸發(開機)"></a>直接手動觸發(開機)</h1><p>  $gcloud functions call startInstancePubSub \</p>
-<pre><code>--data &apos;{&quot;data&quot;:&quot;eyJ6b25lIjoidXMtY2VudHJhbDEtYSIsICJsYWJlbCI6ImVudj1rOHMifQo=&quot;}&apos;</code></pre><p>  executionId: e7o6dafufthu</p>
-<h1 id="執行function成功，幫我們開機"><a href="#執行function成功，幫我們開機" class="headerlink" title="執行function成功，幫我們開機"></a>執行function成功，幫我們開機</h1><p>  result: Successfully started instance(s)</p>
-<h1 id="檢視機器狀態"><a href="#檢視機器狀態" class="headerlink" title="檢視機器狀態"></a>檢視機器狀態</h1><p>  $for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \</p>
-<pre><code>--zone us-central1-a \
-| grep status; done</code></pre><p>  status: RUNNING<br>  status: RUNNING<br>  status: RUNNING</p>
-</li>
-</ul>
-<p>執行結果看到，三台VM Instance有正常運行中</p>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
-<ul>
-<li><p>先看現況VM的狀態(關機)</p>
-<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:29:39] C:1
-$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
-    --zone us-central1-a \
-    | grep status; done
-status: RUNNING
-status: RUNNING
-status: RUNNING</code></pre><p>  <img src="Untitled10.png" alt="Untitled10.png"></p>
-<p>  <img src="Untitled11.png" alt="Untitled11.png"></p>
-</li>
-</ul>
-<h3 id="正式測試"><a href="#正式測試" class="headerlink" title="正式測試"></a>正式測試</h3><ul>
-<li>透過Cloud Scheduler 自動觸發 stop-dev-instances</li>
-<li>方才我們驗證了Cloud function 可以正常工作， 與辨識VM Instance label: <code>env:k8s</code></li>
-<li>再來就是要驗證Scheduler + Cloud function，把時間設定為<code>期望的時間</code></li>
-</ul>
-<blockquote>
-<p>注意：<br>現在時間是<code>10:37</code>且VM處於開機狀態，我們要設定10:48 <code>關機</code></p>
-</blockquote>
-<p><img src="Untitled12.png" alt="Untitled12.png"></p>
-<p>Cloud Shell 範本</p>
-<pre><code># Sample
-gcloud beta scheduler jobs create pubsub startup-dev-instances \
-    --schedule &apos;0 9 * * 1-5&apos; \
-    --topic start-instance-event \
-    --message-body &apos;{&quot;zone&quot;:&quot;us-west1-b&quot;, &quot;label&quot;:&quot;env=dev&quot;}&apos; \
-    --time-zone &apos;America/Los_Angeles&apos;
-
-# 設定 10點48分鐘關機
-gcloud beta scheduler jobs create pubsub stop-dev-instances \
-    --schedule &apos;48 10 * * *&apos; \
-    --topic start-instance-event \
-    --message-body &apos;{&quot;zone&quot;:&quot;us-central1-a&quot;, &quot;label&quot;:&quot;env=k8s&quot;}&apos; \
-    --time-zone &apos;Asia/Taipei&apos;</code></pre><p>確實執行完task喔</p>
-<pre><code># joe.huang @ joehuangs-MacBook-Pro in ~ on git:master x [10:47:20]
-$ for vm in k8s-master k8s-node-1 k8s-node-2; do gcloud compute instances describe $vm \
-    --zone us-central1-a \
-    | grep status; done
-status: TERMINATED
-status: TERMINATED
-status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已被終止運行</p>
-<p><img src="Untitled13.png" alt="Untitled13.png"></p>
-<h2 id="查看Cloud-Scheduler-Job-Log"><a href="#查看Cloud-Scheduler-Job-Log" class="headerlink" title="查看Cloud Scheduler Job Log"></a>查看Cloud Scheduler Job Log</h2><p>最後我們查看log，看看他的執行的過程</p>
-<p>我們可以看到10:48香港時間，執行了<strong>stop-dev-instances</strong></p>
-<ul>
-<li>type: “type.googleapis.com/google.cloud.scheduler.logging.AttemptFinished”</li>
-<li>jobName: “projects/tw-rd-ca-joe-huang/locations/asia-east2/jobs/start-stop-vm”</li>
-<li>pubsubTopic: “projects/tw-rd-ca-joe-huang/topics/<code>stop-instance-event</code>“</li>
-</ul>
-<p><img src="Untitled14.png" alt="Untitled14.png"></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
-<li><strong><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-ushttps://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">Cloud scheduler</a></strong><br><a href="https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us" target="_blank" rel="noopener">https://cloud.google.com/scheduler/docs/start-and-stop-compute-engine-instances-on-a-schedule?hl=en-us</a></li>
-<li><strong><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labelshttps://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">Instances add-labels</a></strong><br><a href="https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/add-labels</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>GCP</category>
-      </categories>
-      <tags>
-        <tag>GCP</tag>
-        <tag>Cloud Scheduler</tag>
-        <tag>Google Pubsub</tag>
       </tags>
   </entry>
 </search>
