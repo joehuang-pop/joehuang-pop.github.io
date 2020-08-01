@@ -817,6 +817,145 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
       </tags>
   </entry>
   <entry>
+    <title>[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance</title>
+    <url>/2020/08/01/GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance/</url>
+    <content><![CDATA[<h1 id="GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance"><a href="#GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance" class="headerlink" title="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance"></a>[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance</h1><p>Status: Completed</p>
+<h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><h1 id="簡介-Serverless-Network-Endpoint-Groups"><a href="#簡介-Serverless-Network-Endpoint-Groups" class="headerlink" title="簡介 Serverless Network Endpoint Groups"></a>簡介 Serverless Network Endpoint Groups</h1><p>目前<a href="https://cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts" target="_blank" rel="noopener">NEG support serverless (in in Beta) [1]</a>，透過Load balance 轉 <code>HTTPs</code> 轉換為<code>HTTP</code> 可以滿足BIOS 連接Cloud Run需求。另外我理解acer，也需要WAF功能抵擋外部攻擊，但現在[Cloud Armor[2]](Cloud Armor.)還未能實現，最後文章指出未來幾個月Cloud Armor也會加入戰力</p>
+<p>Network Endpoint Groups (NEG) 新功能歸功於Google Cloud網絡和負載平衡的基本功能， NEG的運作原理，請見圖1，它是存在Load balance的後端，它可以定義應外部流量，如何到達一組端點(Endpoint)，因此NEG 可以服務外來request，並將request直接經Load balance發送給GCP backend (eg. 可以是Compute Engine VM 或在VM上運行的服務，或是Endpoint URL, FQDN: port, IP)</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h1 id="準備環境"><a href="#準備環境" class="headerlink" title="準備環境"></a>準備環境</h1><ol>
+<li>Cloud Run server：已準備<code>ngnix web</code> <a href="https://ngnix-v1-ve3udnlh4q-uc.a.run.app/" target="_blank" rel="noopener">https://ngnix-v1-ve3udnlh4q-uc.a.run.app</a></li>
+<li>Network Endpoint Groups (NEG) ：設定一組<code>Network endpoints</code></li>
+<li>Load balance：設定backend選擇<code>Network endpoints</code></li>
+</ol>
+<h1 id="A-Service-runs-on-Cloud-Run"><a href="#A-Service-runs-on-Cloud-Run" class="headerlink" title="A Service runs on Cloud Run"></a>A Service runs on Cloud Run</h1><h3 id="Step1-建立Cloud-Run-Service"><a href="#Step1-建立Cloud-Run-Service" class="headerlink" title="Step1. 建立Cloud Run Service"></a>Step1. 建立Cloud Run Service</h3><ul>
+<li><code>endpoint</code>: <a href="https://ngnix-v1-ve3udnlh4q-uc.a.run.app/" target="_blank" rel="noopener">https://ngnix-v1-ve3udnlh4q-uc.a.run.app</a></li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="Step2-測試endpoint"><a href="#Step2-測試endpoint" class="headerlink" title="Step2. 測試endpoint"></a>Step2. 測試<code>endpoint</code></h3><ul>
+<li><p>注意現在使用https連線</p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+<h1 id="Enable-Network-Endpoint-Groups-NEG"><a href="#Enable-Network-Endpoint-Groups-NEG" class="headerlink" title="Enable Network Endpoint Groups(NEG)"></a>Enable Network Endpoint Groups(NEG)</h1><h3 id="Step1-建立-Network-Endpoint-Group"><a href="#Step1-建立-Network-Endpoint-Group" class="headerlink" title="Step1. 建立 Network Endpoint Group"></a>Step1. 建立 Network Endpoint Group</h3><ul>
+<li>此步驟是將外部來源轉為 <code>GCP 內的 backend service</code>，方可與 GCP HTTP(S) LB 串接。</li>
+<li>路徑 GCP console -&gt; Compute Engine -&gt; Network Endpoint Group</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="Step2-Create-Network-Endpoint-Group"><a href="#Step2-Create-Network-Endpoint-Group" class="headerlink" title="Step2. Create Network Endpoint Group"></a>Step2. Create Network Endpoint Group</h3><p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="Step3-設定NEG"><a href="#Step3-設定NEG" class="headerlink" title="Step3. 設定NEG"></a>Step3. 設定NEG</h3><ul>
+<li>NEG 命名</li>
+<li>Network endpoint group type：請選 <code>Internet</code></li>
+<li>Default port：因為來源是Cloud Run 走<code>HTTPs</code> <code>443</code></li>
+<li>Add through endpoint<ul>
+<li>Fully qualified domain name</li>
+<li>Fully qualified domain name：請輸入你的 <code>Cloud Run endpoint</code><br>(eg. ngnix-v1-ve3udnlh4q-uc.a.run.app)</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h1 id="Load-balance"><a href="#Load-balance" class="headerlink" title="Load balance"></a>Load balance</h1><h3 id="Step1-建立-Load-balance"><a href="#Step1-建立-Load-balance" class="headerlink" title="Step1. 建立 Load balance"></a>Step1. 建立 Load balance</h3><ul>
+<li>建立 GCP HTTP(S) LB, 在 GCP console -&gt; Network services -&gt; Load balancing</li>
+<li>選擇<code>backend services</code></li>
+</ul>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h3 id="Step2-設定-backend"><a href="#Step2-設定-backend" class="headerlink" title="Step2. 設定 backend"></a>Step2. 設定 backend</h3><ul>
+<li>backend service 命名</li>
+<li>backend type：請選 <code>Internet network endpoint group</code></li>
+<li>Default port：因為來源是Cloud Run 走<code>HTTPs</code> <code>443</code></li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>詳細設定如下</p>
+<ul>
+<li>Protocol 請選 <code>HTTPS</code></li>
+<li>Backend 選擇上面步驟建立 <code>Network Endpoint Group</code></li>
+<li>其餘設定依需求自行調整</li>
+</ul>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<p>header(非常重要)</p>
+<ul>
+<li>Custom request headers<ul>
+<li>Header name：<code>host</code></li>
+<li>Header value：Cloud Run 產生的<code>endpoint</code><br>(eg. ngnix-v1-ve3udnlh4q-uc.a.run.app)</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="Step2-設定frontend"><a href="#Step2-設定frontend" class="headerlink" title="Step2. 設定frontend"></a>Step2. 設定frontend</h3><p>這邊可以有不同的option <code>HTTP</code>, <code>HTTPs</code>，也可以同時開啟 80 與 443 ，作法需各別開兩個<code>frontend</code>設定</p>
+<ul>
+<li><p><strong>Option1. HTTP</strong></p>
+<ul>
+<li><p>frontend 命名</p>
+</li>
+<li><p>Protocol ：選擇 <code>HTTP</code></p>
+</li>
+<li><p>IP address ：可選擇<code>Ephemeral</code>, 或先註冊一組 <code>static IP</code></p>
+</li>
+<li><p>Port：<code>80</code></p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Option2. HTTPs with certificate</strong></p>
+<ul>
+<li><p>frontend 命名</p>
+</li>
+<li><p>Protocol ：選擇 <code>HTTPS</code></p>
+</li>
+<li><p>IP address ：可選擇<code>Ephemeral</code>, 或先註冊一組 <code>static IP</code></p>
+</li>
+<li><p>Port：<code>443</code></p>
+</li>
+<li><p>Certificate 可以有二種選擇</p>
+<ol>
+<li><p>https 可以<code>自行管理</code>或是使用<code>Google管理的證書</code></p>
+</li>
+<li><p>若要使用自己的SSL證書，可上傳憑證檔；format 如下<br>填入<code>Public key certificate</code>, <code>Certificate chain</code>, <code>Private key</code></p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ol>
+</li>
+<li><p>Certificate：填入<code>Public key certificate</code>, <code>Certificate chain</code>, <code>Private key</code></p>
+</li>
+<li><p>設定完後建立，需要時間生效</p>
+<p>  <img src="Untitled12.png" alt="Untitled12.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>使用Google管理的SSL證書</p>
+<ul>
+<li><p>憑證也可以使用Google管理的SSL證書，輸入網域名稱即可，若該網域的DNS設定有正確指向HTTP(S) Load Balancer的IP，少許時間之後可以看到該證書為<code>ACTIVE</code>狀態。</p>
+<p>  <img src="Untitled13.png" alt="Untitled13.png"></p>
+</li>
+</ul>
+<h1 id="Review-Setting-of-Load-balancer"><a href="#Review-Setting-of-Load-balancer" class="headerlink" title="Review Setting of Load balancer"></a>Review Setting of Load balancer</h1><ul>
+<li>系統會確認您的設定值</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<ul>
+<li>若無誤status 會呈現綠色勾勾</li>
+</ul>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h1 id="Test-Original-Cloud-Run-with-“HTTP-header”"><a href="#Test-Original-Cloud-Run-with-“HTTP-header”" class="headerlink" title="Test Original Cloud Run with “HTTP header”"></a>Test Original Cloud Run with “HTTP header”</h1><h3 id="Test1-curl"><a href="#Test1-curl" class="headerlink" title="Test1. curl"></a>Test1. curl</h3><ul>
+<li>Cloud Run base是採kubernetes，故ingress是L7 load balance，所以Cloud Run 需要透過<code>header</code> host來作為辨識</li>
+<li>因此curl 時可以指定Load balance HTTP IP後，再補上<code>-H host header</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -k -H <span class="string">"host: ngnix-v1-ve3udnlh4q-uc.a.run.app"</span> http://35.201.76.173</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="Test2-Browser"><a href="#Test2-Browser" class="headerlink" title="Test2. Browser"></a>Test2. Browser</h3><ul>
+<li>我們已經了解Clour Run識別需要使用header，其實上面設定load balance froentend時，就已經把header寫入，故我們在Browser連線時就不用在加上header</li>
+<li>透過HTTP(<a href="http://35.201.76.173/" target="_blank" rel="noopener">http://35.201.76.173/</a>)，可以正常連線至Cloud Run ngnix 網頁</li>
+</ul>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a href="https://cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts" target="_blank" rel="noopener">Serverless network endpoint groups overview</a></li>
+<li><a href="https://cloud.google.com/blog/products/networking/better-load-balancing-for-app-engine-cloud-run-and-functions" target="_blank" rel="noopener">Global HTTP(S) Load Balancing and CDN now support serverless compute</a></li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
     <title>[GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs</title>
     <url>/2020/04/26/GCP-Stackdriver%E7%9C%81%E9%8C%A2%E5%A5%BD%E7%B0%A1%E5%96%AE-%E4%BD%BF%E7%94%A8Logs-Exclusions%E7%9C%81%E6%88%90%E6%9C%AC-Stackdriver-Adopting-Logs-Exclusions-to-Save-Costs/</url>
     <content><![CDATA[<h1 id="GCP-Stackdriver省錢好簡單-使用Logs-Exclusions省成本-Stackdriver-Adopting-Logs-Exclusions-to-Save-Costs"><a href="#GCP-Stackdriver省錢好簡單-使用Logs-Exclusions省成本-Stackdriver-Adopting-Logs-Exclusions-to-Save-Costs" class="headerlink" title="[GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs"></a>[GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs</h1><h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
@@ -1107,6 +1246,128 @@ fullVisitorId</code></pre><p>  FROM</p>
         <tag>BigQuery</tag>
         <tag>BigQueryML</tag>
         <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[GCP] 強化GCP 網路資安控管, Enable VPC Service Control</title>
+    <url>/2020/07/13/GCP-%E5%BC%B7%E5%8C%96GCP-%E7%B6%B2%E8%B7%AF%E8%B3%87%E5%AE%89%E6%8E%A7%E7%AE%A1-Enable-VPC-Service-Control/</url>
+    <content><![CDATA[<h1 id="GCP-強化GCP-網路資安控管-Enable-VPC-Service-Control"><a href="#GCP-強化GCP-網路資安控管-Enable-VPC-Service-Control" class="headerlink" title="[GCP] 強化GCP 網路資安控管, Enable VPC Service Control"></a>[GCP] 強化GCP 網路資安控管, Enable VPC Service Control</h1><hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>做好資安的目的有二，首先是「降低資料竊取風險」，當你的架構規模擴大時，網路管理也隨之變得復雜，如此讓復雜的架構中同時滿足資安的條件，我們可以透過「大規模集中管理安全防護設定」，再對於每個GCP Prodcuts再上一道政策防護。</p>
+<p>Service Account 可以讓服務和服務之間彼此溝通，它的發明讓程式更有彈性也更為開放，但他的存在也讓人又愛又恨！打個比方說，開啟了Service Account ，讓特定的服務不只在 Google Cloud 內部可以使用，只要通過權限認證，也能在 on-premise 或者其它雲的環境可以使用。因此我們需要有方法去限制它們的使用範圍，e.g 可以設定一些政策，只讓真正應該存取這些服務的網段、設備、或者是身份進行使用該GCP Products。</p>
+<h1 id="什麼是GCP安全層級-Access-Context-Manager"><a href="#什麼是GCP安全層級-Access-Context-Manager" class="headerlink" title="什麼是GCP安全層級 | Access Context Manager"></a>什麼是GCP安全層級 | Access Context Manager</h1><p>在Google Cloud 怎麼解決集中安全控管？這個作法，其實很像<strong>Microsoft GroupPoicy</strong>的作法，我們制訂一個高層級的政策，透過 VPC 服務控制項 (VPC Service Controls)，企業資安團隊能設定精細的安全範圍控管政策並且套用到數個 GCP 專案與服務，而且這些控管政策是在「機構(organization)」層級統一集中設定的，不會散佈在各個專案裡面，方便資安團隊能夠統一管理，能輕鬆對安全控管項目進行增刪改查等操作。</p>
+<ul>
+<li>e.g 我們可以讓資安團隊設定某些特定的網段才能夠去存取這些代管的服務。</li>
+<li>透過這些設定的安全範圍控管政策，我們將可有效減低資安問題，像是設定不當造成的資料外洩、惡意使用者上傳程式到的雲端儲存空間等等。</li>
+</ul>
+<hr>
+<h1 id="實作1-Access-Context-Manager"><a href="#實作1-Access-Context-Manager" class="headerlink" title="實作1. Access Context Manager"></a>實作1. Access Context Manager</h1><h3 id="step1-設定Access-Context-Manager"><a href="#step1-設定Access-Context-Manager" class="headerlink" title="step1. 設定Access Context Manager"></a>step1. 設定Access Context Manager</h3><ul>
+<li>在建立 VPC 服務控制項之前，我們先要建立「使用的存取層級」</li>
+<li>因為 「輸入政策：存取層級 」，需要有存取層級</li>
+<li>先進入Security → Access Context Manager → 建立一筆新的政策</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="step2-Step-up-Policy"><a href="#step2-Step-up-Policy" class="headerlink" title="step2. Step up Policy"></a>step2. Step up Policy</h3><p>這邊開始設定你的條件項目</p>
+<ul>
+<li>條件可以設定 IP Subnet、地區、裝置政策者</li>
+<li>我們這邊以 IP subnet 為例</li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<blockquote>
+<p>IP 不能是private，所以會噴錯 「Level create failed」</p>
+</blockquote>
+<p>ERROR: organizations/142432071105:0: Specified cidr block is fully contained in a private IP range. Private IP ranges are not supported.</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>已設定完成的二筆以IP based Policy</p>
+<ul>
+<li>172.88.10.0/24</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="step3-Overview-Access-Context-Manager"><a href="#step3-Overview-Access-Context-Manager" class="headerlink" title="step3.  Overview Access Context Manager"></a>step3.  Overview Access Context Manager</h3><ul>
+<li>可以看得到全部的policy</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="限制GCP-member-使用特定服務"><a href="#限制GCP-member-使用特定服務" class="headerlink" title="限制GCP member 使用特定服務"></a>限制GCP member 使用特定服務</h3><ul>
+<li>Access Context Manager 也可以限定 member使用服務</li>
+<li>如果你的IAM設計不夠嚴謹，可以讓user操作各種gcp products</li>
+<li>我們使用member目的，是讓user僅使用google cloud特定的product而已</li>
+</ul>
+<blockquote>
+<p>這個限定 member使用方法，目前僅在gcloud SDK操作</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">gcloud access-context-manager levels <span class="keyword">create</span> <span class="keyword">NAME</span> \</span></pre></td></tr><tr><td class="code"><pre><span class="line">   <span class="comment">--title TITLE \</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">   <span class="comment">--basic-level-spec CONDITIONS.yaml \</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">   <span class="comment">--combine-function=OR \</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">   <span class="comment">--policy=POLICY_NAME</span></span></pre></td></tr></table></figure>
+
+<p>其中各個參數值：</p>
+<ul>
+<li><p><strong>NAME</strong> is the unique name for the access level. It must begin with a letter and include only letters, numbers, and underscores.</p>
+</li>
+<li><p><strong>TITLE</strong> is a human-readable title. It must be unique to the policy.</p>
+</li>
+<li><p><strong>POLICY_NAME</strong> is the name of your organization’s access policy.</p>
+</li>
+<li><p><strong><code>combine-function</code></strong> is set to <strong><code>OR</code></strong>. The default value, <strong><code>AND</code></strong>, requires <em>all</em> conditions be met before an access level is granted. The <strong><code>OR</code></strong> value will give the members access even if other conditions, such as IP address or those inherited from other required access levels, are not met.</p>
+</li>
+<li><p>condition IP/ access level / Region / Device Policy</p>
+<p>  <a href="https://cloud.google.com/vpc-service-controls/docs/use-access-levels?hl=zh-tw" target="_blank" rel="noopener">https://cloud.google.com/vpc-service-controls/docs/use-access-levels?hl=zh-tw</a></p>
+<p>  <img src="Untitled5.png" alt="Untitled5.png"></p>
+<h1 id="Using-access-levels"><a href="#Using-access-levels" class="headerlink" title="Using access levels"></a>Using access levels</h1><p>  Access levels are created and managed using Access Context Manager.</p>
+<h3 id="Creating-an-access-level"><a href="#Creating-an-access-level" class="headerlink" title="Creating an access level"></a>Creating an access level</h3><p>  To create an access level, read about <a href="https://cloud.google.com/access-context-manager/docs/create-access-level?hl=zh-tw" target="_blank" rel="noopener">creating an access level</a> in the Access Context Manager documentation.</p>
+<p>  The following examples explain how to create an access level using different conditions:</p>
+<ul>
+<li><p><a href="https://cloud.google.com/access-context-manager/docs/create-access-level?hl=zh-tw#corporate-network-example" target="_blank" rel="noopener">IP address</a></p>
+</li>
+<li><p><a href="https://cloud.google.com/access-context-manager/docs/create-access-level?hl=zh-tw#members-example" target="_blank" rel="noopener">User and service accounts</a> (members)</p>
+<h3 id="Adding-access-levels-to-service-perimeters"><a href="#Adding-access-levels-to-service-perimeters" class="headerlink" title="Adding access levels to service perimeters"></a>Adding access levels to service perimeters</h3><p>You can add access levels to a service perimeter when creating the perimeter, or to an existing perimeter:</p>
+</li>
+<li><p>Read about <a href="https://cloud.google.com/vpc-service-controls/docs/create-service-perimeters?hl=zh-tw#external-access" target="_blank" rel="noopener">adding access levels when you create a perimeter</a></p>
+</li>
+<li><p>Read about <a href="https://cloud.google.com/vpc-service-controls/docs/manage-service-perimeters?hl=zh-tw#add-access-level" target="_blank" rel="noopener">adding access levels to an existing perimeter</a></p>
+<h3 id="Managing-access-levels"><a href="#Managing-access-levels" class="headerlink" title="Managing access levels"></a>Managing access levels</h3><p>To manage your access levels, read about <a href="https://cloud.google.com/access-context-manager/docs/managing-access-levels?hl=zh-tw" target="_blank" rel="noopener">managing access levels</a>. This documentation explains how to list, modify, and delete existing access levels.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="實作2-VPC-Service-Control"><a href="#實作2-VPC-Service-Control" class="headerlink" title="實作2. VPC Service Control"></a>實作2. VPC Service Control</h1><p>設定一項完整的VPC Service Control，它的操作步驟為以下</p>
+<ul>
+<li>a. 範圍類型：全專案套用，或者是特定範圍選用</li>
+<li>b. 設定類型：可以直接套用，或者先進純模擬測試</li>
+<li>c. 要保護的專案</li>
+<li>d. <strong>要保護的服務</strong></li>
+</ul>
+<h3 id="額外的選用限制項目"><a href="#額外的選用限制項目" class="headerlink" title="額外的選用限制項目"></a>額外的選用限制項目</h3><p><strong>可透過虛擬私人雲端存取的服務 (選用)</strong></p>
+<p>指定可透過私人 Google 存取權使用的服務。只有在服務存取權受限的情況下，這些服務的資源存取權才會受到限制。這個清單未限制透過服務對服務路徑向服務傳送間接存取要求的行為。</p>
+<p><strong>輸入政策：存取層級 (選用)</strong></p>
+<p>存取層級僅適用於來自服務範圍外的受保護資源存取要求。您無法透過存取層級允許受保護的資源或 VM 存取範圍以外的資料和服務。</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h3 id="Step1-範圍類型"><a href="#Step1-範圍類型" class="headerlink" title="Step1. 範圍類型"></a>Step1. 範圍類型</h3><ul>
+<li>設定名稱</li>
+<li>套用的範圍為「全專案套用」</li>
+<li>政策也是「立即套用」</li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h3 id="Step2-套用的服務"><a href="#Step2-套用的服務" class="headerlink" title="Step2. 套用的服務"></a>Step2. 套用的服務</h3><ul>
+<li>套用的服務，我選擇BigQuery</li>
+<li>BigQuery API，其實是對等於BigQuery服務</li>
+</ul>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="step3-檢視Control-Policy"><a href="#step3-檢視Control-Policy" class="headerlink" title="step3. 檢視Control Policy"></a>step3. 檢視Control Policy</h3><p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step4-測試BigQuery"><a href="#step4-測試BigQuery" class="headerlink" title="step4. 測試BigQuery"></a>step4. 測試BigQuery</h3><ul>
+<li>測試環境，刻意使用<code>外部的一組IP</code>，去存取BigQuery</li>
+<li>此時VPC Service Control發揮功效，系統彈出錯訊息</li>
+</ul>
+<blockquote>
+<p>VPC Service Controls: Request is prohibited by organization’s policy: vpcServiceControlsUniqeldentifier</p>
+</blockquote>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h1 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h1><p>如果你很了解<strong>Microsoft Domain</strong> 控管原理，它的概念是使用<strong>GroupPoicy</strong>的作法，相同的道理我們也可以在GCP制訂一個高層級的政策，透過 VPC 服務控制項 (VPC Service Controls)，讓企業資安團隊在<a href="https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy" target="_blank" rel="noopener">「機構(organization)」</a>層級設定精細的安全範圍控管政策並且套用到數個 GCP 專案與服務，如此防護，就像是城堡前的保壘，可以先行阻斷外部的攻擊，如此就能強化雲上GCP 資安。</p>
+]]></content>
+      <categories>
+        <category>GCP</category>
+      </categories>
+      <tags>
+        <tag>GCP</tag>
+        <tag>Security</tag>
+        <tag>VPC Service Control</tag>
+        <tag>Access Context Manager</tag>
       </tags>
   </entry>
   <entry>
@@ -2052,88 +2313,6 @@ gcloud compute instances detach-disk &lt;YOUR_INSTANCE&gt; --disk=&lt;YOUR_DISK&
       </tags>
   </entry>
   <entry>
-    <title>[Python] PyJWT 加解密模組: encode, decode</title>
-    <url>/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/</url>
-    <content><![CDATA[<h1 id="Python-PyJWT-加解密模組-encode-decode"><a href="#Python-PyJWT-加解密模組-encode-decode" class="headerlink" title="[Python] PyJWT 加解密模組: encode, decode"></a>[Python] PyJWT 加解密模組: encode, decode</h1><h2 id="▌Python-JWT-Token"><a href="#▌Python-JWT-Token" class="headerlink" title="▌Python JWT Token"></a>▌Python JWT Token</h2><p><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">Welcome to PyJWT - PyJWT 1.7.1 documentation</a></p>
-<p>PyJWT工具是用來encode、decode的加解密工具，使用jwt module。</p>
-<p>即使Token，被擷取了也不用擔心，因為擷取的人沒有<code>SECRET</code>做decode的動作</p>
-<p>使用前先導入jwt module，再傳入json格式，一個<code>key</code>、一個<code>value</code>，還有一個加密的算法<code>SECRET</code>，最後會幫你算出一個Token。</p>
-<h3 id="範例1：官方入門"><a href="#範例1：官方入門" class="headerlink" title="範例1：官方入門"></a>範例1：官方入門</h3><ul>
-<li>key = k123</li>
-<li>value = v123</li>
-<li>secret = secret</li>
-<li>演算法 = HS256</li>
-</ul>
-<p>→ 將以上參數包成一個json格式放進encode()，encode()會幫你產出一組token</p>
-<pre><code># Sample1
-# encoded_jwt
-
-import jwt
-
-encoded_jwt = jwt.encode({&apos;k123&apos;: &apos;v123&apos;}, &apos;secret&apos;, algorithm=&apos;HS256&apos;)
-encoded_jwt
-
-jwt.decode(encoded_jwt, &apos;secret&apos;, algorithm=[&apos;HS256&apos;])</code></pre><h3 id="輸出1"><a href="#輸出1" class="headerlink" title="輸出1"></a>輸出1</h3><ol>
-<li>encode( )執行產出token</li>
-<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值{k123 : v123}</li>
-</ol>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<hr>
-<h3 id="範例2：帳密加密應用"><a href="#範例2：帳密加密應用" class="headerlink" title="範例2：帳密加密應用"></a>範例2：帳密加密應用</h3><ul>
-<li>k = username</li>
-<li>v = joe</li>
-<li>secret = mykey123</li>
-<li>演算法 = HS256</li>
-</ul>
-<p>→ 將以上參數包成一個json格式放進encode()，encode()產出另一組token</p>
-<pre><code># Sample2
-# Token with account, passwd
-
-token = jwt.encode({&quot;username&quot;:&quot;joe&quot;}, &quot;mykey123&quot;, algorithm=&apos;HS256&apos;)
-token
-jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123= key,value; k=mykey123</code></pre><h3 id="輸出2"><a href="#輸出2" class="headerlink" title="輸出2"></a>輸出2</h3><ol>
-<li>encode( )執行產出token</li>
-<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></li>
-</ol>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<hr>
-<h3 id="範例3：Token-Expiration"><a href="#範例3：Token-Expiration" class="headerlink" title="範例3：Token Expiration"></a>範例3：Token Expiration</h3><p>上面的範例產出的token都是永久有效的，但這邊存在一個風險。只要對方拿到token後，在慢慢try secret，終究是可以得到明碼的帳密。因此需要設計成一個有效期限，若送出request超時再取token的時候系統就會報錯。</p>
-<p>因此token的使用，設定在一個有效的時間區間內。如果超過這個時間，token就等於無效的。</p>
-<p>如果要在次使用token時，就得再次輸入帳密</p>
-<ul>
-<li>使用時間模組<code>datetime</code>  <code>timedelta</code></li>
-<li>在json格式中，放進特殊的key:value → <code>{exp : date}</code><ul>
-<li>超時與時間描述，提供具體的有效期間</li>
-<li>“exp”: datetime.utcnow() + timedelta(minutes=1) → <code>utcnow</code> 當前時間 + <code>timedelta</code> 累加時間為1分鐘<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Sample3</span></pre></td></tr><tr><td class="code"><pre><span class="line"># Experiation</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">from datetime import datetime, timedelta</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"># add specific k &amp; value for exp</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp &#x3D; jwt.encode(&#123;&quot;username&quot;:&quot;joe&quot;, &quot;exp&quot;: datetime.utcnow() + timedelta(minutes&#x3D;1)&#125;, &quot;mykey123&quot;, algorithm&#x3D;&#39;HS256&#39;)</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">jwt.decode(token_exp, &quot;mykey123&quot;, algorithe&#x3D;[&#39;HS256&#39;])</span></pre></td></tr></table></figure>
-<h3 id="輸出3"><a href="#輸出3" class="headerlink" title="輸出3"></a>輸出3</h3></li>
-</ul>
-</li>
-</ul>
-<ol>
-<li><p>decode( ), 第一次解碼encode的json內容，在一分鐘之內可以解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></p>
-<p> <img src="Untitled2.png" alt="Untitled2.png"></p>
-</li>
-<li><p>decode( ), 第二次解碼，已超過一分鐘的區間，故報錯回應 → <code>ExpiredSignatureError</code></p>
-<p> <img src="Untitled3.png" alt="Untitled3.png"></p>
-</li>
-</ol>
-<h2 id="▌結論："><a href="#▌結論：" class="headerlink" title="▌結論："></a>▌結論：</h2><p>應用上會將jwt包成一個API，讓user login時，而他傳入的body即是account/passwd，正確的話即可以產生一組Token，供系統登入</p>
-<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
-<li><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pyjwt.readthedocs.io/en/latest/</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Coding</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
-        <tag>python</tag>
-        <tag>modules</tag>
-        <tag>pyjwt</tag>
-        <tag>jwt</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[Python] Flask API 後端實作 | Flask API Backend Handson</title>
     <url>/2020/03/16/Python-Flask-API-%E5%BE%8C%E7%AB%AF%E5%AF%A6%E4%BD%9C-Flask-API-Backend-Handson/</url>
     <content><![CDATA[<h1 id="Python-Flask-API-後端實作-Flask-API-Backend-Handson"><a href="#Python-Flask-API-後端實作-Flask-API-Backend-Handson" class="headerlink" title="[Python] Flask API 後端實作 | Flask API Backend Handson"></a>[Python] Flask API 後端實作 | Flask API Backend Handson</h1><h2 id="▌什麼是REST？"><a href="#▌什麼是REST？" class="headerlink" title="▌什麼是REST？"></a>▌什麼是REST？</h2><p>REST 是一種軟體架構風格，目的是幫助在各種不同軟體、程式在網路的世界中能夠互相傳遞訊息。透過統一的Protocol(HTTP 網頁協定)，程式端都可視為一個資源（resource）提供使用者使用(request)，以資源操作的概念，結合 URI、URL path 與 HTTP Method ，來傳送訊息。目的是使 URL path 更為簡潔、容易被理解，除了介面簡潔之外，RESTFul架構也有快取 cache 機制、提升 API 活用性等優點。</p>
@@ -2245,6 +2424,88 @@ def get_df():
         <tag>python</tag>
         <tag>modules</tag>
         <tag>os</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Python] PyJWT 加解密模組: encode, decode</title>
+    <url>/2020/03/01/Python-PyJWT-%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%A8%A1%E7%B5%84-encode-decode/</url>
+    <content><![CDATA[<h1 id="Python-PyJWT-加解密模組-encode-decode"><a href="#Python-PyJWT-加解密模組-encode-decode" class="headerlink" title="[Python] PyJWT 加解密模組: encode, decode"></a>[Python] PyJWT 加解密模組: encode, decode</h1><h2 id="▌Python-JWT-Token"><a href="#▌Python-JWT-Token" class="headerlink" title="▌Python JWT Token"></a>▌Python JWT Token</h2><p><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">Welcome to PyJWT - PyJWT 1.7.1 documentation</a></p>
+<p>PyJWT工具是用來encode、decode的加解密工具，使用jwt module。</p>
+<p>即使Token，被擷取了也不用擔心，因為擷取的人沒有<code>SECRET</code>做decode的動作</p>
+<p>使用前先導入jwt module，再傳入json格式，一個<code>key</code>、一個<code>value</code>，還有一個加密的算法<code>SECRET</code>，最後會幫你算出一個Token。</p>
+<h3 id="範例1：官方入門"><a href="#範例1：官方入門" class="headerlink" title="範例1：官方入門"></a>範例1：官方入門</h3><ul>
+<li>key = k123</li>
+<li>value = v123</li>
+<li>secret = secret</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()會幫你產出一組token</p>
+<pre><code># Sample1
+# encoded_jwt
+
+import jwt
+
+encoded_jwt = jwt.encode({&apos;k123&apos;: &apos;v123&apos;}, &apos;secret&apos;, algorithm=&apos;HS256&apos;)
+encoded_jwt
+
+jwt.decode(encoded_jwt, &apos;secret&apos;, algorithm=[&apos;HS256&apos;])</code></pre><h3 id="輸出1"><a href="#輸出1" class="headerlink" title="輸出1"></a>輸出1</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值{k123 : v123}</li>
+</ol>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<hr>
+<h3 id="範例2：帳密加密應用"><a href="#範例2：帳密加密應用" class="headerlink" title="範例2：帳密加密應用"></a>範例2：帳密加密應用</h3><ul>
+<li>k = username</li>
+<li>v = joe</li>
+<li>secret = mykey123</li>
+<li>演算法 = HS256</li>
+</ul>
+<p>→ 將以上參數包成一個json格式放進encode()，encode()產出另一組token</p>
+<pre><code># Sample2
+# Token with account, passwd
+
+token = jwt.encode({&quot;username&quot;:&quot;joe&quot;}, &quot;mykey123&quot;, algorithm=&apos;HS256&apos;)
+token
+jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123= key,value; k=mykey123</code></pre><h3 id="輸出2"><a href="#輸出2" class="headerlink" title="輸出2"></a>輸出2</h3><ol>
+<li>encode( )執行產出token</li>
+<li>decode( ), 解碼encode的json內容，包括secret，解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></li>
+</ol>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<hr>
+<h3 id="範例3：Token-Expiration"><a href="#範例3：Token-Expiration" class="headerlink" title="範例3：Token Expiration"></a>範例3：Token Expiration</h3><p>上面的範例產出的token都是永久有效的，但這邊存在一個風險。只要對方拿到token後，在慢慢try secret，終究是可以得到明碼的帳密。因此需要設計成一個有效期限，若送出request超時再取token的時候系統就會報錯。</p>
+<p>因此token的使用，設定在一個有效的時間區間內。如果超過這個時間，token就等於無效的。</p>
+<p>如果要在次使用token時，就得再次輸入帳密</p>
+<ul>
+<li>使用時間模組<code>datetime</code>  <code>timedelta</code></li>
+<li>在json格式中，放進特殊的key:value → <code>{exp : date}</code><ul>
+<li>超時與時間描述，提供具體的有效期間</li>
+<li>“exp”: datetime.utcnow() + timedelta(minutes=1) → <code>utcnow</code> 當前時間 + <code>timedelta</code> 累加時間為1分鐘<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Sample3</span></pre></td></tr><tr><td class="code"><pre><span class="line"># Experiation</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">from datetime import datetime, timedelta</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"># add specific k &amp; value for exp</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp &#x3D; jwt.encode(&#123;&quot;username&quot;:&quot;joe&quot;, &quot;exp&quot;: datetime.utcnow() + timedelta(minutes&#x3D;1)&#125;, &quot;mykey123&quot;, algorithm&#x3D;&#39;HS256&#39;)</span></pre></td></tr><tr><td class="code"><pre><span class="line">token_exp</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">jwt.decode(token_exp, &quot;mykey123&quot;, algorithe&#x3D;[&#39;HS256&#39;])</span></pre></td></tr></table></figure>
+<h3 id="輸出3"><a href="#輸出3" class="headerlink" title="輸出3"></a>輸出3</h3></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>decode( ), 第一次解碼encode的json內容，在一分鐘之內可以解出key:value值<code>{&#39;username&#39;: &#39;joe&#39;}</code></p>
+<p> <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+<li><p>decode( ), 第二次解碼，已超過一分鐘的區間，故報錯回應 → <code>ExpiredSignatureError</code></p>
+<p> <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ol>
+<h2 id="▌結論："><a href="#▌結論：" class="headerlink" title="▌結論："></a>▌結論：</h2><p>應用上會將jwt包成一個API，讓user login時，而他傳入的body即是account/passwd，正確的話即可以產生一組Token，供系統登入</p>
+<h2 id="▌參考"><a href="#▌參考" class="headerlink" title="▌參考"></a>▌參考</h2><ol>
+<li><a href="https://pyjwt.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pyjwt.readthedocs.io/en/latest/</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Coding</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+        <tag>python</tag>
+        <tag>modules</tag>
+        <tag>pyjwt</tag>
+        <tag>jwt</tag>
       </tags>
   </entry>
   <entry>
@@ -2702,64 +2963,6 @@ def get_df():
       </tags>
   </entry>
   <entry>
-    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
-    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
-<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
-<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
-<blockquote>
-<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
-</blockquote>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
-<hr>
-<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
-<blockquote>
-<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
-</blockquote>
-<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
-<blockquote>
-<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
-</blockquote>
-<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
-<ul>
-<li>醫療：連續處方箋的藥可以自動續領</li>
-<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
-<li>用餐：送餐服務也可以幫你採購食材</li>
-<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
-</ul>
-<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
-<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
-<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
-<blockquote>
-<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
-</blockquote>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
-<blockquote>
-<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
-</blockquote>
-<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
-<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
-<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<hr>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
-<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
-<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[啟發] 為什麼投資會賺錢</title>
     <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E7%82%BA%E4%BB%80%E9%BA%BC%E6%8A%95%E8%B3%87%E6%9C%83%E8%B3%BA%E9%8C%A2/</url>
     <content><![CDATA[<h1 id="啟發-為什麼投資會賺錢"><a href="#啟發-為什麼投資會賺錢" class="headerlink" title="[啟發] 為什麼投資會賺錢"></a>[啟發] 為什麼投資會賺錢</h1><p>Status: Published Medium</p>
@@ -2819,57 +3022,6 @@ def get_df():
 </ul>
 <p>由於產業更新非常快，一個公司能夠20年經營得不錯都是件非常困難的事情，因此，沒有淘汰機制的股市表現一定好不了。</p>
 <p>理解了投資會有回報的本質，你就應該對(債</p>
-<hr>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/</url>
-    <content><![CDATA[<h1 id="啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening"><a href="#啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening" class="headerlink" title="[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening"></a>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</h1><p>Status: Published Medium</p>
-<h2 id="常言道：一日之計在於晨"><a href="#常言道：一日之計在於晨" class="headerlink" title="常言道：一日之計在於晨"></a>常言道：一日之計在於晨</h2><p>世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，<strong>一日之計在於晨</strong>，說得是學習和工作一定要抓緊早上的時光。可是早上覺得有精神到底是一種感覺呢，還是真有什麼明顯的影響呢？</p>
-<p>光有知道這個道理是不行的，我們還需要知道這個道理重要程度，是不是真值得我們調整做事的優先級別，因此你需要有實證有量化分析，這就是</p>
-<blockquote>
-<p><strong>科學方法</strong> 和傳統智慧的差別</p>
-</blockquote>
-<p>本文是讀完&lt;得到&gt;app | 萬維鋼老師的 | &lt;見機&gt; 這門課心得，課堂參考2018出版的&lt;見機：完美的科學秘密&gt; (When The Scientific Secrets of Perfect Timing)內容，作者透過大量數據來解釋人們如何使用的時間，並提醒人們使用時間才有效率</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p><a href="https://www.books.com.tw/products/F014128997" target="_blank" rel="noopener">https://www.books.com.tw/products/F014128997</a></p>
-<h2 id="一日之中的高低潮"><a href="#一日之中的高低潮" class="headerlink" title="一日之中的高低潮"></a>一日之中的高低潮</h2><p>下圖是紐約時報的報導，X軸是一天之中的時刻，Y軸代表的是情緒，總得來說人們在週未的情緒普遍上較好，另外一個觀察是不論是那一天，情緒變化的曲線型狀都非常相似</p>
-<p>早上起來七八點鐘是情緒的高峰，這時候大家說話比較正面，之後人們的情緒變化會慢慢變低落，到下午五點左右達到最低潮(等下班)。而晚上，人們的情緒又開始回升，到了午夜又達到一個高峰，您不妨可以檢視自已是有吻合這樣的情緒浮動</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study</a></p>
-<h2 id="研究指出：情緒變化三個時段"><a href="#研究指出：情緒變化三個時段" class="headerlink" title="研究指出：情緒變化三個時段"></a>研究指出：情緒變化三個時段</h2><p>人的下丘腦之中有個視交叉核，負責整個不同時段的荷爾蒙分佈，其實這就是我們的生理時鐘。而情緒，顯然是受到時生理時鐘的影響。</p>
-<p>總結來說，我們可以把一天的之中的情緒變化分為三段：</p>
-<blockquote>
-<p>上午達到高峰，下午經歷低潮，晚上出現反彈</p>
-</blockquote>
-<h2 id="集中精神的時機點"><a href="#集中精神的時機點" class="headerlink" title="集中精神的時機點"></a>集中精神的時機點</h2><p><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">大腦有二種思維模式</a>：一種是<strong>集中思維</strong>，需要你嚴格按照規則執行，比如說做數學題。集中思維要求大腦處於機靈的狀態，集中注意力。另一種是<strong>發散思維</strong>，適合創造性的活動，注意力不集，混亂一點反而更好。若依照上面的統計結果：<strong>你最好在上午從事集中思維，下午從事發散思維</strong>。</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>「專注模式」和「發散模式」 <a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">https://www.thenewslens.com/article/88323</a></p>
-<h2 id="粹鍊過的大數據結論"><a href="#粹鍊過的大數據結論" class="headerlink" title="粹鍊過的大數據結論"></a>粹鍊過的大數據結論</h2><p>相信或不相信科學結果是主觀的決定。但你都不知道的生理反應，數據則會說話。會有人說，難到我早上自已起來精力好不好，什麼時候適合做什麼自已還不知道嗎？為什麼要聽研究報告說的話？</p>
-<p>你可能真的不知道，但你肯定有個印象，你沒做過量化分析，也許你感覺上午精力更好，但是你不知道有多少，你不知道值不值得為此改變作習，改變工作安排</p>
-<h2 id="量化應用在運動"><a href="#量化應用在運動" class="headerlink" title="量化應用在運動"></a>量化應用在運動</h2><p>現在很流行的量化自我的運動，誰誰誰每天跑了幾公里，把距離分享到社交網路，還要和朋友比較一驟。但社交可不是量化自我的真正的本義，量化自我是一種科學的方法，它的真正目的是為了了解自已、研究自已、對自已做出更好的安排</p>
-<h2 id="高手善於觀察自已"><a href="#高手善於觀察自已" class="headerlink" title="高手善於觀察自已"></a>高手善於觀察自已</h2><p>科學的價值是什麼。別人是用分析了四億條twitter和26000個con-call才得出這些結論，而且給你提供了一個度。有這個度(量)，我們才談得上是科學決策</p>
-<p>量化分析是高手必備的能力。你到底是白天雲雀還是夜間貓頭鷹？自已做個量化分析，看看你在一天中的高峰，低潮和反彈期到底是在什麼時候，並好好的利你的有限時間吧</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>不管心情怎麼變化，都要認識、掌握自已 photo by medium.com</p>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>人的情緒和認知能力在一天之中有明顯的變化，可以分為高峰、低潮和反彈三個時段。你必須</p>
-<blockquote>
-<p>了解自已的這三個時間都在什麼候，對各種任務給予合理的安排</p>
-</blockquote>
-<h3 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h3><ul>
-<li>&lt;得到&gt;app | 萬維鋼老師 | &lt;見機&gt;</li>
-<li><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">Moods on Twitter Follow Biological Rhythms, Study Find - NYTimes.com</a></li>
-<li><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">《深度學習的技術》：從「專注模式」切換到「發散模式」</a></li>
-</ul>
 <hr>
 ]]></content>
       <categories>
@@ -2959,6 +3111,57 @@ def get_df():
 <p><img src="Untitled7.png" alt="Untitled7.png"></p>
 <p><img src="Untitled8.png" alt="Untitled8.png"></p>
 <h2 id="失去自主能力的感覺-2"><a href="#失去自主能力的感覺-2" class="headerlink" title="失去自主能力的感覺"></a>失去自主能力的感覺</h2><p>&lt;不滑手機會怎樣嗎？&gt; 這篇文章很深刻了記錄滑手機時的前後心境，我們不房來看看：「人到中年之後，當你的生活有了擺脫不了的壓力，突破不了的困難，每當想逃避時，有樣東西能讓你暫時忘記煩憂，就很容易對不好的東西上癮，<strong>一種失去自主能力的感覺</strong>，這也就是我們中年人常常看起來很廢的原因吧！」</p>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E9%87%8F%E5%8C%96%E7%A7%91%E5%AD%B8%E7%9A%84%E4%B8%80%E6%97%A5%E4%B9%8B%E8%A8%88-An-hour-in-the-morning-is-worth-two-in-the-evening/</url>
+    <content><![CDATA[<h1 id="啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening"><a href="#啟發-量化科學的一日之計-An-hour-in-the-morning-is-worth-two-in-the-evening" class="headerlink" title="[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening"></a>[啟發] 量化科學的一日之計 | An hour in the morning is worth two in the evening</h1><p>Status: Published Medium</p>
+<h2 id="常言道：一日之計在於晨"><a href="#常言道：一日之計在於晨" class="headerlink" title="常言道：一日之計在於晨"></a>常言道：一日之計在於晨</h2><p>世界上很多道理，你一聽覺得它肯定對，那你為什麼不去執行呢？可能是你還未察覺到他的重要性，<strong>一日之計在於晨</strong>，說得是學習和工作一定要抓緊早上的時光。可是早上覺得有精神到底是一種感覺呢，還是真有什麼明顯的影響呢？</p>
+<p>光有知道這個道理是不行的，我們還需要知道這個道理重要程度，是不是真值得我們調整做事的優先級別，因此你需要有實證有量化分析，這就是</p>
+<blockquote>
+<p><strong>科學方法</strong> 和傳統智慧的差別</p>
+</blockquote>
+<p>本文是讀完&lt;得到&gt;app | 萬維鋼老師的 | &lt;見機&gt; 這門課心得，課堂參考2018出版的&lt;見機：完美的科學秘密&gt; (When The Scientific Secrets of Perfect Timing)內容，作者透過大量數據來解釋人們如何使用的時間，並提醒人們使用時間才有效率</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p><a href="https://www.books.com.tw/products/F014128997" target="_blank" rel="noopener">https://www.books.com.tw/products/F014128997</a></p>
+<h2 id="一日之中的高低潮"><a href="#一日之中的高低潮" class="headerlink" title="一日之中的高低潮"></a>一日之中的高低潮</h2><p>下圖是紐約時報的報導，X軸是一天之中的時刻，Y軸代表的是情緒，總得來說人們在週未的情緒普遍上較好，另外一個觀察是不論是那一天，情緒變化的曲線型狀都非常相似</p>
+<p>早上起來七八點鐘是情緒的高峰，這時候大家說話比較正面，之後人們的情緒變化會慢慢變低落，到下午五點左右達到最低潮(等下班)。而晚上，人們的情緒又開始回升，到了午夜又達到一個高峰，您不妨可以檢視自已是有吻合這樣的情緒浮動</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study</a></p>
+<h2 id="研究指出：情緒變化三個時段"><a href="#研究指出：情緒變化三個時段" class="headerlink" title="研究指出：情緒變化三個時段"></a>研究指出：情緒變化三個時段</h2><p>人的下丘腦之中有個視交叉核，負責整個不同時段的荷爾蒙分佈，其實這就是我們的生理時鐘。而情緒，顯然是受到時生理時鐘的影響。</p>
+<p>總結來說，我們可以把一天的之中的情緒變化分為三段：</p>
+<blockquote>
+<p>上午達到高峰，下午經歷低潮，晚上出現反彈</p>
+</blockquote>
+<h2 id="集中精神的時機點"><a href="#集中精神的時機點" class="headerlink" title="集中精神的時機點"></a>集中精神的時機點</h2><p><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">大腦有二種思維模式</a>：一種是<strong>集中思維</strong>，需要你嚴格按照規則執行，比如說做數學題。集中思維要求大腦處於機靈的狀態，集中注意力。另一種是<strong>發散思維</strong>，適合創造性的活動，注意力不集，混亂一點反而更好。若依照上面的統計結果：<strong>你最好在上午從事集中思維，下午從事發散思維</strong>。</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>「專注模式」和「發散模式」 <a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">https://www.thenewslens.com/article/88323</a></p>
+<h2 id="粹鍊過的大數據結論"><a href="#粹鍊過的大數據結論" class="headerlink" title="粹鍊過的大數據結論"></a>粹鍊過的大數據結論</h2><p>相信或不相信科學結果是主觀的決定。但你都不知道的生理反應，數據則會說話。會有人說，難到我早上自已起來精力好不好，什麼時候適合做什麼自已還不知道嗎？為什麼要聽研究報告說的話？</p>
+<p>你可能真的不知道，但你肯定有個印象，你沒做過量化分析，也許你感覺上午精力更好，但是你不知道有多少，你不知道值不值得為此改變作習，改變工作安排</p>
+<h2 id="量化應用在運動"><a href="#量化應用在運動" class="headerlink" title="量化應用在運動"></a>量化應用在運動</h2><p>現在很流行的量化自我的運動，誰誰誰每天跑了幾公里，把距離分享到社交網路，還要和朋友比較一驟。但社交可不是量化自我的真正的本義，量化自我是一種科學的方法，它的真正目的是為了了解自已、研究自已、對自已做出更好的安排</p>
+<h2 id="高手善於觀察自已"><a href="#高手善於觀察自已" class="headerlink" title="高手善於觀察自已"></a>高手善於觀察自已</h2><p>科學的價值是什麼。別人是用分析了四億條twitter和26000個con-call才得出這些結論，而且給你提供了一個度。有這個度(量)，我們才談得上是科學決策</p>
+<p>量化分析是高手必備的能力。你到底是白天雲雀還是夜間貓頭鷹？自已做個量化分析，看看你在一天中的高峰，低潮和反彈期到底是在什麼時候，並好好的利你的有限時間吧</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>不管心情怎麼變化，都要認識、掌握自已 photo by medium.com</p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>人的情緒和認知能力在一天之中有明顯的變化，可以分為高峰、低潮和反彈三個時段。你必須</p>
+<blockquote>
+<p>了解自已的這三個時間都在什麼候，對各種任務給予合理的安排</p>
+</blockquote>
+<h3 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h3><ul>
+<li>&lt;得到&gt;app | 萬維鋼老師 | &lt;見機&gt;</li>
+<li><a href="https://stoweboyd.com/post/10862664306/moods-on-twitter-follow-biological-rhythms-study" target="_blank" rel="noopener">Moods on Twitter Follow Biological Rhythms, Study Find - NYTimes.com</a></li>
+<li><a href="https://www.thenewslens.com/article/88323" target="_blank" rel="noopener">《深度學習的技術》：從「專注模式」切換到「發散模式」</a></li>
+</ul>
+<hr>
 ]]></content>
       <categories>
         <category>啟發</category>
@@ -3329,6 +3532,64 @@ def get_df():
 <blockquote>
 <p>謝謝你的閱讀！我是黃大仙。<br>都市修行人 / 雲端架構師 / GCP講師 / 新手爸爸<br>喜歡研究不同領域事物，誠摯邀請一同交流學習！📒<br>如果有任何疑問，歡迎留下 Private Note 或留言給我！📒<br>👏1下——–給我一點鼓勵。<br>👏2~10下—–文章對你有幫助。<br>👏50下——-有興趣看「閱讀分享」相關的分享。</p>
 </blockquote>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
+    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
+<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
+<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
+<blockquote>
+<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
+</blockquote>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
+<hr>
+<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
+<blockquote>
+<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
+</blockquote>
+<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
+<blockquote>
+<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
+</blockquote>
+<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
+<ul>
+<li>醫療：連續處方箋的藥可以自動續領</li>
+<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
+<li>用餐：送餐服務也可以幫你採購食材</li>
+<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
+</ul>
+<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
+<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
+<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
+<blockquote>
+<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
+</blockquote>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
+<blockquote>
+<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
+</blockquote>
+<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
+<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
+<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<hr>
+<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
+<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
+<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
 ]]></content>
       <categories>
         <category>啟發</category>

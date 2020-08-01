@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load BalanceStatus: Completed Agenda簡介 Serverless Network Endpoint Groups目前NEG support serverless (in in Beta) [1]，透過Load balance 轉 HTTPs">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load BalanceStatus: Completed Agenda簡介 Serverless Network Endpoint Groups目前NEG support serverless (in in Beta) [1]，透過Load balance 轉 HTTPs">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled17.png">
+<meta property="og:updated_time" content="2020-08-01T03:11:18.977Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;01&#x2F;GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/08/01/GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance/"/>
+
+
+
+
+
+  <title>[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/08/01/GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-01T11:11:18+08:00">
+                2020-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance"><a href="#GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance" class="headerlink" title="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance"></a>[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance</h1><p>Status: Completed</p>
+<h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><h1 id="簡介-Serverless-Network-Endpoint-Groups"><a href="#簡介-Serverless-Network-Endpoint-Groups" class="headerlink" title="簡介 Serverless Network Endpoint Groups"></a>簡介 Serverless Network Endpoint Groups</h1><p>目前<a href="https://cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts" target="_blank" rel="noopener">NEG support serverless (in in Beta) [1]</a>，透過Load balance 轉 <code>HTTPs</code> 轉換為<code>HTTP</code> 可以滿足BIOS 連接Cloud Run需求。另外我理解acer，也需要WAF功能抵擋外部攻擊，但現在[Cloud Armor[2]](Cloud Armor.)還未能實現，最後文章指出未來幾個月Cloud Armor也會加入戰力</p>
+<p>Network Endpoint Groups (NEG) 新功能歸功於Google Cloud網絡和負載平衡的基本功能， NEG的運作原理，請見圖1，它是存在Load balance的後端，它可以定義應外部流量，如何到達一組端點(Endpoint)，因此NEG 可以服務外來request，並將request直接經Load balance發送給GCP backend (eg. 可以是Compute Engine VM 或在VM上運行的服務，或是Endpoint URL, FQDN: port, IP)</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h1 id="準備環境"><a href="#準備環境" class="headerlink" title="準備環境"></a>準備環境</h1><ol>
+<li>Cloud Run server：已準備<code>ngnix web</code> <a href="https://ngnix-v1-ve3udnlh4q-uc.a.run.app/" target="_blank" rel="noopener">https://ngnix-v1-ve3udnlh4q-uc.a.run.app</a></li>
+<li>Network Endpoint Groups (NEG) ：設定一組<code>Network endpoints</code></li>
+<li>Load balance：設定backend選擇<code>Network endpoints</code></li>
+</ol>
+<h1 id="A-Service-runs-on-Cloud-Run"><a href="#A-Service-runs-on-Cloud-Run" class="headerlink" title="A Service runs on Cloud Run"></a>A Service runs on Cloud Run</h1><h3 id="Step1-建立Cloud-Run-Service"><a href="#Step1-建立Cloud-Run-Service" class="headerlink" title="Step1. 建立Cloud Run Service"></a>Step1. 建立Cloud Run Service</h3><ul>
+<li><code>endpoint</code>: <a href="https://ngnix-v1-ve3udnlh4q-uc.a.run.app/" target="_blank" rel="noopener">https://ngnix-v1-ve3udnlh4q-uc.a.run.app</a></li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="Step2-測試endpoint"><a href="#Step2-測試endpoint" class="headerlink" title="Step2. 測試endpoint"></a>Step2. 測試<code>endpoint</code></h3><ul>
+<li><p>注意現在使用https連線</p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+<h1 id="Enable-Network-Endpoint-Groups-NEG"><a href="#Enable-Network-Endpoint-Groups-NEG" class="headerlink" title="Enable Network Endpoint Groups(NEG)"></a>Enable Network Endpoint Groups(NEG)</h1><h3 id="Step1-建立-Network-Endpoint-Group"><a href="#Step1-建立-Network-Endpoint-Group" class="headerlink" title="Step1. 建立 Network Endpoint Group"></a>Step1. 建立 Network Endpoint Group</h3><ul>
+<li>此步驟是將外部來源轉為 <code>GCP 內的 backend service</code>，方可與 GCP HTTP(S) LB 串接。</li>
+<li>路徑 GCP console -&gt; Compute Engine -&gt; Network Endpoint Group</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="Step2-Create-Network-Endpoint-Group"><a href="#Step2-Create-Network-Endpoint-Group" class="headerlink" title="Step2. Create Network Endpoint Group"></a>Step2. Create Network Endpoint Group</h3><p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="Step3-設定NEG"><a href="#Step3-設定NEG" class="headerlink" title="Step3. 設定NEG"></a>Step3. 設定NEG</h3><ul>
+<li>NEG 命名</li>
+<li>Network endpoint group type：請選 <code>Internet</code></li>
+<li>Default port：因為來源是Cloud Run 走<code>HTTPs</code> <code>443</code></li>
+<li>Add through endpoint<ul>
+<li>Fully qualified domain name</li>
+<li>Fully qualified domain name：請輸入你的 <code>Cloud Run endpoint</code><br>(eg. ngnix-v1-ve3udnlh4q-uc.a.run.app)</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h1 id="Load-balance"><a href="#Load-balance" class="headerlink" title="Load balance"></a>Load balance</h1><h3 id="Step1-建立-Load-balance"><a href="#Step1-建立-Load-balance" class="headerlink" title="Step1. 建立 Load balance"></a>Step1. 建立 Load balance</h3><ul>
+<li>建立 GCP HTTP(S) LB, 在 GCP console -&gt; Network services -&gt; Load balancing</li>
+<li>選擇<code>backend services</code></li>
+</ul>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h3 id="Step2-設定-backend"><a href="#Step2-設定-backend" class="headerlink" title="Step2. 設定 backend"></a>Step2. 設定 backend</h3><ul>
+<li>backend service 命名</li>
+<li>backend type：請選 <code>Internet network endpoint group</code></li>
+<li>Default port：因為來源是Cloud Run 走<code>HTTPs</code> <code>443</code></li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>詳細設定如下</p>
+<ul>
+<li>Protocol 請選 <code>HTTPS</code></li>
+<li>Backend 選擇上面步驟建立 <code>Network Endpoint Group</code></li>
+<li>其餘設定依需求自行調整</li>
+</ul>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<p>header(非常重要)</p>
+<ul>
+<li>Custom request headers<ul>
+<li>Header name：<code>host</code></li>
+<li>Header value：Cloud Run 產生的<code>endpoint</code><br>(eg. ngnix-v1-ve3udnlh4q-uc.a.run.app)</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="Step2-設定frontend"><a href="#Step2-設定frontend" class="headerlink" title="Step2. 設定frontend"></a>Step2. 設定frontend</h3><p>這邊可以有不同的option <code>HTTP</code>, <code>HTTPs</code>，也可以同時開啟 80 與 443 ，作法需各別開兩個<code>frontend</code>設定</p>
+<ul>
+<li><p><strong>Option1. HTTP</strong></p>
+<ul>
+<li><p>frontend 命名</p>
+</li>
+<li><p>Protocol ：選擇 <code>HTTP</code></p>
+</li>
+<li><p>IP address ：可選擇<code>Ephemeral</code>, 或先註冊一組 <code>static IP</code></p>
+</li>
+<li><p>Port：<code>80</code></p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Option2. HTTPs with certificate</strong></p>
+<ul>
+<li><p>frontend 命名</p>
+</li>
+<li><p>Protocol ：選擇 <code>HTTPS</code></p>
+</li>
+<li><p>IP address ：可選擇<code>Ephemeral</code>, 或先註冊一組 <code>static IP</code></p>
+</li>
+<li><p>Port：<code>443</code></p>
+</li>
+<li><p>Certificate 可以有二種選擇</p>
+<ol>
+<li><p>https 可以<code>自行管理</code>或是使用<code>Google管理的證書</code></p>
+</li>
+<li><p>若要使用自己的SSL證書，可上傳憑證檔；format 如下<br>填入<code>Public key certificate</code>, <code>Certificate chain</code>, <code>Private key</code></p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ol>
+</li>
+<li><p>Certificate：填入<code>Public key certificate</code>, <code>Certificate chain</code>, <code>Private key</code></p>
+</li>
+<li><p>設定完後建立，需要時間生效</p>
+<p>  <img src="Untitled12.png" alt="Untitled12.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>使用Google管理的SSL證書</p>
+<ul>
+<li><p>憑證也可以使用Google管理的SSL證書，輸入網域名稱即可，若該網域的DNS設定有正確指向HTTP(S) Load Balancer的IP，少許時間之後可以看到該證書為<code>ACTIVE</code>狀態。</p>
+<p>  <img src="Untitled13.png" alt="Untitled13.png"></p>
+</li>
+</ul>
+<h1 id="Review-Setting-of-Load-balancer"><a href="#Review-Setting-of-Load-balancer" class="headerlink" title="Review Setting of Load balancer"></a>Review Setting of Load balancer</h1><ul>
+<li>系統會確認您的設定值</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<ul>
+<li>若無誤status 會呈現綠色勾勾</li>
+</ul>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h1 id="Test-Original-Cloud-Run-with-“HTTP-header”"><a href="#Test-Original-Cloud-Run-with-“HTTP-header”" class="headerlink" title="Test Original Cloud Run with “HTTP header”"></a>Test Original Cloud Run with “HTTP header”</h1><h3 id="Test1-curl"><a href="#Test1-curl" class="headerlink" title="Test1. curl"></a>Test1. curl</h3><ul>
+<li>Cloud Run base是採kubernetes，故ingress是L7 load balance，所以Cloud Run 需要透過<code>header</code> host來作為辨識</li>
+<li>因此curl 時可以指定Load balance HTTP IP後，再補上<code>-H host header</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ curl -k -H <span class="string">"host: ngnix-v1-ve3udnlh4q-uc.a.run.app"</span> http://35.201.76.173</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="Test2-Browser"><a href="#Test2-Browser" class="headerlink" title="Test2. Browser"></a>Test2. Browser</h3><ul>
+<li>我們已經了解Clour Run識別需要使用header，其實上面設定load balance froentend時，就已經把header寫入，故我們在Browser連線時就不用在加上header</li>
+<li>透過HTTP(<a href="http://35.201.76.173/" target="_blank" rel="noopener">http://35.201.76.173/</a>)，可以正常連線至Cloud Run ngnix 網頁</li>
+</ul>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a href="https://cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts" target="_blank" rel="noopener">Serverless network endpoint groups overview</a></li>
+<li><a href="https://cloud.google.com/blog/products/networking/better-load-balancing-for-app-engine-cloud-run-and-functions" target="_blank" rel="noopener">Global HTTP(S) Load Balancing and CDN now support serverless compute</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/13/GCP-%E5%BC%B7%E5%8C%96GCP-%E7%B6%B2%E8%B7%AF%E8%B3%87%E5%AE%89%E6%8E%A7%E7%AE%A1-Enable-VPC-Service-Control/" rel="next" title="[GCP] 強化GCP 網路資安控管, Enable VPC Service Control">
+                <i class="fa fa-chevron-left"></i> [GCP] 強化GCP 網路資安控管, Enable VPC Service Control
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-Serverless-network-endpoint-groups-Cloud-Run-介接-Google-Load-Balance"><span class="nav-number">1.</span> <span class="nav-text">[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agenda"><span class="nav-number">1.1.</span> <span class="nav-text">Agenda</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#簡介-Serverless-Network-Endpoint-Groups"><span class="nav-number">2.</span> <span class="nav-text">簡介 Serverless Network Endpoint Groups</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#準備環境"><span class="nav-number">3.</span> <span class="nav-text">準備環境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#A-Service-runs-on-Cloud-Run"><span class="nav-number">4.</span> <span class="nav-text">A Service runs on Cloud Run</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-建立Cloud-Run-Service"><span class="nav-number">4.0.1.</span> <span class="nav-text">Step1. 建立Cloud Run Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-測試endpoint"><span class="nav-number">4.0.2.</span> <span class="nav-text">Step2. 測試endpoint</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Enable-Network-Endpoint-Groups-NEG"><span class="nav-number">5.</span> <span class="nav-text">Enable Network Endpoint Groups(NEG)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-建立-Network-Endpoint-Group"><span class="nav-number">5.0.1.</span> <span class="nav-text">Step1. 建立 Network Endpoint Group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Create-Network-Endpoint-Group"><span class="nav-number">5.0.2.</span> <span class="nav-text">Step2. Create Network Endpoint Group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step3-設定NEG"><span class="nav-number">5.0.3.</span> <span class="nav-text">Step3. 設定NEG</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Load-balance"><span class="nav-number">6.</span> <span class="nav-text">Load balance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-建立-Load-balance"><span class="nav-number">6.0.1.</span> <span class="nav-text">Step1. 建立 Load balance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-設定-backend"><span class="nav-number">6.0.2.</span> <span class="nav-text">Step2. 設定 backend</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-設定frontend"><span class="nav-number">6.0.3.</span> <span class="nav-text">Step2. 設定frontend</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Review-Setting-of-Load-balancer"><span class="nav-number">7.</span> <span class="nav-text">Review Setting of Load balancer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Test-Original-Cloud-Run-with-“HTTP-header”"><span class="nav-number">8.</span> <span class="nav-text">Test Original Cloud Run with “HTTP header”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Test1-curl"><span class="nav-number">8.0.1.</span> <span class="nav-text">Test1. curl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Test2-Browser"><span class="nav-number">8.0.2.</span> <span class="nav-text">Test2. Browser</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">9.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
