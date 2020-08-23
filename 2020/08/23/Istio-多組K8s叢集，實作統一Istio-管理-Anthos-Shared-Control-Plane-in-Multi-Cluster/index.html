@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-ClusterStatus: in 75% 多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。再來 如果你需要更深入轉換整個kuberne">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-ClusterStatus: in 75% 多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。再來 如果你需要更深入轉換整個kuberne">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled24.png">
+<meta property="og:updated_time" content="2020-08-23T08:41:32.086Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;08&#x2F;23&#x2F;Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/08/23/Istio-多組K8s叢集，實作統一Istio-管理-Anthos-Shared-Control-Plane-in-Multi-Cluster/"/>
+
+
+
+
+
+  <title>[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/08/23/Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-23T16:41:31+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Istio-多組K8s叢集，實作統一Istio-管理-Anthos-Shared-Control-Plane-in-Multi-Cluster"><a href="#Istio-多組K8s叢集，實作統一Istio-管理-Anthos-Shared-Control-Plane-in-Multi-Cluster" class="headerlink" title="[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster"></a>[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster</h1><p>Status: in 75%</p>
+<p>多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。再來</p>
+<p>如果你需要更深入轉換整個kubernetes系統時，你可以參考</p>
+<ul>
+<li><code>[Rancher](https://rancher.com/)</code> 是以UI 介面出發來集中管理多重叢集，它可以設定穿越地端與多組雲端託管的kubernetes</li>
+<li><code>[KQueen](https://www.notion.so/huangdaxian/Istio-K8s-Istio-Anthos-Shared-Control-Plane-in-Multi-Cluster-65d393869c014da98aed614afa98af14)</code> 是open source 是由Mirantis員工所開發，提供一個共用型的自助式kubernetes</li>
+<li><code>Grandener</code> 是由SAP公司所開發，多是利用kubernetes 原生API建構</li>
+</ul>
+<p>但是身為Google Partner，今天要跟大家介紹Anthos，透過它的跨雲地功能，一樣可以達到多組K8s叢集管理能力，而且裡面整合的Istio，可以供二組以上的叢集共用一個<code>Istio Control plane</code>。</p>
+<h1 id="完整架構圖"><a href="#完整架構圖" class="headerlink" title="完整架構圖"></a>完整架構圖</h1><ul>
+<li>一個完整的購物網站<code>Hipster Shop</code> 服務座落在二個cluster 分別在不同的region</li>
+<li>想要透過同一組的istio去控管二邊的service</li>
+<li>使用 <em>remote</em> configuration連線到單一個 Control plane(single Istio control plane)</li>
+<li>實際運作remote Envoy與Control plane溝通，形成Shared control plane</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h1 id="實作目的"><a href="#實作目的" class="headerlink" title="實作目的"></a>實作目的</h1><ol>
+<li>首先要建立2 GKE clusters 環境</li>
+<li>建立屬二個 GKE 溝通時的firewall rules ，使二個clusters可以溝通</li>
+<li>於Cluster 1安裝  <code>Istio control plane</code></li>
+<li>於Cluster 2安裝<code>Istio remote</code></li>
+<li>使 Cluster 2 <code>Istio remote</code> 連線至Cluster 1</li>
+<li>部署 the Hipster Shop multi-service application 在二個Cluster</li>
+<li>確認 Hipster Shop 服務是否正常運行於二個Cluster</li>
+</ol>
+<hr>
+<h1 id="Task-1-Ready-2-GKE-Cluster"><a href="#Task-1-Ready-2-GKE-Cluster" class="headerlink" title="Task 1. Ready 2 GKE Cluster"></a>Task 1. Ready 2 GKE Cluster</h1><p>準二個Cluster</p>
+<ul>
+<li>A GKE cluster, named <code>cluster-1</code>, in the <code>us-east1</code> region.</li>
+<li>A GKE cluster, named <code>cluster-2</code>, in the <code>us-central1</code> region.</li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="Step1-Get-credentials-of-each-GKE"><a href="#Step1-Get-credentials-of-each-GKE" class="headerlink" title="Step1. Get credentials of each GKE"></a>Step1. Get credentials of each GKE</h3><ul>
+<li>要先拿到<code>credentials</code>方能進入二個Cluster</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. config cluster-1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CLUSTER1_NAME=cluster-1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CLUSTER1_ZONE=us-east1-b</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters get-credentials <span class="variable">$CLUSTER1_NAME</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    --zone <span class="variable">$CLUSTER1_ZONE</span> --project <span class="variable">$PROJECT_ID</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. config cluster-2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CLUSTER2_NAME=cluster-2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CLUSTER2_ZONE=us-central1-b</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters get-credentials <span class="variable">$CLUSTER2_NAME</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    --zone <span class="variable">$CLUSTER2_ZONE</span> --project <span class="variable">$PROJECT_ID</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h3 id="Step2-Check-cluster-configurations"><a href="#Step2-Check-cluster-configurations" class="headerlink" title="Step2. Check cluster configurations"></a>Step2. Check cluster configurations</h3><ul>
+<li>check cluster config, 可以看到<ul>
+<li>各別的cluster configurations</li>
+<li>它們使用的key</li>
+<li>server address</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="Step3-kubectx"><a href="#Step3-kubectx" class="headerlink" title="Step3. kubectx"></a>Step3. kubectx</h3><ul>
+<li><code>kubectx</code> 是 open-source 工具，可讓user可以輕鬆切換多個cluster<br>好處就是，省去切換或合併<code>[context](Context 在 Kubernetes 裡面，切換不同的 cluster 是以 context 為單位，一個 context 裡面必需要三個元件，分別是 User、Server、Certification。這三個東西說起來也很直觀，有個使用者 (User) 必須要有憑證 (Certification) 才能連到某個 Cluster (Server)。  底下是一個 Context 所包含的內容：)</code>的功夫，所以我們選用這個好用的切換工具</li>
+<li>什麼是<code>context</code>？<br>Kubernetes 裡面，切換不同的 cluster 是以 context 為單位，一個 context 裡面必需要三個元件，分別是 User、Server、Certification。這三個東西說起來也很直觀，有個使用者 (User) 必須要有憑證 (Certification) 才能連到某個 Cluster (Server)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Download kubectx</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">curl -sLO https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">chmod +x kubectx</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">mv ./kubectx ./bin</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. kubectx read cluster-config</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#setup Var for Cluster</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1=gke_<span class="variable">$&#123;PROJECT_ID&#125;</span>_<span class="variable">$&#123;CLUSTER1_ZONE&#125;</span>_<span class="variable">$&#123;CLUSTER1_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">kubectx cluster2=gke_<span class="variable">$&#123;PROJECT_ID&#125;</span>_<span class="variable">$&#123;CLUSTER2_ZONE&#125;</span>_<span class="variable">$&#123;CLUSTER2_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. List the kubectx available contexts.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">kubectx</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">(now is running on cluster2)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#4. Change cluster to cluster1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h1 id="Task-2-Download-lab-files-from-a-GitHub-repo"><a href="#Task-2-Download-lab-files-from-a-GitHub-repo" class="headerlink" title="Task 2. Download lab files from a GitHub repo"></a>Task 2. Download lab files from a GitHub repo</h1><ul>
+<li>接下來要安裝Google engineers開發的管理Istio工具<ul>
+<li>multi-cluster</li>
+<li>shared control-plane</li>
+</ul>
+</li>
+<li>完整的<code>git</code> 請至下方查看<br><a href="https://github.com/GoogleCloudPlatform/istio-samples.git" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/istio-samples.git</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. git clone </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/GoogleCloudPlatform/istio-samples.git</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> istio-samples/multicluster-gke/single-control-plane</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h1 id="Task-3-Create-GKE-firewall-rules-to-allow-inter-cluster-connections"><a href="#Task-3-Create-GKE-firewall-rules-to-allow-inter-cluster-connections" class="headerlink" title="Task 3. Create GKE firewall rules to allow inter-cluster connections"></a>Task 3. Create GKE firewall rules to allow inter-cluster connections</h1><ul>
+<li>打開<code>firewall</code> 使二邊Cluster內的pod 可以互通</li>
+<li>主要目的，是讓二邊的cluster’s <code>CIDR</code> block range 可以打通，最終<code>control plane</code>與<code>remote</code>互通</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">./scripts/3-firewall.sh</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<ul>
+<li>檢查<code>istio-multicluster-test-pods</code>  規則</li>
+<li>有加入Igress 並同意10.16.0.0/14, 10.8.0.0/14 二組ip range</li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h1 id="Task-4-Install-the-Istio-control-plane-to-cluster-1"><a href="#Task-4-Install-the-Istio-control-plane-to-cluster-1" class="headerlink" title="Task 4. Install the Istio control plane to cluster 1"></a>Task 4. Install the Istio control plane to cluster 1</h1><ul>
+<li>在cluster 1安裝Istio control plane，我們要先取得安裝檔</li>
+<li>因為整個Istio control plane也是以pod型式運行，因此安裝檔會為<code>yaml</code>為主</li>
+<li>取得yaml後，使用kubectl apply -f istio_master.yaml 進行部署</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Download Istio</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">ISTIO_VERSION=<span class="variable">$&#123;ISTIO_VERSION:=1.4.2&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">curl -L https://git.io/getLatestIstio | ISTIO_VERSION=<span class="variable">$ISTIO_VERSION</span> sh -</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Use helm to prepare an installation template.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">cat istio-<span class="variable">$&#123;ISTIO_VERSION&#125;</span>/install/kubernetes/helm/istio-init/files/crd-* \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    &gt; istio_master.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">helm template istio istio-<span class="variable">$&#123;ISTIO_VERSION&#125;</span>/install/kubernetes/helm/istio \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    --namespace istio-system &gt;&gt; istio_master.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Switch to cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#4. Install Istio using the template, to cluster 1.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">kubectl create ns istio-system</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">#4.1 Enable auto-proxy injection of Istio sidecars.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">	kubectl label namespace default istio-injection=enabled</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">	</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">#4.2 Finally, install the control plane components.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">	kubectl apply -f istio_master.yaml</span></pre></td></tr></table></figure>
+
+<ul>
+<li>可以看到很多的istio components 被建立起來<ul>
+<li>envoy</li>
+<li>attributemainifests</li>
+<li>gateways</li>
+<li>etc.</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h1 id="Task-5-Install-the-Istio-remote-on-cluster-2"><a href="#Task-5-Install-the-Istio-remote-on-cluster-2" class="headerlink" title="Task 5. Install the Istio remote on cluster 2"></a>Task 5. Install the Istio remote on cluster 2</h1><ul>
+<li><p>Cluster 2不同的地方是要安裝的是<code>Agnet</code></p>
+<ul>
+<li>安裝皆是透過<code>helm</code></li>
+<li>citadel node-agent</li>
+<li>Envoy sidecar injector to cluster 2.</li>
+</ul>
+</li>
+<li><p>需要template file: <code>istio_remote.yaml</code> 來跑control &amp; remote需求</p>
+<p>  之前在remote components裡包含<code>helm</code>使用的<code>istio_remote.yaml</code></p>
+</li>
+</ul>
+<h3 id="Step1-Isntall-istio-remote-by-helm-in-Cluster1"><a href="#Step1-Isntall-istio-remote-by-helm-in-Cluster1" class="headerlink" title="Step1. Isntall istio-remote by helm in Cluster1"></a>Step1. Isntall istio-remote by helm in Cluster1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. kubectx cluster1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 Extract the IPs for the cluster1 Pilot, Mixer (below called policy)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PILOT_POD_IP=$(kubectl -n istio-system get pod -l istio=pilot -o jsonpath=<span class="string">'&#123;.items[0].status.podIP&#125;'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> POLICY_POD_IP=$(kubectl -n istio-system get pod -l istio=mixer -o jsonpath=<span class="string">'&#123;.items[0].status.podIP&#125;'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> TELEMETRY_POD_IP=$(kubectl -n istio-system get pod -l istio-mixer-type=telemetry -o jsonpath=<span class="string">'&#123;.items[0].status.podIP&#125;'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"Pilot: <span class="variable">$PILOT_POD_IP</span>"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"Istio-Policy (mixer): <span class="variable">$POLICY_POD_IP</span>"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"Istio-Telemetry (mixer): <span class="variable">$TELEMETRY_POD_IP</span>"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">HELM_DIR=<span class="string">"istio-<span class="variable">$&#123;ISTIO_VERSION&#125;</span>/install/kubernetes/helm/istio"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3 isntall istio-remote by helm </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">helm template istio-remote <span class="variable">$HELM_DIR</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    --namespace istio-system \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    --values <span class="variable">$HELM_DIR</span>/values-istio-remote.yaml \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">set</span> global.remotePilotAddress=<span class="variable">$&#123;PILOT_POD_IP&#125;</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">set</span> global.remotePolicyAddress=<span class="variable">$&#123;POLICY_POD_IP&#125;</span> \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">set</span> global.remoteTelemetryAddress=<span class="variable">$&#123;TELEMETRY_POD_IP&#125;</span> &gt; \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">        istio_remote.yaml</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="Step2-Install-Istio-remote-components-in-Cluster2"><a href="#Step2-Install-Istio-remote-components-in-Cluster2" class="headerlink" title="Step2. Install Istio remote components in Cluster2"></a>Step2. Install Istio remote components in Cluster2</h3><ul>
+<li>記得要透過<code>kubectx</code>切換至cluster2</li>
+<li>當然啦，也要建立專屬istio-system 使用的<code>namespace</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Install Istio remote components using the template, to cluster 2.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">kubectx cluster2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">kubectl create ns istio-system</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f istio_remote.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Enable auto-proxy injection of Istio sidecars.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h1 id="Task-6-Connect-cluster-2-to-cluster-1"><a href="#Task-6-Connect-cluster-2-to-cluster-1" class="headerlink" title="Task 6. Connect cluster 2 to cluster 1"></a>Task 6. Connect cluster 2 to cluster 1</h1><ul>
+<li>cluster1 目前還未經設定，允許<code>cluster2</code>進行通訊</li>
+<li>所以我們要針對<code>remote Cluster 2</code>，產生一個 Kubeconfig file ，然後把Secret加到Cluster 1</li>
+<li>設定變數描述Cluster2的環境，包含以下<ul>
+<li>name, kubecfg file, server address, istio namespace, istio service account, service account secret name, the CA cert, and token.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Step1-Generate-kubeconfig-for-Cluster2"><a href="#Step1-Generate-kubeconfig-for-Cluster2" class="headerlink" title="Step1. Generate kubeconfig for Cluster2"></a>Step1. Generate kubeconfig for Cluster2</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Verify that you're currently using the cluster2 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">kubectx cluster2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Set up multiple environment variables describing cluster2, including the name, etc.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> WORK_DIR=$(<span class="built_in">pwd</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">CLUSTER_NAME=$(kubectl config view --minify=<span class="literal">true</span> -o <span class="string">"jsonpath=&#123;.clusters[].name&#125;"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">CLUSTER_NAME=<span class="string">"<span class="variable">$&#123;CLUSTER_NAME##*_&#125;</span>"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> KUBECFG_FILE=<span class="variable">$&#123;WORK_DIR&#125;</span>/<span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">SERVER=$(kubectl config view --minify=<span class="literal">true</span> -o <span class="string">"jsonpath=&#123;.clusters[].cluster.server&#125;"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">NAMESPACE=istio-system</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">SERVICE_ACCOUNT=istio-multi</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">SECRET_NAME=$(kubectl get sa <span class="variable">$&#123;SERVICE_ACCOUNT&#125;</span> -n <span class="variable">$&#123;NAMESPACE&#125;</span> -o jsonpath=<span class="string">'&#123;.secrets[].name&#125;'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">CA_DATA=$(kubectl get secret <span class="variable">$&#123;SECRET_NAME&#125;</span> -n <span class="variable">$&#123;NAMESPACE&#125;</span> -o <span class="string">"jsonpath=&#123;.data['ca\.crt']&#125;"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">TOKEN=$(kubectl get secret <span class="variable">$&#123;SECRET_NAME&#125;</span> -n <span class="variable">$&#123;NAMESPACE&#125;</span> -o <span class="string">"jsonpath=&#123;.data['token']&#125;"</span> | base64 --decode)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Create a new kubeconfig </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#   for cluster 2 named cluster-2 using the environment variables.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; <span class="variable">$&#123;KUBECFG_FILE&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">clusters:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">   - cluster:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">       certificate-authority-data: <span class="variable">$&#123;CA_DATA&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">       server: <span class="variable">$&#123;SERVER&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">     name: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">contexts:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">   - context:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">       cluster: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">       user: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">     name: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">current-context: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">kind: Config</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">preferences: &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">users:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">   - name: <span class="variable">$&#123;CLUSTER_NAME&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">     user:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">       token: <span class="variable">$&#123;TOKEN&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">EOF</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="Step2-Let-cluster1-the-control-plane-know-about-cluster2-the-remote"><a href="#Step2-Let-cluster1-the-control-plane-know-about-cluster2-the-remote" class="headerlink" title="Step2. Let cluster1, the control plane, know about cluster2, the remote."></a>Step2. Let cluster1, the control plane, know about cluster2, the remote.</h3><ul>
+<li>上面已經為了雙cluster溝通，打通<code>firewall</code></li>
+<li>現在要為彼此溝通的Auth，製作<code>secret</code><ul>
+<li><code>secret</code>包含cluster-2 ‘kubeconfig’</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Switch to the cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Let cluster1, the control plane, know about cluster2, the remote.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">kubectl create secret generic <span class="variable">$&#123;CLUSTER_NAME&#125;</span> --from-file <span class="variable">$&#123;KUBECFG_FILE&#125;</span> -n <span class="variable">$&#123;NAMESPACE&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">kubectl label secret <span class="variable">$&#123;CLUSTER_NAME&#125;</span> istio/multiCluster=<span class="literal">true</span> -n <span class="variable">$&#123;NAMESPACE&#125;</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<h1 id="Task-7-Deploy-the-Hipster-Shop-multi-service-application"><a href="#Task-7-Deploy-the-Hipster-Shop-multi-service-application" class="headerlink" title="Task 7. Deploy the Hipster Shop multi-service application"></a>Task 7. Deploy the Hipster Shop multi-service application</h1><ul>
+<li>上面的步聚，都是準備Cluster，現在以下才是重頭戲</li>
+<li>要把<code>Hipster Shop</code> 整個microservices部在二個Cluster裡面</li>
+<li>然後運行統一個cluster 1 control plane，如圖所示</li>
+</ul>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<ul>
+<li>看一下部署在cluseter1 的service 1內容</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<ul>
+<li>再來為什麼要做remove，是因為我們要完成二個cluster的部署</li>
+<li>因此還需要切換至cluster 2, 把原本cluster 1已存在的<code>pod</code>移除<ul>
+<li>oadgenerator</li>
+<li>cartservice</li>
+<li>recommendationservice</li>
+<li>redis-cart</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Switch to cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Deploy all the Hipster Shop services to cluster 1:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/master/release/kubernetes-manifests.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Remove the deployments assigned to cluster 2:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">services2=(<span class="string">"loadgenerator"</span> <span class="string">"cartservice"</span> <span class="string">"recommendationservice"</span> <span class="string">"redis-cart"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> s <span class="keyword">in</span> <span class="string">"<span class="variable">$&#123;services2[@]&#125;</span>"</span>; <span class="keyword">do</span> kubectl delete deployment <span class="variable">$s</span>; <span class="keyword">done</span>;</span></pre></td></tr></table></figure>
+
+<p>切換至GKE workload，可以看到Hipster Shop分部在cluster1, 2</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h3 id="Step2-Cluster2-deploy-amp-delete-service"><a href="#Step2-Cluster2-deploy-amp-delete-service" class="headerlink" title="Step2. Cluster2 deploy &amp; delete service"></a>Step2. Cluster2 deploy &amp; delete service</h3><ul>
+<li>切換至<code>cluster2</code>，開始部署Hipster Shop pods</li>
+<li>同樣的也要把重復的pod，從cluster移除</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#4. Switch to cluster2 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#5. Deploy all the Hipster Shop services to cluster 2:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/master/release/kubernetes-manifests.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#6. Remove the deployments assigned to cluster 1:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">services1=(<span class="string">"emailservice"</span> <span class="string">"paymentservice"</span> <span class="string">"shippingservice"</span> <span class="string">"adservice"</span> <span class="string">"checkoutservice"</span> <span class="string">"currencyservice"</span> <span class="string">"frontend"</span> <span class="string">"productcatalogservice"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> s <span class="keyword">in</span> <span class="string">"<span class="variable">$&#123;services1[@]&#125;</span>"</span>; <span class="keyword">do</span> kubectl delete deployment <span class="variable">$s</span>; <span class="keyword">done</span>;</span></pre></td></tr></table></figure>
+
+<p>建立</p>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<p>移除</p>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<h1 id="Task-8-Verify-the-Hipster-Shop-deployment"><a href="#Task-8-Verify-the-Hipster-Shop-deployment" class="headerlink" title="Task 8. Verify the Hipster Shop deployment"></a>Task 8. Verify the Hipster Shop deployment</h1><ul>
+<li>確認Hipster Shop部署，各別切換至cluster1, 2</li>
+</ul>
+<h3 id="Step1-Verify-pod-in-each-cluster"><a href="#Step1-Verify-pod-in-each-cluster" class="headerlink" title="Step1. Verify pod in each cluster"></a>Step1. Verify pod in each cluster</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Switch to cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Check cluster 1 to ensure all pods are RUNNING and READY.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl get pods</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Switch to cluster2 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">kubectx cluster2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#4. Check pods on cluster 2 to ensure all pods are RUNNING and READY.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">kubectl get pods</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<h3 id="Step2-Check-the-Envoy-proxies-running-on-both-clusters"><a href="#Step2-Check-the-Envoy-proxies-running-on-both-clusters" class="headerlink" title="Step2. Check the Envoy proxies running on both clusters"></a>Step2. Check the Envoy proxies running on both clusters</h3><ul>
+<li>重點來了，我們要依據先前架構圖設計，Control plane僅在cluster-1</li>
+<li>使用<code>./istio-*/bin/istioctl</code> 進行測試<ul>
+<li>因此，可以看得到<code>istioctl proxy-status</code>只有在cluster-1</li>
+<li>如果跳進cluster-2看<code>istioctl proxy-status</code>是會顯示錯誤</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Switch to cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Check the proxies, from cluster 1, where the control plane runs.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">./istio-*/bin/istioctl proxy-status</span></pre></td></tr></table></figure>
+
+<ul>
+<li><code>istioctl</code> 僅能在 cluser-1正常運作</li>
+<li>cluser-2則否</li>
+</ul>
+<p><img src="Untitled19.png" alt="Untitled19.png"></p>
+<h1 id="Task-9-Use-Hipster-Shop-services-running-across-multiple-clusters"><a href="#Task-9-Use-Hipster-Shop-services-running-across-multiple-clusters" class="headerlink" title="Task 9. Use Hipster Shop services running across multiple clusters"></a>Task 9. Use Hipster Shop services running across multiple clusters</h1><ul>
+<li>現在已經完整雙cluster, 且有一個control-plane托管二座cluster istio系統</li>
+<li>同時網站運行也是正常的，到此實作也算是完成</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Switch to cluster1 context.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx cluster1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Get the Istio IngressGateway's EXTERNAL-IP.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl get svc istio-ingressgateway -n istio-system</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Browse Hipster Shop home page, at http://[EXTERNAL_IP].</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled20.png" alt="Untitled20.png"></p>
+<h1 id="Task10-Register-Cluster-to-Anthos"><a href="#Task10-Register-Cluster-to-Anthos" class="headerlink" title="Task10: Register Cluster to Anthos"></a>Task10: Register Cluster to Anthos</h1><ul>
+<li>最後，可以將二個cluster加入Anthos Service Mesh(ASM)</li>
+<li>加入的方法很簡單，僅需點選<code>REGISTER</code></li>
+</ul>
+<p><img src="Untitled21.png" alt="Untitled21.png"></p>
+<p>加入時，設定與過程</p>
+<ul>
+<li>建立service account</li>
+<li>安裝與設定agent</li>
+</ul>
+<p><img src="Untitled22.png" alt="Untitled22.png"></p>
+<p>同樣的步驟也把 cluster-2 加入ASM</p>
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<p>最後就可以享有ASM管理，lab過長，先以提供示意圖</p>
+<p><img src="Untitled24.png" alt="Untitled24.png"></p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>這個實作，完成2 GKE clusters運行在不同的regions，且使用統一個service mesh，透過cluster-1 control-plane托管。這樣的應用，非常適合實際production的環境，因為我們常講Globally deployment，概念包含的docker registry, node, pod separately，相信不久大家也會把istio centralized 加入Globally 運行一個重要的best practice。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ol>
+<li><a href="https://www.akiicat.com/2019/04/24/Kubernetes/setup-kubernetes-configuration/" target="_blank" rel="noopener">管理多個 Kubernetes Cluster：建立、切換、合併 context</a></li>
+<li>Google Anthos Lab</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/01/GCP-Serverless-network-endpoint-groups-Cloud-Run-%E4%BB%8B%E6%8E%A5-Google-Load-Balance/" rel="next" title="[GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance">
+                <i class="fa fa-chevron-left"></i> [GCP]Serverless network endpoint groups | Cloud Run 介接 Google Load Balance
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Istio-多組K8s叢集，實作統一Istio-管理-Anthos-Shared-Control-Plane-in-Multi-Cluster"><span class="nav-number">1.</span> <span class="nav-text">[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完整架構圖"><span class="nav-number">2.</span> <span class="nav-text">完整架構圖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#實作目的"><span class="nav-number">3.</span> <span class="nav-text">實作目的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-1-Ready-2-GKE-Cluster"><span class="nav-number">4.</span> <span class="nav-text">Task 1. Ready 2 GKE Cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-Get-credentials-of-each-GKE"><span class="nav-number">4.0.1.</span> <span class="nav-text">Step1. Get credentials of each GKE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Check-cluster-configurations"><span class="nav-number">4.0.2.</span> <span class="nav-text">Step2. Check cluster configurations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step3-kubectx"><span class="nav-number">4.0.3.</span> <span class="nav-text">Step3. kubectx</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-2-Download-lab-files-from-a-GitHub-repo"><span class="nav-number">5.</span> <span class="nav-text">Task 2. Download lab files from a GitHub repo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-3-Create-GKE-firewall-rules-to-allow-inter-cluster-connections"><span class="nav-number">6.</span> <span class="nav-text">Task 3. Create GKE firewall rules to allow inter-cluster connections</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-4-Install-the-Istio-control-plane-to-cluster-1"><span class="nav-number">7.</span> <span class="nav-text">Task 4. Install the Istio control plane to cluster 1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-5-Install-the-Istio-remote-on-cluster-2"><span class="nav-number">8.</span> <span class="nav-text">Task 5. Install the Istio remote on cluster 2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-Isntall-istio-remote-by-helm-in-Cluster1"><span class="nav-number">8.0.1.</span> <span class="nav-text">Step1. Isntall istio-remote by helm in Cluster1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Install-Istio-remote-components-in-Cluster2"><span class="nav-number">8.0.2.</span> <span class="nav-text">Step2. Install Istio remote components in Cluster2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-6-Connect-cluster-2-to-cluster-1"><span class="nav-number">9.</span> <span class="nav-text">Task 6. Connect cluster 2 to cluster 1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-Generate-kubeconfig-for-Cluster2"><span class="nav-number">9.0.1.</span> <span class="nav-text">Step1. Generate kubeconfig for Cluster2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Let-cluster1-the-control-plane-know-about-cluster2-the-remote"><span class="nav-number">9.0.2.</span> <span class="nav-text">Step2. Let cluster1, the control plane, know about cluster2, the remote.</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-7-Deploy-the-Hipster-Shop-multi-service-application"><span class="nav-number">10.</span> <span class="nav-text">Task 7. Deploy the Hipster Shop multi-service application</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Cluster2-deploy-amp-delete-service"><span class="nav-number">10.0.1.</span> <span class="nav-text">Step2. Cluster2 deploy &amp; delete service</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-8-Verify-the-Hipster-Shop-deployment"><span class="nav-number">11.</span> <span class="nav-text">Task 8. Verify the Hipster Shop deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step1-Verify-pod-in-each-cluster"><span class="nav-number">11.0.1.</span> <span class="nav-text">Step1. Verify pod in each cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step2-Check-the-Envoy-proxies-running-on-both-clusters"><span class="nav-number">11.0.2.</span> <span class="nav-text">Step2. Check the Envoy proxies running on both clusters</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-9-Use-Hipster-Shop-services-running-across-multiple-clusters"><span class="nav-number">12.</span> <span class="nav-text">Task 9. Use Hipster Shop services running across multiple clusters</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Task10-Register-Cluster-to-Anthos"><span class="nav-number">13.</span> <span class="nav-text">Task10: Register Cluster to Anthos</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">14.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">15.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
