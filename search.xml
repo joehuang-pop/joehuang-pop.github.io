@@ -168,72 +168,6 @@ WHERE date_formatted = &apos;2017-07-08&apos;</code></pre><ul>
       </tags>
   </entry>
   <entry>
-    <title>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</title>
-    <url>/2020/04/23/GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products/</url>
-    <content><![CDATA[<h1 id="GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><a href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products" class="headerlink" title="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products"></a>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1><p>Status: Completed</p>
-<h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
-<ul>
-<li>很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。</li>
-<li>但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話</li>
-</ul>
-<blockquote>
-<p>我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD</p>
-</blockquote>
-<p>因此節流是一種方式，另外我們也要設定Budget alter，也就是預算告警！以GCP為例，Billing Alert 可以針對Products來設定告警，這點非常的貼心</p>
-<h2 id="▌操作步驟"><a href="#▌操作步驟" class="headerlink" title="▌操作步驟"></a>▌操作步驟</h2><hr>
-<ul>
-<li>建立Budget alert之前，請先確認帳號是否擁有Billing Account Administrator權限[1][2]</li>
-<li>完整說明與操作請參考[2]</li>
-</ul>
-<p><strong>Step1. 請進入Budgets &amp; alerts 頁面</strong></p>
-<ul>
-<li><p>建立一筆 Budget</p>
-<p>  <img src="Untitled.png" alt="Untitled.png"></p>
-</li>
-</ul>
-<p><strong>Step2. Budget alert 可以針對特定product進行告警</strong></p>
-<ul>
-<li><p>以stackdriver為例，加入products清單</p>
-<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
-</li>
-</ul>
-<p><strong>Step3. 設定預算比較值</strong></p>
-<ul>
-<li>Budget type 說明<ul>
-<li>Specified amount：先設置一個固定金額，之後每月支出會比較這筆固定金額</li>
-<li>Last month’s spend：是根據上個月的支出，當作每月比較的基準金額</li>
-</ul>
-</li>
-</ul>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p><strong>Step4. 設定門檻水準</strong></p>
-<p> <strong>Trigger on說明</strong></p>
-<ul>
-<li><p><strong>Actual：觸發是依照實際使用值</strong><br>當預算期間內累積的累計費用超過門檻值時，實際成本門檻值規則將發送通知。<br>(ex. 如果您為$ 100的預算設置了50％的實際支出警報，那麼當您在預算期內支出了$ 50時，您將收到警報通知)</p>
-</li>
-<li><p><strong>Forecasted ：觸發會依照系統預測使用量</strong><br>當預測使用量超過門檻時，將發送通知。<br>(ex. 如果設定$ 100的預算，並設置了110％的預測費用警報，當系統預測預算將支出超過$ 110時，將收到警報通知)</p>
-<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
-</li>
-</ul>
-<p><strong>Step5. 檢視並確認Budget是否設定成功</strong></p>
-<ul>
-<li>確認Logging Budget 建立完成</li>
-</ul>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><hr>
-<p>[1] <a href="https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in</a></p>
-<p>[2] <a href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/budgets</a></p>
-]]></content>
-      <categories>
-        <category>GCP</category>
-      </categories>
-      <tags>
-        <tag>Billing</tag>
-        <tag>Billing Budget Alert</tag>
-        <tag>Cost down</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[GCP] Cloud Run 六個實作: 解析麻雀雖小五臟俱全 | Cloud Run is Small but Complete</title>
     <url>/2020/05/01/GCP-Cloud-Run-%E5%85%AD%E5%80%8B%E5%AF%A6%E4%BD%9C-%E8%A7%A3%E6%9E%90%E9%BA%BB%E9%9B%80%E9%9B%96%E5%B0%8F%E4%BA%94%E8%87%9F%E4%BF%B1%E5%85%A8-Cloud-Run-is-Small-but-Complete/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><hr>
@@ -726,6 +660,72 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
       </tags>
   </entry>
   <entry>
+    <title>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</title>
+    <url>/2020/04/23/GCP-Billing-%E9%A0%90%E7%AE%97%E5%91%8A%E8%AD%A6%E6%9C%8D-%E9%81%B8%E7%94%A8%E5%90%84%E5%88%A5Products-Billing-Budget-Alert-By-Products/</url>
+    <content><![CDATA[<h1 id="GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products"><a href="#GCP-Billing-預算告警服-選用各別Products-Billing-Budget-Alert-By-Products" class="headerlink" title="[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products"></a>[GCP] Billing 預算告警服: 選用各別Products | Billing Budget Alert By Products</h1><p>Status: Completed</p>
+<h2 id="▌前言"><a href="#▌前言" class="headerlink" title="▌前言"></a>▌前言</h2><hr>
+<ul>
+<li>很多用戶對於public是又愛又恨，因為他的便利和彈性又隨時可取得資源。</li>
+<li>但是常常一個不小心就用過量了，收到帳單面都綠了，套一句客戶說的話</li>
+</ul>
+<blockquote>
+<p>我終於體驗到了雲端的恐怖之處，做什麼都要錢 XDD</p>
+</blockquote>
+<p>因此節流是一種方式，另外我們也要設定Budget alter，也就是預算告警！以GCP為例，Billing Alert 可以針對Products來設定告警，這點非常的貼心</p>
+<h2 id="▌操作步驟"><a href="#▌操作步驟" class="headerlink" title="▌操作步驟"></a>▌操作步驟</h2><hr>
+<ul>
+<li>建立Budget alert之前，請先確認帳號是否擁有Billing Account Administrator權限[1][2]</li>
+<li>完整說明與操作請參考[2]</li>
+</ul>
+<p><strong>Step1. 請進入Budgets &amp; alerts 頁面</strong></p>
+<ul>
+<li><p>建立一筆 Budget</p>
+<p>  <img src="Untitled.png" alt="Untitled.png"></p>
+</li>
+</ul>
+<p><strong>Step2. Budget alert 可以針對特定product進行告警</strong></p>
+<ul>
+<li><p>以stackdriver為例，加入products清單</p>
+<p>  <img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+</ul>
+<p><strong>Step3. 設定預算比較值</strong></p>
+<ul>
+<li>Budget type 說明<ul>
+<li>Specified amount：先設置一個固定金額，之後每月支出會比較這筆固定金額</li>
+<li>Last month’s spend：是根據上個月的支出，當作每月比較的基準金額</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p><strong>Step4. 設定門檻水準</strong></p>
+<p> <strong>Trigger on說明</strong></p>
+<ul>
+<li><p><strong>Actual：觸發是依照實際使用值</strong><br>當預算期間內累積的累計費用超過門檻值時，實際成本門檻值規則將發送通知。<br>(ex. 如果您為$ 100的預算設置了50％的實際支出警報，那麼當您在預算期內支出了$ 50時，您將收到警報通知)</p>
+</li>
+<li><p><strong>Forecasted ：觸發會依照系統預測使用量</strong><br>當預測使用量超過門檻時，將發送通知。<br>(ex. 如果設定$ 100的預算，並設置了110％的預測費用警報，當系統預測預算將支出超過$ 110時，將收到警報通知)</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<p><strong>Step5. 檢視並確認Budget是否設定成功</strong></p>
+<ul>
+<li>確認Logging Budget 建立完成</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><hr>
+<p>[1] <a href="https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/billing-access#overview_of_billing_roles_in</a></p>
+<p>[2] <a href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener">https://cloud.google.com/billing/docs/how-to/budgets</a></p>
+]]></content>
+      <categories>
+        <category>GCP</category>
+      </categories>
+      <tags>
+        <tag>Billing</tag>
+        <tag>Billing Budget Alert</tag>
+        <tag>Cost down</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[GCP]Google Apps Scripts 串接 GCP BigQuery</title>
     <url>/2020/02/12/GCP-Google-Apps-Scripts-%E4%B8%B2%E6%8E%A5-GCP-BigQuery/</url>
     <content><![CDATA[<h1 id="GCP-Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#GCP-Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="[GCP]Google Apps Scripts 串接 GCP BigQuery"></a>[GCP]Google Apps Scripts 串接 GCP BigQuery</h1><h2 id="Google-Apps-Scripts-串接-GCP-BigQuery"><a href="#Google-Apps-Scripts-串接-GCP-BigQuery" class="headerlink" title="Google Apps Scripts 串接 GCP BigQuery"></a>Google Apps Scripts 串接 GCP BigQuery</h2><h3 id="Google-Apps-Scripts"><a href="#Google-Apps-Scripts" class="headerlink" title="Google Apps Scripts"></a>Google Apps Scripts</h3><p><a href="https://script.google.com/u/0/home" target="_blank" rel="noopener">Apps Script</a></p>
@@ -954,6 +954,17 @@ status: TERMINATED</code></pre><p>執行結果看到<br>三台VM Instance有已�
 <li><a href="https://cloud.google.com/blog/products/networking/better-load-balancing-for-app-engine-cloud-run-and-functions" target="_blank" rel="noopener">Global HTTP(S) Load Balancing and CDN now support serverless compute</a></li>
 </ol>
 ]]></content>
+      <categories>
+        <category>GCP</category>
+      </categories>
+      <tags>
+        <tag>GCP</tag>
+        <tag>Cloud Run</tag>
+        <tag>Networking</tag>
+        <tag>NEG</tag>
+        <tag>kubernetes</tag>
+        <tag>network endpoint groups</tag>
+      </tags>
   </entry>
   <entry>
     <title>[GCP] Stackdriver省錢好簡單: 使用Logs Exclusions省成本 | Stackdriver: Adopting Logs Exclusions to Save Costs</title>
@@ -2509,54 +2520,6 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
       </tags>
   </entry>
   <entry>
-    <title>[ 啟發 ] Don&#39;t Let Best be Enemy of Better |  最好是更好的敵人</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-Don-t-Let-Best-be-Enemy-of-Better-%E6%9C%80%E5%A5%BD%E6%98%AF%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B5%E4%BA%BA/</url>
-    <content><![CDATA[<h1 id="啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人"><a href="#啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人" class="headerlink" title="[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人"></a>[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人</h1><p>近來讀了一篇很有心得的文章，特此下筆分享給大家，習得觀念是從訂閱&lt;得到&gt;app 有聲書而來的，它是吳軍老師 | 硅谷來信 | 第215封信</p>
-<p>一開始看到這個主題，還不懂它的意思，直到文中提到，工作中很多時候我們無所作為不是因為不想做事，而是一根筋地追求最好(完美)，最後什麼也沒有得到。</p>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<h2 id="更白話的說："><a href="#更白話的說：" class="headerlink" title="更白話的說："></a>更白話的說：</h2><p>人們時常因為一昧追求美完，而忘記自已還是原地踏步，道理很容易懂，不過也常一鼓腦兒想朝向盡善盡美境界，因為價值 = 經驗 x 時間 更是讓人有滿滿的感觸</p>
-<p>雖然我們說要實現最後10%，但這並<strong>不意謂我們不可以接受部份的改進</strong>。很多時候，一個完美結果需要很<strong>多次的改進才能實現，而不是一步就位</strong>。</p>
-<p>一步到位，追求完美的觀念。或許是來自工業時代的觀念，因為製造出來的產品不能有任何的瑕疪，這會影響整體的量產，最終管理學也造就了<a href="https://zh.wikipedia.org/zh-tw/%E5%85%AD%E6%A8%99%E6%BA%96%E5%B7%AE" target="_blank" rel="noopener">6 Sigma(σ)</a>，來提升品質</p>
-<h2 id="保時捷-911的例子"><a href="#保時捷-911的例子" class="headerlink" title="保時捷 911的例子"></a>保時捷 911的例子</h2><p>著名保時捷911的開發者<a href="https://zh.wikipedia.org/wiki/%E6%96%90%E8%BF%AA%E5%8D%97%C2%B7%E4%BF%9D%E6%99%82%E6%8D%B7" target="_blank" rel="noopener">小保時捷</a>，是承習父親的喜愛汽車基因，而他不滿現況<a href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E4%BC%97%E7%94%B2%E5%A3%B3%E8%99%AB" target="_blank" rel="noopener">福斯金龜車</a>(Volkswagen Beetle)馬力不足。也因此下定決心打造一台完美的汽車。他所創立的汽車公司最初所生產的跑車，亦是從福斯金龜車發展而來，但保時捷911更具備他所期望 → 馬力。最後他為了追求完美，成功打造一台保時捷911風靡全球，這個是工業時代的典範。</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<p>你看現今911跑車是不是還保有金龜車的神韻</p>
-<h2 id="軟工思維-v-s-產品疊代"><a href="#軟工思維-v-s-產品疊代" class="headerlink" title="軟工思維 v.s 產品疊代"></a>軟工思維 v.s 產品疊代</h2><p>一位在Google老員工小黃，曾待過全球衛星製造商SUSS MicroTec，IBM以及Yahoo，他身上流著純軟體工程的血液，事事都要做好規劃且開發時，必須嚴格導循軟體規範。這樣的工作思維讓他很不習新東家Yahoo環境，他看到Yahoo工程師時間一到軟體就匆忙上線，身為主管的他，跟他的下屬說明開發是要按照規範做事，但工程師回應說：「我們產品的疊代週期根本趕不上競爭對手阿」</p>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>軟體工程學中的UML 關系圖</p>
-<h2 id="漸進式節奏是合理的"><a href="#漸進式節奏是合理的" class="headerlink" title="漸進式節奏是合理的"></a>漸進式節奏是合理的</h2><p>我們來分析一下，在資訊時代下的產物(軟體)，其實它的召回成本不算太高，因此在工業時代的擔心其實是沒有必要的。後來小黃他到了Google也漸漸這樣的節奏，意思是說</p>
-<blockquote>
-<p>他已經習慣每一次工作做更好，而不是最到最好。</p>
-</blockquote>
-<p>在資訊時代，最有效的工作方式就是保證每一次要比先前更好，且能做到持續不斷的進步，而不是為了追求最好把工作的週期無限拖長</p>
-<h2 id="iOS更新災情"><a href="#iOS更新災情" class="headerlink" title="iOS更新災情"></a>iOS更新災情</h2><p>最近iphone iOS 13自動更新，引起很多用戶反應發生系統問題，我家人也是深受其害。但讀完上面的例子，你現在可以理解在資訊時代，軟體的開發節奏似乎大於一切，突然懂了什麼…原來這就是資訊時代的節奏阿</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<p>由蘋果人blog整理災情資訊: <a href="https://applealmond.com/posts/59808" target="_blank" rel="noopener">https://applealmond.com/posts/59808</a></p>
-<h2 id="“目標”-與-“行動”-是不一樣的"><a href="#“目標”-與-“行動”-是不一樣的" class="headerlink" title="“目標” 與 “行動” 是不一樣的"></a>“目標” 與 “行動” 是不一樣的</h2><p>同樣的，Google有個基礎服務，這個服務每星期要更新一次，每一次更新雖然會事先規劃好需要更新的全部的功能，但到了升級前，總有別的項目不能如期交付，以至于它的不完美。</p>
-<p>那怎麼辨呢？是否再等一兩天？</p>
-<blockquote>
-<p>Google的做法是不能等，因為永遠沒有完美的時候！</p>
-</blockquote>
-<p>將一個比原來更好的一點的版本按時提供給user，總比為了追求一個完美的版本，最後什麼都提供不了好得多。</p>
-<h2 id="用數學打個比方"><a href="#用數學打個比方" class="headerlink" title="用數學打個比方"></a>用數學打個比方</h2><p>假如一個更好的改進可以讓我們獲得<strong>20%的收益</strong>，<strong>2次</strong>這樣的改進就能獲得40%，而我們自以為的完美最好的改進，不過是30%。</p>
-<p>2 + 2 &gt; 3 的道理誰都懂，做事情不怕慢，就怕停<br>因為我們隨著時間的推進，我們發現</p>
-<blockquote>
-<p>過去所認為的完美，其實並不完美了</p>
-</blockquote>
-<h2 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h2><ul>
-<li>經濟日報 <a href="https://money.udn.com/money/story/6709/3784258" target="_blank" rel="noopener">https://money.udn.com/money/story/6709/3784258</a></li>
-<li>Who first said it? <a href="https://www.entrepreneur.com/article/249676" target="_blank" rel="noopener">(Don’t Let the Perfect Be the Enemy of the Good)</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[啟發] 2分鐘法則才能持之以恆 | 2 Minute Rule Makes Dreams Happened</title>
     <url>/2020/02/12/%E5%95%9F%E7%99%BC-2%E5%88%86%E9%90%98%E6%B3%95%E5%89%87%E6%89%8D%E8%83%BD%E6%8C%81%E4%B9%8B%E4%BB%A5%E6%81%86-2-Minute-Rule-Makes-Dreams-Happened/</url>
     <content><![CDATA[<h1 id="啟發-2分鐘法則才能持之以恆-2-Minute-Rule-Makes-Dreams-Happened"><a href="#啟發-2分鐘法則才能持之以恆-2-Minute-Rule-Makes-Dreams-Happened" class="headerlink" title="[啟發] 2分鐘法則才能持之以恆 | 2 Minute Rule Makes Dreams Happened"></a>[啟發] 2分鐘法則才能持之以恆 | 2 Minute Rule Makes Dreams Happened</h1><p>Status: Published</p>
@@ -2721,6 +2684,54 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
       </tags>
   </entry>
   <entry>
+    <title>[ 啟發 ] Don&#39;t Let Best be Enemy of Better |  最好是更好的敵人</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-Don-t-Let-Best-be-Enemy-of-Better-%E6%9C%80%E5%A5%BD%E6%98%AF%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B5%E4%BA%BA/</url>
+    <content><![CDATA[<h1 id="啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人"><a href="#啟發-Don’t-Let-Best-be-Enemy-of-Better-最好是更好的敵人" class="headerlink" title="[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人"></a>[ 啟發 ] Don’t Let Best be Enemy of Better |  最好是更好的敵人</h1><p>近來讀了一篇很有心得的文章，特此下筆分享給大家，習得觀念是從訂閱&lt;得到&gt;app 有聲書而來的，它是吳軍老師 | 硅谷來信 | 第215封信</p>
+<p>一開始看到這個主題，還不懂它的意思，直到文中提到，工作中很多時候我們無所作為不是因為不想做事，而是一根筋地追求最好(完美)，最後什麼也沒有得到。</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h2 id="更白話的說："><a href="#更白話的說：" class="headerlink" title="更白話的說："></a>更白話的說：</h2><p>人們時常因為一昧追求美完，而忘記自已還是原地踏步，道理很容易懂，不過也常一鼓腦兒想朝向盡善盡美境界，因為價值 = 經驗 x 時間 更是讓人有滿滿的感觸</p>
+<p>雖然我們說要實現最後10%，但這並<strong>不意謂我們不可以接受部份的改進</strong>。很多時候，一個完美結果需要很<strong>多次的改進才能實現，而不是一步就位</strong>。</p>
+<p>一步到位，追求完美的觀念。或許是來自工業時代的觀念，因為製造出來的產品不能有任何的瑕疪，這會影響整體的量產，最終管理學也造就了<a href="https://zh.wikipedia.org/zh-tw/%E5%85%AD%E6%A8%99%E6%BA%96%E5%B7%AE" target="_blank" rel="noopener">6 Sigma(σ)</a>，來提升品質</p>
+<h2 id="保時捷-911的例子"><a href="#保時捷-911的例子" class="headerlink" title="保時捷 911的例子"></a>保時捷 911的例子</h2><p>著名保時捷911的開發者<a href="https://zh.wikipedia.org/wiki/%E6%96%90%E8%BF%AA%E5%8D%97%C2%B7%E4%BF%9D%E6%99%82%E6%8D%B7" target="_blank" rel="noopener">小保時捷</a>，是承習父親的喜愛汽車基因，而他不滿現況<a href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E4%BC%97%E7%94%B2%E5%A3%B3%E8%99%AB" target="_blank" rel="noopener">福斯金龜車</a>(Volkswagen Beetle)馬力不足。也因此下定決心打造一台完美的汽車。他所創立的汽車公司最初所生產的跑車，亦是從福斯金龜車發展而來，但保時捷911更具備他所期望 → 馬力。最後他為了追求完美，成功打造一台保時捷911風靡全球，這個是工業時代的典範。</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p>你看現今911跑車是不是還保有金龜車的神韻</p>
+<h2 id="軟工思維-v-s-產品疊代"><a href="#軟工思維-v-s-產品疊代" class="headerlink" title="軟工思維 v.s 產品疊代"></a>軟工思維 v.s 產品疊代</h2><p>一位在Google老員工小黃，曾待過全球衛星製造商SUSS MicroTec，IBM以及Yahoo，他身上流著純軟體工程的血液，事事都要做好規劃且開發時，必須嚴格導循軟體規範。這樣的工作思維讓他很不習新東家Yahoo環境，他看到Yahoo工程師時間一到軟體就匆忙上線，身為主管的他，跟他的下屬說明開發是要按照規範做事，但工程師回應說：「我們產品的疊代週期根本趕不上競爭對手阿」</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>軟體工程學中的UML 關系圖</p>
+<h2 id="漸進式節奏是合理的"><a href="#漸進式節奏是合理的" class="headerlink" title="漸進式節奏是合理的"></a>漸進式節奏是合理的</h2><p>我們來分析一下，在資訊時代下的產物(軟體)，其實它的召回成本不算太高，因此在工業時代的擔心其實是沒有必要的。後來小黃他到了Google也漸漸這樣的節奏，意思是說</p>
+<blockquote>
+<p>他已經習慣每一次工作做更好，而不是最到最好。</p>
+</blockquote>
+<p>在資訊時代，最有效的工作方式就是保證每一次要比先前更好，且能做到持續不斷的進步，而不是為了追求最好把工作的週期無限拖長</p>
+<h2 id="iOS更新災情"><a href="#iOS更新災情" class="headerlink" title="iOS更新災情"></a>iOS更新災情</h2><p>最近iphone iOS 13自動更新，引起很多用戶反應發生系統問題，我家人也是深受其害。但讀完上面的例子，你現在可以理解在資訊時代，軟體的開發節奏似乎大於一切，突然懂了什麼…原來這就是資訊時代的節奏阿</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>由蘋果人blog整理災情資訊: <a href="https://applealmond.com/posts/59808" target="_blank" rel="noopener">https://applealmond.com/posts/59808</a></p>
+<h2 id="“目標”-與-“行動”-是不一樣的"><a href="#“目標”-與-“行動”-是不一樣的" class="headerlink" title="“目標” 與 “行動” 是不一樣的"></a>“目標” 與 “行動” 是不一樣的</h2><p>同樣的，Google有個基礎服務，這個服務每星期要更新一次，每一次更新雖然會事先規劃好需要更新的全部的功能，但到了升級前，總有別的項目不能如期交付，以至于它的不完美。</p>
+<p>那怎麼辨呢？是否再等一兩天？</p>
+<blockquote>
+<p>Google的做法是不能等，因為永遠沒有完美的時候！</p>
+</blockquote>
+<p>將一個比原來更好的一點的版本按時提供給user，總比為了追求一個完美的版本，最後什麼都提供不了好得多。</p>
+<h2 id="用數學打個比方"><a href="#用數學打個比方" class="headerlink" title="用數學打個比方"></a>用數學打個比方</h2><p>假如一個更好的改進可以讓我們獲得<strong>20%的收益</strong>，<strong>2次</strong>這樣的改進就能獲得40%，而我們自以為的完美最好的改進，不過是30%。</p>
+<p>2 + 2 &gt; 3 的道理誰都懂，做事情不怕慢，就怕停<br>因為我們隨著時間的推進，我們發現</p>
+<blockquote>
+<p>過去所認為的完美，其實並不完美了</p>
+</blockquote>
+<h2 id="參考："><a href="#參考：" class="headerlink" title="參考："></a>參考：</h2><ul>
+<li>經濟日報 <a href="https://money.udn.com/money/story/6709/3784258" target="_blank" rel="noopener">https://money.udn.com/money/story/6709/3784258</a></li>
+<li>Who first said it? <a href="https://www.entrepreneur.com/article/249676" target="_blank" rel="noopener">(Don’t Let the Perfect Be the Enemy of the Good)</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[啟發] 主觀不比客觀差 | Subjective is more Valuable</title>
     <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E4%B8%BB%E8%A7%80%E4%B8%8D%E6%AF%94%E5%AE%A2%E8%A7%80%E5%B7%AE-Subjective-is-more-Valuable/</url>
     <content><![CDATA[<h1 id="啟發-主觀不比客觀差-Subjective-is-more-Valuable"><a href="#啟發-主觀不比客觀差-Subjective-is-more-Valuable" class="headerlink" title="[啟發] 主觀不比客觀差 | Subjective is more Valuable"></a>[啟發] 主觀不比客觀差 | Subjective is more Valuable</h1><p>Status: Published</p>
@@ -2882,6 +2893,64 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
 <p>所以每當你因為總是幹也幹不完的工作而焦慮時<br>不妨試試先停下來，重新梳理一遍手邊的工作</p>
 </blockquote>
 <p>→ 主動地站在對公司業務幫助最大的角度！<br>→ 主動站在提升自己能力的角度！</p>
+]]></content>
+      <categories>
+        <category>啟發</category>
+      </categories>
+      <tags>
+        <tag>得到App</tag>
+        <tag>吳軍</tag>
+        <tag>voice book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
+    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
+    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
+<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
+<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
+<blockquote>
+<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
+</blockquote>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
+<hr>
+<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
+<blockquote>
+<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
+</blockquote>
+<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
+<blockquote>
+<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
+</blockquote>
+<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
+<ul>
+<li>醫療：連續處方箋的藥可以自動續領</li>
+<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
+<li>用餐：送餐服務也可以幫你採購食材</li>
+<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
+</ul>
+<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
+<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
+<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
+<blockquote>
+<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
+</blockquote>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
+<blockquote>
+<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
+</blockquote>
+<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
+<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
+<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<hr>
+<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
+<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
+<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
 ]]></content>
       <categories>
         <category>啟發</category>
@@ -3532,64 +3601,6 @@ jwt.decode(token, &quot;mykey123&quot;, algorithms=&apos;HS256&apos;) #mykey123=
 <blockquote>
 <p>謝謝你的閱讀！我是黃大仙。<br>都市修行人 / 雲端架構師 / GCP講師 / 新手爸爸<br>喜歡研究不同領域事物，誠摯邀請一同交流學習！📒<br>如果有任何疑問，歡迎留下 Private Note 或留言給我！📒<br>👏1下——–給我一點鼓勵。<br>👏2~10下—–文章對你有幫助。<br>👏50下——-有興趣看「閱讀分享」相關的分享。</p>
 </blockquote>
-]]></content>
-      <categories>
-        <category>啟發</category>
-      </categories>
-      <tags>
-        <tag>得到App</tag>
-        <tag>吳軍</tag>
-        <tag>voice book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[啟發] 如何斷除壞習慣 | To Break Bad Habits</title>
-    <url>/2020/02/12/%E5%95%9F%E7%99%BC-%E5%A6%82%E4%BD%95%E6%96%B7%E9%99%A4%E5%A3%9E%E7%BF%92%E6%85%A3-To-Break-Bad-Habits/</url>
-    <content><![CDATA[<h1 id="啟發-如何斷除壞習慣-To-Break-Bad-Habits"><a href="#啟發-如何斷除壞習慣-To-Break-Bad-Habits" class="headerlink" title="[啟發] 如何斷除壞習慣 | To Break Bad Habits"></a>[啟發] 如何斷除壞習慣 | To Break Bad Habits</h1><p>Blog URL: <a href="https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY" target="_blank" rel="noopener">https://drive.mindmup.com/map/1IkHfIjj0-XzhLBl_TNJLgjMhtEwER7jY</a><br>Status: Published<br>text convert: <a href="https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1qIKKayDH0S7G5dyX3-3ImW3WiqgrSKwH</a></p>
-<p>生活中有許多的壞習慣，比說無限上綱的滑手機，看東森新聞XDD。但要如何讓壞習慣不可能發生？我從 &lt;原子習慣&gt; 得到的啟發，我們先看一個故事，1830年《鐘樓怪人》的作者<a href="https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%85%8B%E5%A4%9A%C2%B7%E9%9B%A8%E6%9E%9C" target="_blank" rel="noopener">雨果</a>，他面臨一個不可能的截稿期限，他要在一年內完成作品。</p>
-<p>為了對抗拖延的惡習，阻止娛樂活動，雨果想出一個怪招，他請助理把他所有的衣服都鎖進一個大櫃子裡，除了一條大披巾，他沒有東西可穿。既然沒有能穿出門的衣服，1830年未他就整整待在書房瘋狂寫作，結果大作《鐘樓怪人》就在1831年1月出版</p>
-<blockquote>
-<p>有時候，成功的關鍵除了讓好習慣變得容易執行之外<br>更重要的是把壞習慣變困難。</p>
-</blockquote>
-<p><img src="Untitled.png" alt="Untitled.png"></p>
-<p>這是行為改變第三法則的反轉：「<strong>試行動困難無比」</strong>。如果發現自己一直難以貫徹計畫，我們可以效法雨果，藉由創造心理學家所謂的「承諾機制」，增加壞習慣的難度。</p>
-<hr>
-<h2 id="承諾機制"><a href="#承諾機制" class="headerlink" title="承諾機制"></a><strong>承諾機制</strong></h2><p>當雨果把衣服都鎖起來，好讓自己專心寫作<br>就是創造了一個承諾機制，那什麼是？我們先談談定義</p>
-<blockquote>
-<p><strong><em>承諾機制是用當下做的選擇來控制未來的行為</em></strong>。這是鎖定未來行為，把你跟好習慣綁在一起，並讓你遠離惡習的一個方法。</p>
-</blockquote>
-<p>生活中有很多方法可以創造<em>承諾機制</em>。你可以買獨立包裝而非家庭號的食物，來減低過度飲食的機率，出門時會刻意不帶錢包，以免被誘惑去買速食。</p>
-<blockquote>
-<p>而承諾機制之所以有用<br>是因為它可以在你淪為誘惑的受者之前，好好利用良好的意圖</p>
-</blockquote>
-<h2 id="善用科技"><a href="#善用科技" class="headerlink" title="善用科技"></a><strong>善用科技</strong></h2><p>讓好習慣自動化，並消除壞習慣，方法很多，通常都跟善用科技有關。因此承諾機制常搭配科技的輔助，比方說科技能讓原本困難、惱人與複雜的行動，變得輕鬆、無痛且簡單。</p>
-<ul>
-<li>醫療：連續處方箋的藥可以自動續領</li>
-<li>理財：透過自動提撥特定比例的薪資，來為退休生活存錢</li>
-<li>用餐：送餐服務也可以幫你採購食材</li>
-<li>生產力：可以用網站封鎖工具阻斷社群媒體的瀏覽</li>
-</ul>
-<h2 id="iPhone-Screen-Time-限制App使用"><a href="#iPhone-Screen-Time-限制App使用" class="headerlink" title="iPhone Screen Time 限制App使用"></a>iPhone Screen Time 限制App使用</h2><p><strong>消除壞習慣，</strong>我自已也有一套方法，<strong>克制自已使用手機</strong>，比方說iPhone內建的 Screen Time功能，透過它我限制使用Line、Instagram、Facebook的使用間間，我設定為一天僅可以用45分鐘。對於筆電上的Line我則啟用自動鎖定模式，若三分鐘未使用就需要重新輸入一次密碼。</p>
-<p>我還聽到更狠的是，透過插座定時器，裝在網路路由上，時間到就斷電，即是斷網路的概念，如果家有中有重點網路成隱的朋友，我是可以協助安裝XD</p>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
-<h2 id="自動化的缺點"><a href="#自動化的缺點" class="headerlink" title="自動化的缺點"></a>自動化的缺點</h2><p>當然，科技的力量也可能對我們不利。瘋狂追劇之所以變成習慣，是因為比起繼續盯著螢幕，你要投注更多心力才能停止看劇要看下一集，你連按個鈕都不用！Netfix 或YouTube 會自動為你播放，你只要保持眼睛張開就可以了(你看看多自動化阿)。</p>
-<p>科技帶來某種程度的方便，讓你可以滿足最微小的突發奇想與欲望。稍微覺得有點餓，就能把食物仙到家門口，或是稍微覺得有點無聊，就能迷航於廣闊的社群媒體之海。 當滿足欲望所需的努力基本上趨近於零，你會發現自己不知不覺陷入當下浮現的任何衝動。</p>
-<blockquote>
-<p>自動化的缺點，就是可能會讓我們從一項簡單任務到另一項簡單任務</p>
-</blockquote>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>但我發現自己只要一有空閒，就會被社群媒體吸引，只要出現</p>
-<blockquote>
-<p><strong><em>毫秒的無聊</em></strong>就能讓我拿起手機。我們很容易把這些小小的分心美化成「休息一下」，但長久累積下來，會變成嚴重的問題。「只要再一分鐘」的心態一直摸著我，阻礙我去做任何重要的事。</p>
-</blockquote>
-<h2 id="大絕招，改密碼"><a href="#大絕招，改密碼" class="headerlink" title="大絕招，改密碼"></a>大絕招，改密碼</h2><p>再來是作者的親身經歷，寫這本書的那一年，試驗了一個時間管理策略：請他的助理每週一會改掉我所有社群媒體帳號的密碼，讓作者無法登入，於是呢整個期間，就能不受干擾地工作。</p>
-<p>助理會在週五把新的密碼寄給作者，使其在週末盡情享用社群媒體，可到了週一，她會再次更改密碼。這個方法你也可以找個朋友或家人合作，每週為彼此重設密碼。</p>
-<p>六年前，還是替代役的我，也迷上最火紅的英雄聯盟 | LOL，當然也是請女友(現任的老婆)幫我修改密碼，從此之就沒有登入過遊戲了，要斷絕壞習慣就要給一次痛快！</p>
-<p><img src="Untitled3.png" alt="Untitled3.png"></p>
-<hr>
-<h2 id="結論："><a href="#結論：" class="headerlink" title="結論："></a>結論：</h2><p>很多書本教你如何建立起好習慣，但好的書同時也不忘教你如何遠離壞習慣，因為我們不可永遠保持著正念，總要用些方法幫自已自然地遠離惡習。</p>
-<p>科技為你所用時，自動化能讓好習慣變得無可避免，但科技也可能滋長壞習慣。了解壞習慣產生之前，早一步意識到它，這是鎖定未來行為，而不是依賴當下意志力的終極之道。</p>
-<p>透過運用<strong>承諾機制</strong>、<strong>策略性的一次性選擇</strong>，你可以打造一個<strong>充滿必然性</strong>的環境，在這個空間裡，好習慣不再只是你希望的結果，而是幾乎保證會發生的結果。</p>
 ]]></content>
       <categories>
         <category>啟發</category>
