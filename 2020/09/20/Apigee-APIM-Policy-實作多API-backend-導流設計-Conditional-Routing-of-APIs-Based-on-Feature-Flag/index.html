@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="APIGEE,BLUE GREEN DEPLOYMENT,MULTIPLE TARGET ENDPOINT,API GATEWAY,APIM," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Purpose Apigee提供一個更強的方法，使用同一個proxy endpoint保留不變，異動的是後端的Target Endpoint，如此可以使route-rule讓流量導向新版v2   Prepare Target Pointstep1. deploy Proxy, Product script 執行前請先準備好, Apigee account, password, organizati">
+<meta name="keywords" content="APIGEE,BLUE GREEN DEPLOYMENT,MULTIPLE TARGET ENDPOINT,API GATEWAY,APIM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Apigee] APIM Policy 實作多API backend 導流設計 | Conditional Routing of APIs Based on Feature Flag">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="Purpose Apigee提供一個更強的方法，使用同一個proxy endpoint保留不變，異動的是後端的Target Endpoint，如此可以使route-rule讓流量導向新版v2   Prepare Target Pointstep1. deploy Proxy, Product script 執行前請先準備好, Apigee account, password, organizati">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled24.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled25.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled26.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled27.png">
+<meta property="og:updated_time" content="2020-09-20T13:08:20.077Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/09/20/Apigee-APIM-Policy-實作多API-backend-導流設計-Conditional-Routing-of-APIs-Based-on-Feature-Flag/"/>
+
+
+
+
+
+  <title>[Apigee] APIM Policy 實作多API backend 導流設計 | Conditional Routing of APIs Based on Feature Flag | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/09/20/Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Apigee] APIM Policy 實作多API backend 導流設計 | Conditional Routing of APIs Based on Feature Flag</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-20T20:05:26+08:00">
+                2020-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/APIM/" itemprop="url" rel="index">
+                    <span itemprop="name">APIM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Purpose"><a href="#Purpose" class="headerlink" title="Purpose"></a>Purpose</h1><p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>Apigee提供一個更強的方法，使用同一個proxy endpoint保留不變，異動的是後端的Target Endpoint，如此可以使<code>route-rule</code>讓流量導向新版v2</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<hr>
+<h1 id="Prepare-Target-Point"><a href="#Prepare-Target-Point" class="headerlink" title="Prepare Target Point"></a>Prepare Target Point</h1><h3 id="step1-deploy-Proxy-Product"><a href="#step1-deploy-Proxy-Product" class="headerlink" title="step1. deploy Proxy, Product"></a>step1. deploy Proxy, Product</h3><ul>
+<li>script 執行前請先準備好, Apigee account, password, organization 供環境變數使用</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">wget https://storage.googleapis.com/apigee-quest/scripts/lab13.rewind.sh</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">./lab13.rewind.sh</span></pre></td></tr></table></figure>
+
+<p>執行script畫面</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h3 id="step2-Check-proxy-with-lab13"><a href="#step2-Check-proxy-with-lab13" class="headerlink" title="step2. Check proxy with lab13"></a>step2. Check proxy with lab13</h3><ul>
+<li>檢查script 部署的proxy, product, apps</li>
+</ul>
+<p>proxy &gt; done</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>product &gt; done</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p>Apps &gt; done</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="step3-Save-Apps-key"><a href="#step3-Save-Apps-key" class="headerlink" title="step3. Save Apps key"></a>step3. Save Apps key</h3><ul>
+<li>保存Apps產生的<code>key</code>，供後面API測試</li>
+</ul>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h1 id="Integrate-Stackdriver-Add-Extension-Policy-to-your-API"><a href="#Integrate-Stackdriver-Add-Extension-Policy-to-your-API" class="headerlink" title="Integrate Stackdriver Add Extension Policy to your API"></a>Integrate Stackdriver Add Extension Policy to your API</h1><ul>
+<li>整合GCP monitoring，可以把API operation records 送進stackdriver管理</li>
+<li>操作流程：新增Stackdirver extension: Proxy Endpoints → PreFlow → <code>+Step</code></li>
+<li>並改寫以下xml 內官，*記得換你自已專案的名字<code>&quot;PROJECT_ID_HERE&quot;</code></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Input</span>&gt;</span>&lt;![CDATA[</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">         &#123;  "logName": "example-log",</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">            "resource": &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">                "type": "global",</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">                "labels": &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">                    "project_id": "PROJECT_ID_HERE"</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">                &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">            &#125;,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            "message": &#123;"Action": "&#123;request.verb&#125;", "ClientIP": "&#123;client.ip&#125;", "responsePayload": &#123;response.content&#125;,  "Apiproxyname": "&#123;apiproxy.name&#125;"&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">     ]]&gt;<span class="tag">&lt;/<span class="name">Input</span>&gt;</span></span></pre></td></tr></table></figure>
+
+<p>xml 修改示意圖</p>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h1 id="Provide-alternate-flow-logic-for-the-cloud-as-a-target"><a href="#Provide-alternate-flow-logic-for-the-cloud-as-a-target" class="headerlink" title="Provide alternate flow logic for the cloud as a target"></a>Provide alternate flow logic for the cloud as a target</h1><ul>
+<li>重點來了，除了原有default target backend之外，在外加<code>新的backend</code></li>
+<li><code>Target Endpoints</code> 新增一個名為<code>cloud</code>(new target endpoint)</li>
+</ul>
+<h3 id="step1"><a href="#step1" class="headerlink" title="step1."></a>step1.</h3><ul>
+<li>請在Target Endpoints → 點選”+” 為其新增一個Target Endpooint</li>
+</ul>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="step2"><a href="#step2" class="headerlink" title="step2."></a>step2.</h3><ul>
+<li>命名：<code>cloud</code></li>
+<li>Target：<a href="http://cloud.hipster.s.apigee.com/products" target="_blank" rel="noopener">http://cloud.hipster.s.apigee.com/products</a></li>
+</ul>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step3-Check-2nd-TargetEndpoint"><a href="#step3-Check-2nd-TargetEndpoint" class="headerlink" title="step3. Check 2nd TargetEndpoint"></a>step3. Check 2nd TargetEndpoint</h3><ul>
+<li>現在可以看到Target Endpoints有二個分別為<ul>
+<li><code>default</code></li>
+<li><code>cloud</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<ul>
+<li><p>檢視一下新 TargetEndpoint<br>API會顯示簡單的products ID, description etc.</p>
+<p>  <a href="http://cloud.hipster.s.apigee.com/products" target="_blank" rel="noopener">http://cloud.hipster.s.apigee.com/products</a></p>
+<p>  <img src="Untitled11.png" alt="Untitled11.png"></p>
+</li>
+</ul>
+<h3 id="step4-Cloud-Target-Add-“Assign-Message”"><a href="#step4-Cloud-Target-Add-“Assign-Message”" class="headerlink" title="step4. Cloud Target Add “Assign Message”"></a>step4. Cloud Target Add “Assign Message”</h3><ul>
+<li>要在cloud 上加上policy<code>&quot;Assign Message&quot;</code>，並且名為<code>Keep Target URL</code></li>
+<li>“Assign Message”目的為 response content 可以清楚Target Endpoint 是來自<code>cloud</code></li>
+</ul>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<p>新增policy <code>&quot;Assign Message&quot;</code></p>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<h3 id="step5-Check"><a href="#step5-Check" class="headerlink" title="step5. Check"></a>step5. Check</h3><ul>
+<li>對針<code>&quot;Assign Message&quot;</code>修改policy</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<p>編輯 xml</p>
+<ul>
+<li>透過<DisplayName><code>Keep Target URL</code></DisplayName></li>
+<li>其中也使用了<Name><code>target.copy.queryparams</code></Name> 取環境變數</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">AssignMessage</span> <span class="attr">async</span>=<span class="string">"false"</span> <span class="attr">continueOnError</span>=<span class="string">"false"</span> <span class="attr">enabled</span>=<span class="string">"true"</span> <span class="attr">name</span>=<span class="string">"Keep-Target-URL"</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">DisplayName</span>&gt;</span>Keep Target URL<span class="tag">&lt;/<span class="name">DisplayName</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">AssignVariable</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">Name</span>&gt;</span>target.copy.pathsuffix<span class="tag">&lt;/<span class="name">Name</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">Value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">Value</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;/<span class="name">AssignVariable</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">AssignVariable</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">Name</span>&gt;</span>target.copy.queryparams<span class="tag">&lt;/<span class="name">Name</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">Value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">Value</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;/<span class="name">AssignVariable</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">IgnoreUnresolvedVariables</span>&gt;</span>true<span class="tag">&lt;/<span class="name">IgnoreUnresolvedVariables</span>&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">AssignTo</span> <span class="attr">createNew</span>=<span class="string">"false"</span> <span class="attr">transport</span>=<span class="string">"http"</span> <span class="attr">type</span>=<span class="string">"request"</span>/&gt;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">AssignMessage</span>&gt;</span></span></pre></td></tr></table></figure>
+
+<p>編輯完的畫面如下 </p>
+<p>This new policy has rules to prevent changes to the Target Endpoint URL.</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h3 id="step6-default-Target-Add-a-“Route-rule”"><a href="#step6-default-Target-Add-a-“Route-rule”" class="headerlink" title="step6. default Target Add a “Route rule”"></a>step6. default Target Add a “Route rule”</h3><ul>
+<li>請在<code>Proxy Endpoints.default</code>新增路由新的Target Endpoint(cloud)</li>
+<li>詳細路徑 <code>*Proxy Endpoint</code> &gt; default &gt; PreFlow</li>
+</ul>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="step7-check-2-RouteRule"><a href="#step7-check-2-RouteRule" class="headerlink" title="step7. check 2 RouteRule"></a>step7. check 2 <code>RouteRule</code></h3><ul>
+<li><code>RouteRule</code>:<ol>
+<li>cloud 新增的</li>
+</ol>
+  *這邊塞入xml <code>verifyapikey.verify-api-key.platform equals &quot;cloud&quot;</code> 規擇，可根據API key的不同導向至不同的Target Endpoint<ol start="2">
+<li>default 即有的</li>
+</ol>
+</li>
+</ul>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<ul>
+<li><p>Overview</p>
+<p>  新增完cloud，請確認有2個Target Endpoints存在</p>
+</li>
+</ul>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<h3 id="step8-Deployment-to-test"><a href="#step8-Deployment-to-test" class="headerlink" title="step8. Deployment to test"></a>step8. Deployment to test</h3><ul>
+<li>以上的policy 新增修改，請部署至 <strong>test 環境</strong></li>
+<li>另外也請確認latest revision.</li>
+</ul>
+<p><img src="Untitled19.png" alt="Untitled19.png"></p>
+<h1 id="Flag-the-developer-app-to-route-its-calls-to-the-cloud"><a href="#Flag-the-developer-app-to-route-its-calls-to-the-cloud" class="headerlink" title="Flag the developer app to route its calls to the cloud"></a>Flag the developer app to route its calls to the cloud</h1><p>Apps Custom Attributes 可以增加key:value值來辨識背後的API backend</p>
+<ul>
+<li>請至Apps: <code>lab13-Product-App</code></li>
+<li>編輯 &gt; <code>Custom Attributes</code><ul>
+<li>Name: <code>platform</code></li>
+<li>Value: <code>cloud</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="step1-edit"><a href="#step1-edit" class="headerlink" title="step1. edit"></a>step1. edit</h3><p><img src="Untitled20.png" alt="Untitled20.png"></p>
+<h3 id="step2-Custom-Attributes"><a href="#step2-Custom-Attributes" class="headerlink" title="step2. Custom Attributes"></a>step2. Custom Attributes</h3><ul>
+<li>Key-value pairs值可更細微對API Target backend控制</li>
+</ul>
+<p><img src="Untitled21.png" alt="Untitled21.png"></p>
+<h1 id="Create-a-new-app-that-remains-routed-to-the-legacy-backend"><a href="#Create-a-new-app-that-remains-routed-to-the-legacy-backend" class="headerlink" title="Create a new app that remains routed to the legacy backend"></a>Create a new app that remains routed to the legacy backend</h1><p>為了實驗不同的API key 導向不同的Target Endpoint，因此我們新增第二個Apps</p>
+<ul>
+<li>請至  Publish &gt; Apps 命名為<code>Legacy App</code></li>
+<li>Product 同樣納入 <code>lab13-cataloh-Products</code></li>
+</ul>
+<h3 id="step1-legacy-App"><a href="#step1-legacy-App" class="headerlink" title="step1. legacy App"></a>step1. legacy App</h3><p><img src="Untitled22.png" alt="Untitled22.png"></p>
+<h3 id="step2-Get-2nd-key"><a href="#step2-Get-2nd-key" class="headerlink" title="step2. Get 2nd key"></a>step2. Get 2nd key</h3><ul>
+<li>取得新的Apps Key</li>
+</ul>
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<h1 id="API-Diagnostics-Trace-Tool"><a href="#API-Diagnostics-Trace-Tool" class="headerlink" title="API Diagnostics: Trace Tool"></a>API Diagnostics: Trace Tool</h1><p>以上的準備都是為此的測試，這邊請先收錄二隻Apps key，而Target Endpoint目標都是同一個</p>
+<h3 id="step1-Track-calls-with-Trace"><a href="#step1-Track-calls-with-Trace" class="headerlink" title="step1. Track calls with Trace"></a>step1. Track calls with Trace</h3><ul>
+<li>Develop &gt; API Proxies &gt; lab13-catalog proxy</li>
+<li>/products?apikey=[API-KEY -01]</li>
+<li>/products?apikey=[API-KEY -02]</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#key1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">https://joeuang-eval-test.apigee.net/lab13-catalog/v1/products?apikey=YiXXXXXXtN</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#key2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">https://joehuang-eval-test.apigee.net/lab13-catalog/v1/products?apikey=bcLXXXXXX5ih</span></pre></td></tr></table></figure>
+
+<h3 id="step2-1st-API-Key-as-the-value-of-the-apikey-query-parameter"><a href="#step2-1st-API-Key-as-the-value-of-the-apikey-query-parameter" class="headerlink" title="step2. 1st API Key as the value of the apikey query parameter."></a>step2. 1st API Key as the value of the apikey query parameter.</h3><ul>
+<li>第一把 API Key的測試，得到 response 200</li>
+<li>且在Target Requests 得到<code>&quot;Keep Target URL&quot;</code>，代並這次的requst是打<code>cloud</code></li>
+</ul>
+<p><img src="Untitled24.png" alt="Untitled24.png"></p>
+<p>問題#1 為什麼Apps custome attributes 可以判斷不同的Target Endpoints？</p>
+<ul>
+<li>因為我們有<code>condition flow</code> 其中expression 可以幫忙比對content內容</li>
+</ul>
+<p><img src="Untitled25.png" alt="Untitled25.png"></p>
+<p>還記得剛才設定的custome attributes 這個<code>flag</code>，就是透過condition flow幫忙比對的</p>
+<p><img src="Untitled26.png" alt="Untitled26.png"></p>
+<h3 id="step3-2nd-API-Key-as-the-value-of-the-apikey-query-parameter"><a href="#step3-2nd-API-Key-as-the-value-of-the-apikey-query-parameter" class="headerlink" title="step3. 2nd API Key as the value of the apikey query parameter."></a>step3. 2nd API Key as the value of the apikey query parameter.</h3><ul>
+<li>第二把 API Key的測試，得到同樣得到 response 200</li>
+<li>但是這次的Target Endpoint是不一樣的，請注意是”default”</li>
+</ul>
+<p><img src="Untitled27.png" alt="Untitled27.png"></p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>服務在更版時候，我們常用藍綠部署(Blue Green Deployment)，可以保證系統在不間斷提供服務的情況下，上新版的部署方式，一般會在Load balance上實作。現在我們了解Apigee polocy 方法可以實作multiple Target，如此我們就可以鎖定同樣的proxy endpoint。透過修改APIM policy增加不同的API Endpoint，可將流量導到不同的版本的API backend(default, cloud)。方法是透過<code>Condition flow</code> 偵查不同組的API Key (key1, key2)，可以將流量轉發到不同的服務上(Target Endpoints)。</p>
+<p>此作法可較過去更有彈性，怎麼說呢？因為我們二邊的Target Endpoints，不僅都保留住，只要不同的API key，還都能通往到目的地。如果你是developer, system administrator 對APIM 有興趣妨可以考慮更彈的管理版本部署方法。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/APIGEE/" rel="tag"># APIGEE</a>
+          
+            <a href="/tags/BLUE-GREEN-DEPLOYMENT/" rel="tag"># BLUE GREEN DEPLOYMENT</a>
+          
+            <a href="/tags/MULTIPLE-TARGET-ENDPOINT/" rel="tag"># MULTIPLE TARGET ENDPOINT</a>
+          
+            <a href="/tags/API-GATEWAY/" rel="tag"># API GATEWAY</a>
+          
+            <a href="/tags/APIM/" rel="tag"># APIM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/23/Istio-%E5%A4%9A%E7%B5%84K8s%E5%8F%A2%E9%9B%86%EF%BC%8C%E5%AF%A6%E4%BD%9C%E7%B5%B1%E4%B8%80Istio-%E7%AE%A1%E7%90%86-Anthos-Shared-Control-Plane-in-Multi-Cluster/" rel="next" title="[Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster">
+                <i class="fa fa-chevron-left"></i> [Istio] 多組K8s叢集，實作統一Istio 管理 | Anthos Shared Control Plane in Multi-Cluster
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/20/Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience/" rel="prev" title="[Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience">
+                [Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Purpose"><span class="nav-number">1.</span> <span class="nav-text">Purpose</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prepare-Target-Point"><span class="nav-number">2.</span> <span class="nav-text">Prepare Target Point</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-deploy-Proxy-Product"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. deploy Proxy, Product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Check-proxy-with-lab13"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. Check proxy with lab13</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Save-Apps-key"><span class="nav-number">2.0.3.</span> <span class="nav-text">step3. Save Apps key</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Integrate-Stackdriver-Add-Extension-Policy-to-your-API"><span class="nav-number">3.</span> <span class="nav-text">Integrate Stackdriver Add Extension Policy to your API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Provide-alternate-flow-logic-for-the-cloud-as-a-target"><span class="nav-number">4.</span> <span class="nav-text">Provide alternate flow logic for the cloud as a target</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Check-2nd-TargetEndpoint"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. Check 2nd TargetEndpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-Cloud-Target-Add-“Assign-Message”"><span class="nav-number">4.0.4.</span> <span class="nav-text">step4. Cloud Target Add “Assign Message”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step5-Check"><span class="nav-number">4.0.5.</span> <span class="nav-text">step5. Check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step6-default-Target-Add-a-“Route-rule”"><span class="nav-number">4.0.6.</span> <span class="nav-text">step6. default Target Add a “Route rule”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step7-check-2-RouteRule"><span class="nav-number">4.0.7.</span> <span class="nav-text">step7. check 2 RouteRule</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step8-Deployment-to-test"><span class="nav-number">4.0.8.</span> <span class="nav-text">step8. Deployment to test</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Flag-the-developer-app-to-route-its-calls-to-the-cloud"><span class="nav-number">5.</span> <span class="nav-text">Flag the developer app to route its calls to the cloud</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-edit"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. edit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Custom-Attributes"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. Custom Attributes</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create-a-new-app-that-remains-routed-to-the-legacy-backend"><span class="nav-number">6.</span> <span class="nav-text">Create a new app that remains routed to the legacy backend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-legacy-App"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1. legacy App</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Get-2nd-key"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. Get 2nd key</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API-Diagnostics-Trace-Tool"><span class="nav-number">7.</span> <span class="nav-text">API Diagnostics: Trace Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Track-calls-with-Trace"><span class="nav-number">7.0.1.</span> <span class="nav-text">step1. Track calls with Trace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-1st-API-Key-as-the-value-of-the-apikey-query-parameter"><span class="nav-number">7.0.2.</span> <span class="nav-text">step2. 1st API Key as the value of the apikey query parameter.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-2nd-API-Key-as-the-value-of-the-apikey-query-parameter"><span class="nav-number">7.0.3.</span> <span class="nav-text">step3. 2nd API Key as the value of the apikey query parameter.</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">8.</span> <span class="nav-text">結論</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

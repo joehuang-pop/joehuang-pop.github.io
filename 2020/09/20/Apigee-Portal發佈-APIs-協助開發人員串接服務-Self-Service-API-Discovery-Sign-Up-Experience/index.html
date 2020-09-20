@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="APIGEE,API GATEWAY,APIM PORTAL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="PurposeAPIM是為開發人員提供一個簡單、靈活、全受管，且可以處理針對應用程式後端而建立和操作穩固 API 的所有層面。那麼透過 API Management，您可以用較少的投資更快速啟動新服務，以便將重點放在建置核心商業服務上。因為API Management 的建置是可以建制一個Developer Portal透過已編譯過的Open API sepc，供開發者測試API 並掌握各種Res">
+<meta name="keywords" content="APIGEE,API GATEWAY,APIM PORTAL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery &amp; Sign Up Experience">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="PurposeAPIM是為開發人員提供一個簡單、靈活、全受管，且可以處理針對應用程式後端而建立和操作穩固 API 的所有層面。那麼透過 API Management，您可以用較少的投資更快速啟動新服務，以便將重點放在建置核心商業服務上。因為API Management 的建置是可以建制一個Developer Portal透過已編譯過的Open API sepc，供開發者測試API 並掌握各種Res">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled24.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled25.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled26.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled27.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled28.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled29.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled30.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled31.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled32.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled33.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled34.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled35.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled36.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled37.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled38.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled39.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled40.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled41.png">
+<meta property="og:updated_time" content="2020-09-20T13:08:20.974Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/09/20/Apigee-Portal發佈-APIs-協助開發人員串接服務-Self-Service-API-Discovery-Sign-Up-Experience/"/>
+
+
+
+
+
+  <title>[Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/09/20/Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-20T21:03:25+08:00">
+                2020-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/APIM/" itemprop="url" rel="index">
+                    <span itemprop="name">APIM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Purpose"><a href="#Purpose" class="headerlink" title="Purpose"></a>Purpose</h1><p>APIM是為開發人員提供一個簡單、靈活、全受管，且可以處理針對應用程式後端而建立和操作穩固 API 的所有層面。那麼透過 API Management，您可以用較少的投資更快速啟動新服務，以便將重點放在建置核心商業服務上。因為API Management 的建置是可以建制一個Developer Portal透過已編譯過的Open API sepc，供開發者測試API 並掌握各種Response, Parameter設計，以利快速串接API 開發TSP 服務，今天的分享即是在Apigee上刻一個專有 Developer Portal供你的合作廠商測試你的API。</p>
+<h1 id="Prepare-Target-Point"><a href="#Prepare-Target-Point" class="headerlink" title="Prepare Target Point"></a>Prepare Target Point</h1><ul>
+<li>準備測試用的API backend, API proxy, product, Apps</li>
+</ul>
+<h3 id="step1-deploy-Proxy-Product"><a href="#step1-deploy-Proxy-Product" class="headerlink" title="step1. deploy Proxy, Product"></a>step1. deploy Proxy, Product</h3><p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="step2-Check-proxy-with-lab6"><a href="#step2-Check-proxy-with-lab6" class="headerlink" title="step2. Check proxy with lab6"></a>step2. Check proxy with lab6</h3><p>API proxy &gt; done</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p>API products &gt; done</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p>Apps &gt; done</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="step3-Export-your-API-Proxy"><a href="#step3-Export-your-API-Proxy" class="headerlink" title="step3. Export your API Proxy"></a>step3. Export your API Proxy</h3><p>這個步驟只是備份用而已，對後面的實作沒有關系</p>
+<ul>
+<li>請至<code>lab6</code> proxy</li>
+<li>確認你的<code>lab6-catalog.xml</code> 檔案是否存在，以及確認APIProxy revision=x name 要等於 =”lab6-catalog”</li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="step4-Create-GCS-and-upload-APIProxy-folder"><a href="#step4-Create-GCS-and-upload-APIProxy-folder" class="headerlink" title="step4. Create GCS and upload APIProxy folder"></a>step4. Create GCS and upload APIProxy folder</h3><p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h1 id="OpenAPI-Sepc"><a href="#OpenAPI-Sepc" class="headerlink" title="OpenAPI Sepc"></a>OpenAPI Sepc</h1><p>上傳Open API 範例至Spec</p>
+<h3 id="step1-import-URL"><a href="#step1-import-URL" class="headerlink" title="step1. import URL"></a>step1. import URL</h3><ul>
+<li>請至 Develop&gt; Specs &gt; <code>import URL</code></li>
+<li>name: Hipster Products API</li>
+<li>Import URL: <a href="https://storage.googleapis.com/apigee-quest/data/hipster-products.yml" target="_blank" rel="noopener">https://storage.googleapis.com/apigee-quest/data/hipster-products.yml</a></li>
+<li>請修改範例中的{edge-org}的名稱，以利script運行</li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>記錄Apps KEY</p>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="step2-Authorize-KEY"><a href="#step2-Authorize-KEY" class="headerlink" title="step2. Authorize KEY"></a>step2. Authorize KEY</h3><ul>
+<li>我們在Open Spec頁面中，可以直接測試API</li>
+<li>但必預先驗證過Key的值，才能繼續在測試頁面發送request</li>
+</ul>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<p>驗證 &gt; done</p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h3 id="step3-Test-Send-out-request"><a href="#step3-Test-Send-out-request" class="headerlink" title="step3. Test Send out request"></a>step3. Test Send out request</h3><p>可以正常發送request</p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="認識OpenAPI-Spec-格式"><a href="#認識OpenAPI-Spec-格式" class="headerlink" title="認識OpenAPI Spec 格式"></a>認識OpenAPI Spec 格式</h3><p>#1 <code>basePath</code>:</p>
+<p>說在在這個endpoint之下的那一個basePath是可用的</p>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<p>#2 <code>securityDefinitions</code>:</p>
+<p>說明這隻API 使用的驗證方試為verify API key</p>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<p>#3 <code>paths</code>:</p>
+<p>說明有實作那些methods</p>
+<ul>
+<li>description</li>
+<li>schema</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<p>#4 <code>definitions</code></p>
+<ul>
+<li>其中使用了$ref 更細項的<code>definitions</code>，同時也將定義的後面寫在下方</li>
+</ul>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<p>右側欄的項目，都是來自Open API spec中所定義的<code>definitions</code></p>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="step3-Test-API"><a href="#step3-Test-API" class="headerlink" title="step3. Test API"></a>step3. Test API</h3><ul>
+<li>測試API，得到 200 response</li>
+<li>同時也得到完整的response structure</li>
+</ul>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<p>測試結果如下</p>
+<p>response results</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="attr">"products"</span>: [</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      <span class="attr">"id"</span>: <span class="string">"OLJCESPC7Z"</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">      <span class="attr">"name"</span>: <span class="string">"Vintage Typewriter"</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">      <span class="attr">"description"</span>: <span class="string">"This typewriter looks good in your living room."</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>#1 In console畫面可得到如下</p>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<p>#2 terminal curl方法測試</p>
+<p><img src="Untitled19.png" alt="Untitled19.png"></p>
+<p>#3 HTTP 方法測試</p>
+<p><img src="Untitled20.png" alt="Untitled20.png"></p>
+<h1 id="API-Publishing-Developer-Portal"><a href="#API-Publishing-Developer-Portal" class="headerlink" title="API Publishing: Developer Portal"></a>API Publishing: Developer Portal</h1><p>完成了SmartDoc 中的測試，接下來我們把API 發佈至public製作一個網站供測試，步驟如下</p>
+<h3 id="step1-建立developer-portal"><a href="#step1-建立developer-portal" class="headerlink" title="step1. 建立developer portal"></a>step1. 建立developer portal</h3><ul>
+<li><strong>Name:</strong> <code>Demo_Hipster Developer Portal</code></li>
+<li><strong>Description</strong>: <code>Developer Portal for Hipster APIs</code></li>
+</ul>
+<p><img src="Untitled21.png" alt="Untitled21.png"></p>
+<p>符合命名</p>
+<p><img src="Untitled22.png" alt="Untitled22.png"></p>
+<h3 id="step2-加入APIM-內的APIs"><a href="#step2-加入APIM-內的APIs" class="headerlink" title="step2. 加入APIM 內的APIs"></a>step2. 加入APIM 內的APIs</h3><ul>
+<li>因為Apigee Edge 版本差異，項目可能為APIs, 亦或是API Catalog</li>
+</ul>
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<p>右上角的 + API</p>
+<p><img src="Untitled24.png" alt="Untitled24.png"></p>
+<h3 id="step3-3-Follows-to-inest-API"><a href="#step3-3-Follows-to-inest-API" class="headerlink" title="step3. 3 Follows to inest API"></a>step3. 3 Follows to inest API</h3><ul>
+<li>選擇API Products</li>
+</ul>
+<p><img src="Untitled25.png" alt="Untitled25.png"></p>
+<ul>
+<li>DOCUMENTATION<br>選擇你的Open API Spec</li>
+</ul>
+<p><img src="Untitled26.png" alt="Untitled26.png"></p>
+<p>記得選擇先帶入的Open API Spec 命為<code>Hipster Products API</code></p>
+<p><img src="Untitled27.png" alt="Untitled27.png"></p>
+<p>確認完成，點選Finish</p>
+<p><img src="Untitled28.png" alt="Untitled28.png"></p>
+<h3 id="step4-Portal-overview"><a href="#step4-Portal-overview" class="headerlink" title="step4. Portal overview"></a>step4. Portal overview</h3><ul>
+<li>回到Portal overvie檢查剛剛加入的Portal</li>
+<li>以及選入的API product, API Spec</li>
+</ul>
+<p><img src="Untitled29.png" alt="Untitled29.png"></p>
+<h1 id="Discovering-API-products-on-the-Portal"><a href="#Discovering-API-products-on-the-Portal" class="headerlink" title="Discovering API products on the Portal"></a>Discovering API products on the Portal</h1><h3 id="step1-轉至Developer-portal"><a href="#step1-轉至Developer-portal" class="headerlink" title="step1. 轉至Developer portal"></a>step1. 轉至Developer portal</h3><p>第一次測試，我設定為public，所以不用登入</p>
+<p><img src="Untitled30.png" alt="Untitled30.png"></p>
+<h3 id="step2-View-APIs"><a href="#step2-View-APIs" class="headerlink" title="step2. View APIs"></a>step2. View APIs</h3><p>請至APIs，查看lab6-catalog-product</p>
+<p><img src="Untitled31.png" alt="Untitled31.png"></p>
+<p>基本上可以看剛Open API Spec測試頁面一樣的Spec, 以及定義出的structure</p>
+<p>Path: <code>/products</code></p>
+<p><img src="Untitled32.png" alt="Untitled32.png"></p>
+<p>Execute#1 Error no Authorize</p>
+<ul>
+<li>嘿嘿，這個當然也是要經過驗證身份，若沒有驗證過就會得到error</li>
+</ul>
+<p><img src="Untitled33.png" alt="Untitled33.png"></p>
+<p>Execute#2  Authorize</p>
+<ul>
+<li>我們乖乖得做完驗證</li>
+</ul>
+<p><img src="Untitled34.png" alt="Untitled34.png"></p>
+<ul>
+<li>可以正常送request</li>
+</ul>
+<p><img src="Untitled35.png" alt="Untitled35.png"></p>
+<h1 id="Registering-an-application-on-the-Portal"><a href="#Registering-an-application-on-the-Portal" class="headerlink" title="Registering an application on the Portal"></a>Registering an application on the Portal</h1><p>這次我們要註冊一個user，你可以想像是外部的TSP，要和你們合作開發，正準備進入你們公司的APIs inventory，我們現在把URL提供給他們，只要他們一經驗證就可以進來測試這些你授權的APIs</p>
+<h3 id="step1"><a href="#step1" class="headerlink" title="step1."></a>step1.</h3><ul>
+<li>Sign In a <code>USER</code>&gt; <code>Create account</code></li>
+<li>請至信箱開發認證網址</li>
+</ul>
+<p><img src="Untitled36.png" alt="Untitled36.png"></p>
+<p><img src="Untitled37.png" alt="Untitled37.png"></p>
+<p>目前的user是有指定的註冊者身份，請見右上方</p>
+<p><img src="Untitled38.png" alt="Untitled38.png"></p>
+<h3 id="step2-NEW-APP-to-create-a-new-application"><a href="#step2-NEW-APP-to-create-a-new-application" class="headerlink" title="step2. NEW APP to create a new application."></a>step2. NEW APP to create a new application.</h3><p>有了註冊後的帳號，我們可以就自已建立自已的<code>APIs, key</code>，透過這把key 可以存取自已名下的APIs</p>
+<ul>
+<li>設定<code>App name</code>, <code>description</code>, 並選入 lab6-catalog-product</li>
+<li>確認APIs 的狀態應為 <code>Actives</code></li>
+</ul>
+<p><strong>App Name:</strong> <code>ProductCatalogApp</code></p>
+<p><strong>Description</strong>: <code>Application to manage the product catalog</code></p>
+<p><img src="Untitled39.png" alt="Untitled39.png"></p>
+<h3 id="step3-Generate-ID-API-Keys"><a href="#step3-Generate-ID-API-Keys" class="headerlink" title="step3. Generate ID, API Keys"></a>step3. Generate ID, API Keys</h3><p>TSP 開發者，有別於Apps key之外，可以有自已<code>key</code>, 當然也有自已的key expires</p>
+<ul>
+<li>App ID</li>
+<li>API Keys</li>
+</ul>
+<p><img src="Untitled40.png" alt="Untitled40.png"></p>
+<h3 id="step4-使用新的User-key-發送request"><a href="#step4-使用新的User-key-發送request" class="headerlink" title="step4. 使用新的User key 發送request"></a>step4. 使用新的User key 發送request</h3><ul>
+<li>Apoted NEW <code>API KEY</code>，同樣也可以得到正常的response結果</li>
+</ul>
+<p><img src="Untitled41.png" alt="Untitled41.png"></p>
+<hr>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>完成以上的Portal建製與授權，建立APIM Portal 總結目有三項</p>
+<ul>
+<li><p><strong>發布 API 並協助開發人員順利上手</strong></p>
+<p>  可供自訂的多功能開發人員入口網站不僅內建應用程式註冊服務，<code>也支援 API 金鑰的自動與手動核准程序</code>，完全是開發人員心目中的理想工具。此外，開發人員還可快速且<code>安全地存取探索、測試及運用 API</code> 所需的工具與資訊</p>
+</li>
+<li><p><strong>推動 API 產品上市</strong></p>
+<p>  利用符合開發人員與合作夥伴需求的 API 產品，協助他們快速上手。透過 API Proxy 及其他設定等組合資源，提高附加價值、探索新商機，同時簡化學習流程。</p>
+</li>
+<li><p><strong>透過入口網站實現品牌體驗</strong></p>
+<p>  無論是部署在雲端或內部部署環境中的 Apigee API 管理平台，自訂開發人員入口網站都可提供獨一無二的品牌體驗。第二個實驗，<code>TSP可以自已註冊一個帳戶，以自助方式</code>存取安全的開發人員入口網站，是開發人員與貴公司能成功交流的關鍵。</p>
+</li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://cloud.google.com/apigee/api-management/developer-portal?hl=zh-tw" target="_blank" rel="noopener">Apigee 開發人員入口網站</a></li>
+<li><a href="https://www.qwiklabs.com/focuses/10522?parent=catalog" target="_blank" rel="noopener">Self Service API Discovery &amp; Sign Up Experience</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/APIGEE/" rel="tag"># APIGEE</a>
+          
+            <a href="/tags/API-GATEWAY/" rel="tag"># API GATEWAY</a>
+          
+            <a href="/tags/APIM-PORTAL/" rel="tag"># APIM PORTAL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/20/Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag/" rel="next" title="[Apigee] APIM Policy 實作多API backend 導流設計 | Conditional Routing of APIs Based on Feature Flag">
+                <i class="fa fa-chevron-left"></i> [Apigee] APIM Policy 實作多API backend 導流設計 | Conditional Routing of APIs Based on Feature Flag
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Purpose"><span class="nav-number">1.</span> <span class="nav-text">Purpose</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prepare-Target-Point"><span class="nav-number">2.</span> <span class="nav-text">Prepare Target Point</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-deploy-Proxy-Product"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. deploy Proxy, Product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Check-proxy-with-lab6"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. Check proxy with lab6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Export-your-API-Proxy"><span class="nav-number">2.0.3.</span> <span class="nav-text">step3. Export your API Proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-Create-GCS-and-upload-APIProxy-folder"><span class="nav-number">2.0.4.</span> <span class="nav-text">step4. Create GCS and upload APIProxy folder</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenAPI-Sepc"><span class="nav-number">3.</span> <span class="nav-text">OpenAPI Sepc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-import-URL"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. import URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Authorize-KEY"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. Authorize KEY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Test-Send-out-request"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. Test Send out request</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#認識OpenAPI-Spec-格式"><span class="nav-number">3.0.4.</span> <span class="nav-text">認識OpenAPI Spec 格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Test-API"><span class="nav-number">3.0.5.</span> <span class="nav-text">step3. Test API</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API-Publishing-Developer-Portal"><span class="nav-number">4.</span> <span class="nav-text">API Publishing: Developer Portal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-建立developer-portal"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. 建立developer portal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-加入APIM-內的APIs"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. 加入APIM 內的APIs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-3-Follows-to-inest-API"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. 3 Follows to inest API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-Portal-overview"><span class="nav-number">4.0.4.</span> <span class="nav-text">step4. Portal overview</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Discovering-API-products-on-the-Portal"><span class="nav-number">5.</span> <span class="nav-text">Discovering API products on the Portal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-轉至Developer-portal"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. 轉至Developer portal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-View-APIs"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. View APIs</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Registering-an-application-on-the-Portal"><span class="nav-number">6.</span> <span class="nav-text">Registering an application on the Portal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-NEW-APP-to-create-a-new-application"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. NEW APP to create a new application.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Generate-ID-API-Keys"><span class="nav-number">6.0.3.</span> <span class="nav-text">step3. Generate ID, API Keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-使用新的User-key-發送request"><span class="nav-number">6.0.4.</span> <span class="nav-text">step4. 使用新的User key 發送request</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">7.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">8.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
