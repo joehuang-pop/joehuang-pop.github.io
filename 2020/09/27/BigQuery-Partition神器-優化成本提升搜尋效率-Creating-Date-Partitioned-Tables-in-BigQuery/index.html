@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GCP,BigQuery,partition_table," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="現在數據無處不在，隨著時間的流動，企業內部Datawarehouse數據也跟著正成長，如何使用Partition_table 協助企業用於優化 BigQuery 成本，不僅優化您搜尋效率更可以提升業務成果。 什麼是Partition？Partitioned table(分區表)是原始table中擷取出來的片段的table，不同於完整的table，我們僅拿我們要的資料。如此可以更簡單管理且加速que">
+<meta name="keywords" content="GCP,BigQuery,partition_table">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[BigQuery] Partition神器: 優化成本提升搜尋效率 | Creating Date-Partitioned Tables in BigQuery">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="現在數據無處不在，隨著時間的流動，企業內部Datawarehouse數據也跟著正成長，如何使用Partition_table 協助企業用於優化 BigQuery 成本，不僅優化您搜尋效率更可以提升業務成果。 什麼是Partition？Partitioned table(分區表)是原始table中擷取出來的片段的table，不同於完整的table，我們僅拿我們要的資料。如此可以更簡單管理且加速que">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled6.png">
+<meta property="og:updated_time" content="2020-09-27T07:44:43.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;27&#x2F;BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/09/27/BigQuery-Partition神器-優化成本提升搜尋效率-Creating-Date-Partitioned-Tables-in-BigQuery/"/>
+
+
+
+
+
+  <title>[BigQuery] Partition神器: 優化成本提升搜尋效率 | Creating Date-Partitioned Tables in BigQuery | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/09/27/BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[BigQuery] Partition神器: 優化成本提升搜尋效率 | Creating Date-Partitioned Tables in BigQuery</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-27T15:40:42+08:00">
+                2020-09-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>現在數據無處不在，隨著時間的流動，企業內部Datawarehouse數據也跟著正成長，如何使用Partition_table 協助企業用於優化 BigQuery 成本，不僅優化您搜尋效率更可以提升業務成果。</p>
+<h1 id="什麼是Partition？"><a href="#什麼是Partition？" class="headerlink" title="什麼是Partition？"></a>什麼是Partition？</h1><p><code>Partitioned table</code>(分區表)是原始table中擷取出來的片段的table，不同於完整的table，我們僅拿我們要的資料。如此可以更簡單管理且加速query的速度，增進了query的速度也是間接首你節省成本，因為BigQuery的計價其中一個項目就是每次<a href="https://cloud.google.com/bigquery/pricing?hl=en-us" target="_blank" rel="noopener">query的資料量來計價</a>。</p>
+<p>在來我們談談Partition目的。過去SQL query行為是把所有的dataset掃描進來，再透過<code>WHERE</code>篩選條件，如此的行為是非浪費時間和資源的。其實在query 若可以把資料按時間做切片，就可以query特定的資料段，故能節省大量的時間與資源，比如說以下的場景就很適合做時間段的區分</p>
+<ul>
+<li>上週所有參訪者的意願資料</li>
+<li>上個月所有的產品的銷售情況</li>
+<li>週年慶時期 10-11月, Q3旺季出貨</li>
+</ul>
+<h1 id="圖解-Partition-table"><a href="#圖解-Partition-table" class="headerlink" title="圖解 Partition_table"></a>圖解 Partition_table</h1><p>當我們要查的是c1 c3 colume時，我們會用以下的query</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 因為語法中使用到 `WHERE between 2020-06-03 and 2020-06-05` 所有只會有綠色的block 被存取到</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 正是因為做了細部的切分，所以像是黃色和藍色block都不會被touch到，Query就不會有計費，更重詹的是有加速query的作用，colume base partition的好處</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">SELECT c1, c3 FROM ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">WHERE eventDate BETWEEN <span class="string">"2020-06-03"</span> AND <span class="string">"2020-06-05"</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li><code>table partition</code>可以是date也可以是integer</li>
+<li><code>藍色</code>是指所有的dataset</li>
+<li><code>eventDate</code>是標試時間的地方</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h1 id="Partition的好處"><a href="#Partition的好處" class="headerlink" title="Partition的好處"></a>Partition的好處</h1><p>最後總結一下，使用<code>partition</code>的好處有項</p>
+<p><code>行為 = select WHERE date ≥&quot;20200602&quot;</code></p>
+<ol>
+<li>得到更輕量的table(你也可以想像成不用在做sharding)</li>
+<li><code>Schema</code> 更一致</li>
+<li>更快的<code>Query</code></li>
+<li>更少的<code>metadata overhead</code></li>
+<li>重要就是更少的費用</li>
+</ol>
+<hr>
+<h1 id="Partition實作"><a href="#Partition實作" class="headerlink" title="Partition實作"></a>Partition實作</h1><h3 id="step1-Create-a-new-partitioned-table-based-on-date"><a href="#step1-Create-a-new-partitioned-table-based-on-date" class="headerlink" title="step1. Create a new partitioned table based on date"></a>step1. <strong>Create a new partitioned table based on date</strong></h3><ul>
+<li>先從Google 公開資料上取得table，<code>data-to-insights.ecommerce</code>，其中<ul>
+<li><code>ecommerce</code>為dataset</li>
+<li><code>all_sessions_raw</code>為table</li>
+</ul>
+</li>
+<li>得到table後，我們取原data 之中已經即有<code>schema:date</code>，當作是partition 切割的基準<ul>
+<li><code>PARTITION BY date_formatted</code>: 我們指定date當作切割的基準</li>
+<li><code>ARSE_DATE(&quot;%Y%m%d&quot;, date) AS date_formatted</code></li>
+</ul>
+</li>
+<li>最後生成一個新的table<ul>
+<li>ecommerce.partition_by_day</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#standardSQL</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> <span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">TABLE</span> ecommerce.partition_by_day</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> <span class="keyword">PARTITION</span> <span class="keyword">BY</span> date_formatted</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> OPTIONS(</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   description=<span class="string">"a table partitioned by date"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"> ) <span class="keyword">AS</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"> <span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"> PARSE_DATE(<span class="string">"%Y%m%d"</span>, <span class="built_in">date</span>) <span class="keyword">AS</span> date_formatted,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"> fullvisitorId</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"> <span class="keyword">FROM</span> <span class="string">`data-to-insights.ecommerce.all_sessions_raw`</span></span></pre></td></tr></table></figure>
+
+<p>檢視原始資料 Table size顯示5.63GB</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="step2-General-Query-with-WHERE"><a href="#step2-General-Query-with-WHERE" class="headerlink" title="step2. General Query with WHERE"></a>step2. General Query with WHERE</h3><p>這次的SQL query行為是把所有的dataset掃描進來，再透過<code>WHERE</code>篩選條件，一共scan 1.7GB 資料，執行時間為0.5 sec</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h3 id="step3-執行結果-review-partition-table"><a href="#step3-執行結果-review-partition-table" class="headerlink" title="step3.  執行結果: review partition_table"></a>step3.  執行結果: review partition_table</h3><ul>
+<li>Schema</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<ul>
+<li>Preview<br>可看到多一個我們建立的schema<br><code>date_formated</code></li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<ul>
+<li>Details<ul>
+<li><strong>Table size:</strong> 只有13.17MB</li>
+<li><strong>Table type:</strong> Partitioned</li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="step4-實測Query-partition"><a href="#step4-實測Query-partition" class="headerlink" title="step4. 實測Query partition"></a>step4. 實測Query partition</h3><ul>
+<li>本次的Query 針對新建的partition_table <code>data-to-insights.ecommerce.partition_by_day</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#standardSQL</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> <span class="string">`data-to-insights.ecommerce.partition_by_day`</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">WHERE</span> date_formatted = <span class="string">'2016-08-01'</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li>結果非常驚人，Query results in <code>0.2s</code>，時間足足快了一倍！</li>
+<li>為什麼這麼快呢，因為只跑了25KB的data</li>
+</ul>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>Partition_table在 BigQuery 中是重要優化成本的作法，如果你已經使用BigQuery一段時間了，且對自已資料有一定的掌握度，開始加入<code>date</code>吧，多一個維度切割你的資料，您就不用為了<code>成本</code>跟<code>效能</code>妥協了。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://www.mile.cloud/zh-hant/cost-optimization-best-practices-for-bigquery/" target="_blank" rel="noopener">BigQuery 成本優化三大指南 from CloudMile</a></li>
+<li><a href="https://www.qwiklabs.com/focuses/3694?parent=catalog" target="_blank" rel="noopener">Creating Date-Partitioned Tables in BigQuery</a></li>
+<li><a href="https://www.youtube.com/watch?time_continue=17&v=nzD-JwQ-Clw&feature=emb_logo" target="_blank" rel="noopener">Cloud OnAir BigQuery</a></li>
+<li><a href="https://cloud.google.com/bigquery/docs/partitioned-tables" target="_blank" rel="noopener">Introduction to partitioned tables</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/BigQuery/" rel="tag"># BigQuery</a>
+          
+            <a href="/tags/partition-table/" rel="tag"># partition_table</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/20/Apigee-Portal%E7%99%BC%E4%BD%88-APIs-%E5%8D%94%E5%8A%A9%E9%96%8B%E7%99%BC%E4%BA%BA%E5%93%A1%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-Self-Service-API-Discovery-Sign-Up-Experience/" rel="next" title="[Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience">
+                <i class="fa fa-chevron-left"></i> [Apigee] Portal發佈 APIs 協助開發人員串接服務 | Self Service API Discovery & Sign Up Experience
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是Partition？"><span class="nav-number">1.</span> <span class="nav-text">什麼是Partition？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#圖解-Partition-table"><span class="nav-number">2.</span> <span class="nav-text">圖解 Partition_table</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Partition的好處"><span class="nav-number">3.</span> <span class="nav-text">Partition的好處</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Partition實作"><span class="nav-number">4.</span> <span class="nav-text">Partition實作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Create-a-new-partitioned-table-based-on-date"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. Create a new partitioned table based on date</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-General-Query-with-WHERE"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. General Query with WHERE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-執行結果-review-partition-table"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3.  執行結果: review partition_table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-實測Query-partition"><span class="nav-number">4.0.4.</span> <span class="nav-text">step4. 實測Query partition</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -122,7 +122,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled25.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled26.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled27.png">
-<meta property="og:updated_time" content="2020-09-20T13:08:20.077Z">
+<meta property="og:updated_time" content="2020-09-20T13:15:03.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;09&#x2F;20&#x2F;Apigee-APIM-Policy-%E5%AF%A6%E4%BD%9C%E5%A4%9AAPI-backend-%E5%B0%8E%E6%B5%81%E8%A8%AD%E8%A8%88-Conditional-Routing-of-APIs-Based-on-Feature-Flag&#x2F;Untitled.png">
 
@@ -537,8 +537,8 @@
 <li>但是這次的Target Endpoint是不一樣的，請注意是”default”</li>
 </ul>
 <p><img src="Untitled27.png" alt="Untitled27.png"></p>
-<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>服務在更版時候，我們常用藍綠部署(Blue Green Deployment)，可以保證系統在不間斷提供服務的情況下，上新版的部署方式，一般會在Load balance上實作。現在我們了解Apigee polocy 方法可以實作multiple Target，如此我們就可以鎖定同樣的proxy endpoint。透過修改APIM policy增加不同的API Endpoint，可將流量導到不同的版本的API backend(default, cloud)。方法是透過<code>Condition flow</code> 偵查不同組的API Key (key1, key2)，可以將流量轉發到不同的服務上(Target Endpoints)。</p>
-<p>此作法可較過去更有彈性，怎麼說呢？因為我們二邊的Target Endpoints，不僅都保留住，只要不同的API key，還都能通往到目的地。如果你是developer, system administrator 對APIM 有興趣妨可以考慮更彈的管理版本部署方法。</p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>服務在更版時候，我們常用藍綠部署(Blue Green Deployment)，可以保證系統在不間斷提供服務的情況下，上新版的部署方式，一般會在Load balance上實作。現在我們了解Apigee policy 方法可以實作multiple Target，如此我們就可以鎖定同樣的proxy endpoint。透過修改APIM policy增加不同的API Endpoint，可將流量導到不同的版本的API backend(default, cloud)。方法是透過<code>Condition flow</code> 偵查不同組的API Key (key1, key2)，可以將流量轉發到不同的服務上(Target Endpoints)。</p>
+<p>此作法可較過去更有彈性，怎麼說呢？因為我們二邊的Target Endpoints，不僅都保留住，只要不同的API key，都能還有通往到目的地。如果你是developer, system administrator 對APIM 有興趣妨可以考慮更彈的管理版本部署方法。</p>
 
       
     </div>
@@ -666,7 +666,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -688,7 +688,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
