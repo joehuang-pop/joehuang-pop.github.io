@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="security,Cloud IAP,VPN,VDI,tunnel-through-iap,OAuth," />
 
 
 
@@ -86,13 +86,13 @@
 
 
 
-<meta name="description" content="[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)Status: in 75% 今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線I">
-<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta name="description" content="今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線IAP認證(--tunnel-through-iap); Port轉換)start-iap-tunnel)，最後GAE網頁，則是使用IAP-secured Web App，最後也交叉設定OAuth consent screen，">
+<meta name="keywords" content="security,Cloud IAP,VPN,VDI,tunnel-through-iap,OAuth">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)">
 <meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
-<meta property="og:description" content="[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)Status: in 75% 今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線I">
+<meta property="og:description" content="今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線IAP認證(--tunnel-through-iap); Port轉換)start-iap-tunnel)，最後GAE網頁，則是使用IAP-secured Web App，最後也交叉設定OAuth consent screen，">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled1.png">
@@ -112,7 +112,8 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled15.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled16.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled17.png">
-<meta property="og:updated_time" content="2020-10-25T09:51:16.282Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled18.png">
+<meta property="og:updated_time" content="2020-10-25T10:09:42.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;25&#x2F;GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A&#x2F;Untitled.png">
 
@@ -306,7 +307,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-25T17:51:16+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-25T18:03:46+08:00">
                 2020-10-25
               </time>
             
@@ -316,6 +317,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -349,45 +372,44 @@
       
 
       
-        <h1 id="GCP-你還在用VPN連線嗎？-快點試試Cloud-IAP，資安手法大開公-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-上"><a href="#GCP-你還在用VPN連線嗎？-快點試試Cloud-IAP，資安手法大開公-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-上" class="headerlink" title="[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)"></a>[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)</h1><p>Status: in 75%</p>
-<p>今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線IAP認證<code>(--tunnel-through-iap)</code>; Port轉換)start-iap-tunnel)，最後GAE網頁，則是使用<code>IAP-secured Web App</code>，最後也交叉設定<code>OAuth consent screen</code>，使保護更佳彈性。</p>
+        <p>今天Cloud IAP的分享，它的應用很廣泛，我將分享應用在linux, windwos伺服器存取的保謢，以及網頁(ednpoint)存取的保護。IAP手法很多，常用的連線IAP認證<code>(--tunnel-through-iap)</code>; Port轉換)start-iap-tunnel)，最後GAE網頁，則是使用<code>IAP-secured Web App</code>，最後也交叉設定<code>OAuth consent screen</code>，使保護更佳彈性。</p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>很多的情況下，User需要從外部(非公司內網)連線到你的伺服器或是網頁，傳統的解決方案，你會透過VPN, VDI方式連線到你指定的伺服器，這些方法還需多餘的人力去維護，有沒有一個方法可以減少管理人員的負控，又可以快速讓外部使用者，可以方便且安全經過認證連線至內部服務器呢？</p>
 <p>現在提倡所謂的<code>Zero Trust Network</code> ，是提供模組化、具有成本效益的作法，採取網路分隔的方式來保護重要的資產。</p>
 <p><img src="Untitled.png" alt="Untitled.png"></p>
 <p>Cloud IAP (Identity-Aware Proxy) 是 GCP 上的一個服務，可以利用身分資訊和背景資訊(context)，為 GCP 上執行的雲端應用程式和 VM 提供存取防護。Cloud IAP 會驗證使用者身分和要求內容，判斷是否應將應用程式或 VM 存取權授予某位使用者。另外，Cloud IAP 可以使用 TCP 轉送功能(TCP forwarding)，能保護您託管給 GCP 的 VM 執行個體的 SSH 和 RDP 存取權限，您不必為 VM 執行個體設定公開 IP 位址。</p>
-<p><a href="https://lh3.googleusercontent.com/FKKigXQwouctKVSxTaxcGAAkD2-Rz6a0WEwDTTUIdJeFK7kSKKfNgCBEfuFkZ4t5myztqbvnr8htYWMoPh-OTDbKzWuzaBmDRU1NJM816812eEEcuTZoPwuqo3d2ZSbX8WTLC9-L" target="_blank" rel="noopener">https://lh3.googleusercontent.com/FKKigXQwouctKVSxTaxcGAAkD2-Rz6a0WEwDTTUIdJeFK7kSKKfNgCBEfuFkZ4t5myztqbvnr8htYWMoPh-OTDbKzWuzaBmDRU1NJM816812eEEcuTZoPwuqo3d2ZSbX8WTLC9-L</a></p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
 <p>以往<code>跳板機</code>存有許多風險，除了單點失效之外，跳板機這台主機的資安風險也需要考慮在內。IAP 提供的 TCP Forwarding 功能可以改善跳板機的缺點，參考上圖的架構，透過 Google 帳號建立安全連線存取 Compute Engine 中的虛擬機器。</p>
 <hr>
 <h1 id="IAP-設定"><a href="#IAP-設定" class="headerlink" title="IAP 設定"></a>IAP 設定</h1><h3 id="step1-Enable-IAP"><a href="#step1-Enable-IAP" class="headerlink" title="step1. Enable IAP"></a>step1. Enable IAP</h3><ul>
 <li>前往 「Security」-&gt;「Identity-Aware Proxy」，選擇「SSH 和 TCP 資源」可以看到下圖畫面。這裡會列出目前專案中的所有 GCE 資源。您可以選擇開啟或關閉（預設為關閉）單台或單區域以及所有 GCE 資源對應的 IAP 功能。</li>
 </ul>
-<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
 <p>Security」-Identity-Aware Proxy </p>
 <ul>
 <li>請點選 Enable API</li>
 </ul>
-<p><img src="Untitled2.png" alt="Untitled2.png"></p>
-<p>確認 API Running後，才可以進行IAP的設定</p>
 <p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>確認 API Running後，才可以進行IAP的設定</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
 <h3 id="step2-Choose-specific-VM"><a href="#step2-Choose-specific-VM" class="headerlink" title="step2. Choose specific VM"></a>step2. Choose specific VM</h3><ul>
 <li>請至<code>(2)SSH and  TCP RESOURCES</code></li>
 <li>選擇欲開啟<code>IAP</code>保護的VM</li>
 </ul>
-<p><img src="Untitled4.png" alt="Untitled4.png"></p>
-<p>範例：選擇python-env</p>
 <p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<p>範例：選擇python-env</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
 <h3 id="step3-Allow-USER-for-IAP-Tunnel"><a href="#step3-Allow-USER-for-IAP-Tunnel" class="headerlink" title="step3. Allow USER for IAP Tunnel"></a>step3. Allow USER for IAP Tunnel</h3><ul>
 <li>此步驟是指定user可以遊走在 IAP Tunnel(Google 管理的)</li>
 <li>接著將某個<code>user</code>加入允許透過 IAP Tunnel 連線到這個主機，點選「ADD MEMBER」，出現下圖畫面</li>
 </ul>
-<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
 <h3 id="step4-確認完成加入IAP-Role"><a href="#step4-確認完成加入IAP-Role" class="headerlink" title="step4. 確認完成加入IAP Role"></a>step4. 確認完成加入IAP Role</h3><ul>
 <li><p>可以將任何一個 Google 帳號（Gmail, GSuite, Cloud Identity）新增成為成員</p>
 </li>
 <li><p>也可以新增一個群組帳號，存取權限將會對應到群組內的成員</p>
 </li>
 <li><p>Role請選擇「IAP-secured Tunnel User」</p>
-<p>  <img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
 </li>
 </ul>
 <h3 id="step5-建立-firewall-for-IAP-Tunnel"><a href="#step5-建立-firewall-for-IAP-Tunnel" class="headerlink" title="step5. 建立 firewall for IAP Tunnel"></a>step5. 建立 firewall for IAP Tunnel</h3><ul>
@@ -398,7 +420,7 @@
 <p>請注意預設的 default-allow-ssh 跟 default-allow-rdp 允許來自所有來源的主機連線到 port 22 與 3389。你可以視情況調整這兩個規則，讓主機只允許來自 IAP 的連線。</p>
 </blockquote>
 <p>設定IAP過程中，若沒有開啟IAP Tunnel 防火牆，GCP會提示建立它</p>
-<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
 <h1 id="建立-IAP-Tunnel-專用防火牆"><a href="#建立-IAP-Tunnel-專用防火牆" class="headerlink" title="建立 IAP Tunnel 專用防火牆"></a>建立 IAP Tunnel 專用防火牆</h1><h3 id="step1-設定"><a href="#step1-設定" class="headerlink" title="step1. 設定"></a>step1. 設定</h3><p>路徑：「Networking」 → 「VPC network」→ 「Firewall」→ 上方點選「Create Firewall Rule」</p>
 <p>防火牆設定：</p>
 <ul>
@@ -406,11 +428,11 @@
 <li><code>Source IP range</code>: 依照google 指定的range</li>
 <li><code>Protocols and ports</code>: 22 port</li>
 </ul>
-<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
 <h3 id="step2-Check-policy"><a href="#step2-Check-policy" class="headerlink" title="step2. Check policy"></a>step2. Check policy</h3><ul>
 <li>設定完成後，畫面如下</li>
 </ul>
-<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
 <p><a href="https://lh4.googleusercontent.com/95HwALMJBXleUKQ2vSXga-ySOhTDdOy1UAc1nwlEMWHPrkiSkjEp7mkZPvYsWUc3VcnhaSCOVHDgMHKUyh6kNqPjH1xHJPOxumLAWvV6-G_rwNAr2jKqrq9iPs7fHB-AklbOFpNI" target="_blank" rel="noopener">https://lh4.googleusercontent.com/95HwALMJBXleUKQ2vSXga-ySOhTDdOy1UAc1nwlEMWHPrkiSkjEp7mkZPvYsWUc3VcnhaSCOVHDgMHKUyh6kNqPjH1xHJPOxumLAWvV6-G_rwNAr2jKqrq9iPs7fHB-AklbOFpNI</a></p>
 <h3 id="step3-SSH-VM-with-IAP-Tuneel"><a href="#step3-SSH-VM-with-IAP-Tuneel" class="headerlink" title="step3. SSH VM with IAP Tuneel"></a>step3. SSH VM with IAP Tuneel</h3><ul>
 <li>驗證時，可以關掉<code>public IP</code>, 直接透過IAP 方法來驗證</li>
@@ -418,16 +440,16 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># gcloud compute ssh</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># --tunnel-through-iap</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">gcloud compute ssh python-env --zone us-central1<span class="_">-a</span> --tunnel-through-iap</span></pre></td></tr></table></figure>
 
 <p>即使沒有公開的IP，透過–tunnel-through-iap 依然可以正常連線到我的VM</p>
-<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
 <hr>
 <h1 id="Windows-RDP-Port-Forwarding"><a href="#Windows-RDP-Port-Forwarding" class="headerlink" title="Windows RDP Port-Forwarding"></a>Windows RDP Port-Forwarding</h1><p>在開始之前我們先用<code>public IP</code>連入 VM，之後關閉<code>public IP</code>，我們透過poty-forwading 產生使得雲上VM <code>3389</code> port 轉接到地端的<code>8080</code> port</p>
 <h3 id="step1-透過公開IP-連線-Windows"><a href="#step1-透過公開IP-連線-Windows" class="headerlink" title="step1. 透過公開IP 連線 Windows"></a>step1. 透過公開IP 連線 Windows</h3><ul>
 <li>本驗證是用 <code>public IP</code>登入系統</li>
 <li>透過Chrome RDP自動帶入public IP</li>
 </ul>
-<p><img src="Untitled12.png" alt="Untitled12.png"></p>
-<p>測試可以正常登入windows</p>
 <p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<p>測試可以正常登入windows</p>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
 <h3 id="step2-IAP-to-localhost-8080-本機登入"><a href="#step2-IAP-to-localhost-8080-本機登入" class="headerlink" title="step2. IAP to localhost:8080 (本機登入)"></a>step2. IAP to <a href="http://localhost:8080" target="_blank" rel="noopener">localhost:8080</a> (本機登入)</h3><ul>
 <li><code>start-iap-tunnel</code>: 透過此指令產生tcp-forwarding</li>
 <li>測試時，此時請至本機電腦上運行</li>
@@ -438,22 +460,23 @@
 <li>執行 IAP port-forwarding成功</li>
 <li>我們把GCP 上面VM <code>3389 port</code>，轉接到<code>本機端的8080 port</code></li>
 </ul>
-<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
 <h3 id="step3-RDP-連線localhost"><a href="#step3-RDP-連線localhost" class="headerlink" title="step3. RDP 連線localhost"></a>step3. RDP 連線localhost</h3><ul>
 <li>此時連線非之前的<code>public IP</code>，而是localhost:8080，</li>
 </ul>
-<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
 <h3 id="step4-localhost-8080"><a href="#step4-localhost-8080" class="headerlink" title="step4. localhost:8080"></a>step4. localhost:8080</h3><p>測試可以正常連線且登入windows</p>
 <ul>
 <li>可以看到視窗最上方有顯示 <code>localhost:8080</code></li>
 </ul>
-<p><img src="Untitled16.png" alt="Untitled16.png"></p>
 <p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
 <hr>
 <h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>[1] Cloud IAP for TCP forwarding</p>
 <p><a href="https://cloud.google.com/iap/docs/tcp-forwarding-overview?hl=zh-tw" target="_blank" rel="noopener">https://cloud.google.com/iap/docs/tcp-forwarding-overview?hl=zh-tw</a></p>
 <p>[2] Known limitations</p>
 <p><a href="https://cloud.google.com/iap/docs/using-tcp-forwarding?hl=zh-tw#known_limitations" target="_blank" rel="noopener">https://cloud.google.com/iap/docs/using-tcp-forwarding?hl=zh-tw#known_limitations</a></p>
+<p>[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)</p>
 
       
     </div>
@@ -469,6 +492,22 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/security/" rel="tag"># security</a>
+          
+            <a href="/tags/Cloud-IAP/" rel="tag"># Cloud IAP</a>
+          
+            <a href="/tags/VPN/" rel="tag"># VPN</a>
+          
+            <a href="/tags/VDI/" rel="tag"># VDI</a>
+          
+            <a href="/tags/tunnel-through-iap/" rel="tag"># tunnel-through-iap</a>
+          
+            <a href="/tags/OAuth/" rel="tag"># OAuth</a>
+          
+        </div>
+      
 
       
       
@@ -478,8 +517,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/10/04/K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts/" rel="next" title="[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts">
-                <i class="fa fa-chevron-left"></i> [K8S] kubectx多叢集間切換自如 | Switching between K8s contexts
+              <a href="/2020/10/25/GCP-%E7%B6%B2%E9%A0%81%E9%80%8F%E9%81%8ECloud-IAP%E4%BF%9D%E8%AD%B7-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8B/" rel="next" title="[GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下)">
+                <i class="fa fa-chevron-left"></i> [GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下)
               </a>
             
           </div>
@@ -487,10 +526,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/10/25/GCP-%E7%B6%B2%E9%A0%81%E9%80%8F%E9%81%8ECloud-IAP%E4%BF%9D%E8%AD%B7-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8B/" rel="prev" title="[GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下)">
-                [GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -578,7 +613,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">categories</span>
                 
               </div>
@@ -589,7 +624,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -622,7 +657,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GCP-你還在用VPN連線嗎？-快點試試Cloud-IAP，資安手法大開公-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-上"><span class="nav-number">1.</span> <span class="nav-text">[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IAP-設定"><span class="nav-number">3.</span> <span class="nav-text">IAP 設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Enable-IAP"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. Enable IAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Choose-specific-VM"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. Choose specific VM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Allow-USER-for-IAP-Tunnel"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. Allow USER for IAP Tunnel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-確認完成加入IAP-Role"><span class="nav-number">3.0.4.</span> <span class="nav-text">step4. 確認完成加入IAP Role</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step5-建立-firewall-for-IAP-Tunnel"><span class="nav-number">3.0.5.</span> <span class="nav-text">step5. 建立 firewall for IAP Tunnel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建立-IAP-Tunnel-專用防火牆"><span class="nav-number">4.</span> <span class="nav-text">建立 IAP Tunnel 專用防火牆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-設定"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. 設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Check-policy"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. Check policy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-SSH-VM-with-IAP-Tuneel"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. SSH VM with IAP Tuneel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Windows-RDP-Port-Forwarding"><span class="nav-number">5.</span> <span class="nav-text">Windows RDP Port-Forwarding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-透過公開IP-連線-Windows"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. 透過公開IP 連線 Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-IAP-to-localhost-8080-本機登入"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. IAP to localhost:8080 (本機登入)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-RDP-連線localhost"><span class="nav-number">5.0.3.</span> <span class="nav-text">step3. RDP 連線localhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-localhost-8080"><span class="nav-number">5.0.4.</span> <span class="nav-text">step4. localhost:8080</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IAP-設定"><span class="nav-number">2.</span> <span class="nav-text">IAP 設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Enable-IAP"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. Enable IAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Choose-specific-VM"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. Choose specific VM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Allow-USER-for-IAP-Tunnel"><span class="nav-number">2.0.3.</span> <span class="nav-text">step3. Allow USER for IAP Tunnel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-確認完成加入IAP-Role"><span class="nav-number">2.0.4.</span> <span class="nav-text">step4. 確認完成加入IAP Role</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step5-建立-firewall-for-IAP-Tunnel"><span class="nav-number">2.0.5.</span> <span class="nav-text">step5. 建立 firewall for IAP Tunnel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建立-IAP-Tunnel-專用防火牆"><span class="nav-number">3.</span> <span class="nav-text">建立 IAP Tunnel 專用防火牆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-設定"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. 設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Check-policy"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. Check policy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-SSH-VM-with-IAP-Tuneel"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. SSH VM with IAP Tuneel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Windows-RDP-Port-Forwarding"><span class="nav-number">4.</span> <span class="nav-text">Windows RDP Port-Forwarding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-透過公開IP-連線-Windows"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. 透過公開IP 連線 Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-IAP-to-localhost-8080-本機登入"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. IAP to localhost:8080 (本機登入)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-RDP-連線localhost"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. RDP 連線localhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-localhost-8080"><span class="nav-number">4.0.4.</span> <span class="nav-text">step4. localhost:8080</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
             
 
           </div>

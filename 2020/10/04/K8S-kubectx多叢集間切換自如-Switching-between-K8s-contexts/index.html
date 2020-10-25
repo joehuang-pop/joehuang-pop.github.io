@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="GCP,kubernetes,kubectx,kubeconfig,opensource," />
 
 
 
@@ -86,20 +86,20 @@
 
 
 
-<meta name="description" content="[K8S] kubectx多叢集間切換自如 | Switching between K8s contextsStatus: in 75% 前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹co">
-<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta name="description" content="前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹context, kubeconfig 如果你需要更深入轉換整個kubernetes系統時，你可以參考以下工具(以下非本文的主軸)  [Ran">
+<meta name="keywords" content="GCP,kubernetes,kubectx,kubeconfig,opensource">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts">
 <meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
-<meta property="og:description" content="[K8S] kubectx多叢集間切換自如 | Switching between K8s contextsStatus: in 75% 前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹co">
+<meta property="og:description" content="前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹context, kubeconfig 如果你需要更深入轉換整個kubernetes系統時，你可以參考以下工具(以下非本文的主軸)  [Ran">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled1.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled2.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled3.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled4.png">
-<meta property="og:updated_time" content="2020-10-04T06:34:12.585Z">
+<meta property="og:updated_time" content="2020-10-25T10:08:31.835Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts&#x2F;Untitled.png">
 
@@ -304,6 +304,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -336,8 +358,7 @@
       
 
       
-        <h1 id="K8S-kubectx多叢集間切換自如-Switching-between-K8s-contexts"><a href="#K8S-kubectx多叢集間切換自如-Switching-between-K8s-contexts" class="headerlink" title="[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts"></a>[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts</h1><p>Status: in 75%</p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個<code>背景</code>及<code>命名空間</code>之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹context, kubeconfig</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個<code>背景</code>及<code>命名空間</code>之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹context, kubeconfig</p>
 <p>如果你需要更深入轉換整個kubernetes系統時，你可以參考以下工具(以下非本文的主軸)</p>
 <ul>
 <li><code>[Rancher](https://rancher.com/)</code> 是以UI 介面出發來集中管理多重叢集，它可以設定穿越地端與多組雲端託管的kubernetes</li>
@@ -447,6 +468,20 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/GCP/" rel="tag"># GCP</a>
+          
+            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          
+            <a href="/tags/kubectx/" rel="tag"># kubectx</a>
+          
+            <a href="/tags/kubeconfig/" rel="tag"># kubeconfig</a>
+          
+            <a href="/tags/opensource/" rel="tag"># opensource</a>
+          
+        </div>
+      
 
       
       
@@ -466,8 +501,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/10/25/GCP-%E4%BD%A0%E9%82%84%E5%9C%A8%E7%94%A8VPN%E9%80%A3%E7%B7%9A%E5%97%8E%EF%BC%9F-%E5%BF%AB%E9%BB%9E%E8%A9%A6%E8%A9%A6Cloud-IAP%EF%BC%8C%E8%B3%87%E5%AE%89%E6%89%8B%E6%B3%95%E5%A4%A7%E9%96%8B%E5%85%AC-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8A/" rel="prev" title="[GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上)">
-                [GCP] 你還在用VPN連線嗎？ 快點試試Cloud IAP，資安手法大開公 | Giving it a Try to let Cloud IAP protect your system (上) <i class="fa fa-chevron-right"></i>
+              <a href="/2020/10/25/GCP-%E7%B6%B2%E9%A0%81%E9%80%8F%E9%81%8ECloud-IAP%E4%BF%9D%E8%AD%B7-Giving-it-a-Try-to-let-Cloud-IAP-protect-your-system-%E4%B8%8B/" rel="prev" title="[GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下)">
+                [GCP] 網頁透過Cloud IAP保護  | Giving it a Try to let Cloud IAP protect your system (下) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -556,7 +591,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">categories</span>
                 
               </div>
@@ -567,7 +602,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -600,7 +635,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#K8S-kubectx多叢集間切換自如-Switching-between-K8s-contexts"><span class="nav-number">1.</span> <span class="nav-text">[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是Context"><span class="nav-number">3.</span> <span class="nav-text">什麼是Context</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是kubeconfig"><span class="nav-number">4.</span> <span class="nav-text">什麼是kubeconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl的身份認證"><span class="nav-number">4.1.</span> <span class="nav-text">kubectl的身份認證</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我們可透過-kubeconfig-了解以下資訊"><span class="nav-number">4.2.</span> <span class="nav-text">我們可透過 kubeconfig 了解以下資訊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-切換叢集應用"><span class="nav-number">4.3.</span> <span class="nav-text">kubeconfig 切換叢集應用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-結構"><span class="nav-number">4.4.</span> <span class="nav-text">kubeconfig 結構</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kubectx-解決了什麼"><span class="nav-number">5.</span> <span class="nav-text">Kubectx 解決了什麼</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectx-用法"><span class="nav-number">5.1.</span> <span class="nav-text">kubectx 用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectx-切換叢集-使用別名"><span class="nav-number">6.</span> <span class="nav-text">kubectx 切換叢集, 使用別名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-準備cluster"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1. 準備cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-使用別名並切換叢集"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. 使用別名並切換叢集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是Context"><span class="nav-number">2.</span> <span class="nav-text">什麼是Context</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是kubeconfig"><span class="nav-number">3.</span> <span class="nav-text">什麼是kubeconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl的身份認證"><span class="nav-number">3.1.</span> <span class="nav-text">kubectl的身份認證</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我們可透過-kubeconfig-了解以下資訊"><span class="nav-number">3.2.</span> <span class="nav-text">我們可透過 kubeconfig 了解以下資訊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-切換叢集應用"><span class="nav-number">3.3.</span> <span class="nav-text">kubeconfig 切換叢集應用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-結構"><span class="nav-number">3.4.</span> <span class="nav-text">kubeconfig 結構</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kubectx-解決了什麼"><span class="nav-number">4.</span> <span class="nav-text">Kubectx 解決了什麼</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectx-用法"><span class="nav-number">4.1.</span> <span class="nav-text">kubectx 用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectx-切換叢集-使用別名"><span class="nav-number">5.</span> <span class="nav-text">kubectx 切換叢集, 使用別名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-準備cluster"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. 準備cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-使用別名並切換叢集"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. 使用別名並切換叢集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
             
 
           </div>
