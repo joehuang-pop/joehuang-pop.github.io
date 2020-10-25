@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[K8S] kubectx多叢集間切換自如 | A tool to switch between Kubernetes contextsStatus: in 75% Agenda 前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[K8S] kubectx多叢集間切換自如 | A tool to switch between K8s contexts">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="[K8S] kubectx多叢集間切換自如 | A tool to switch between Kubernetes contextsStatus: in 75% Agenda 前言多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個背景及命名空間之間做轉換。在真正使用之前，我們先了解一下在之前，切">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled4.png">
+<meta property="og:updated_time" content="2020-10-04T06:22:55.965Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2020&#x2F;10&#x2F;04&#x2F;K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2020/10/04/K8S-kubectx多叢集間切換自如-A-tool-to-switch-between-K8s-contexts/"/>
+
+
+
+
+
+  <title>[K8S] kubectx多叢集間切換自如 | A tool to switch between K8s contexts | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2020/10/04/K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-A-tool-to-switch-between-K8s-contexts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[K8S] kubectx多叢集間切換自如 | A tool to switch between K8s contexts</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-04T14:22:55+08:00">
+                2020-10-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="K8S-kubectx多叢集間切換自如-A-tool-to-switch-between-Kubernetes-contexts"><a href="#K8S-kubectx多叢集間切換自如-A-tool-to-switch-between-Kubernetes-contexts" class="headerlink" title="[K8S] kubectx多叢集間切換自如 | A tool to switch between Kubernetes contexts"></a>[K8S] kubectx多叢集間切換自如 | A tool to switch between Kubernetes contexts</h1><p>Status: in 75%</p>
+<h2 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h2><hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>多組K8s叢集管理，需要注意的重點有二件事，第一就是叢集(cluster)切換，不可或缺的工具有kubectx, kubens，有了它們就能輕鬆在多個<code>背景</code>及<code>命名空間</code>之間做轉換。在真正使用之前，我們先了解一下在之前，切換叢集需要關系的元件有那些，因此會介紹context, kubeconfig</p>
+<p>如果你需要更深入轉換整個kubernetes系統時，你可以參考以下工具(以下非本文的主軸)</p>
+<ul>
+<li><code>[Rancher](https://rancher.com/)</code> 是以UI 介面出發來集中管理多重叢集，它可以設定穿越地端與多組雲端託管的kubernetes</li>
+<li><code>[KQueen](https://www.notion.so/huangdaxian/Istio-K8s-Istio-Anthos-Shared-Control-Plane-in-Multi-Cluster-65d393869c014da98aed614afa98af14)</code> 是open source 是由Mirantis員工所開發，提供一個共用型的自助式kubernetes</li>
+<li><code>Grandener</code> 是由SAP公司所開發，多是利用kubernetes 原生API建構</li>
+</ul>
+<hr>
+<h1 id="什麼是Context"><a href="#什麼是Context" class="headerlink" title="什麼是Context"></a>什麼是Context</h1><ul>
+<li>它是一個設定檔，位置存在於  <code>$HOME/.kube/config</code></li>
+<li>設定檔的功能包含以下<ul>
+<li><code>namespace</code> 使用控管</li>
+<li>如何驗證叢集</li>
+<li>告知server, client 有那些</li>
+</ul>
+</li>
+</ul>
+<p>其實context = kubeconfig，一個 <code>context</code> 裡面必需要三個元件分別是<br>這三個東西說起來也很直觀，有個使用者 (User) 必須要有憑證 (Certification) 才能連到某個 Cluster (Serve)，因此配置完 kubeconfig，如此 kubectl 才會知道要進行存取的 k8s cluster 位於何處</p>
+<ul>
+<li>User</li>
+<li>Server</li>
+<li>Certification</li>
+</ul>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>photo by Akiicat 學習筆記</p>
+<h1 id="什麼是kubeconfig"><a href="#什麼是kubeconfig" class="headerlink" title="什麼是kubeconfig"></a>什麼是kubeconfig</h1><p>我們可透過 kubeconfig 了解以下資訊：</p>
+<ul>
+<li>存取的 k8s cluster 進入點為 <strong>context</strong>，透過設定 <code>current-context</code>可以指定 kubectl 操作時預設的 context</li>
+<li>使用者可以自訂多組的 cluster/user/context 並隨意搭配出不同的 context 組合，藉此存取多組 k8s cluster</li>
+<li>範例包含設定兩組 context，分別是 <code>gke</code>&amp; <code>onprem-connect</code></li>
+<li>若要使用 kubectl 直接對<code>不同的 context</code> 進行存取，可在命令中加上 <code>-context [CONTEXT_NAME]</code>來動態變更，只要相對應的憑證有設定正確就能切換至不同的叢集</li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h2 id="kubeconfig-切換叢集應用"><a href="#kubeconfig-切換叢集應用" class="headerlink" title="kubeconfig 切換叢集應用"></a>kubeconfig 切換叢集應用</h2><ul>
+<li><p>在管理kubernetes時，我們常用以下指令，來取某個 Kubernetes 的 cluster</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl config use-context <span class="comment">#命令快速在叢集之間進行切換</span></span></pre></td></tr></table></figure>
+</li>
+<li><p>比如現在現有三個叢集如下prod, test, dev，現在要從<code>prd</code> 切到<code>test</code></p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+<h2 id="kubeconfig-結構"><a href="#kubeconfig-結構" class="headerlink" title="kubeconfig 結構"></a>kubeconfig 結構</h2><p>kubeconfig文件由一組上下文組成。上下文包含以下三個主要元素</p>
+<ul>
+<li><p><strong>叢集(cluster)</strong>：叢集的API Server的URL</p>
+</li>
+<li><p><strong>使用者(user)</strong>：叢集的特定使用者的身份驗證憑證</p>
+</li>
+<li><p><strong>命名空間(namespace)</strong>：連接到叢集時使用的命名空間</p>
+</li>
+<li><p>其中<code>certificate</code>有以下四種表示(參考下面參數)</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">cluster:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="bullet">-</span> <span class="attr">certificate-authority-data:</span>                               <span class="comment">#cluster</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="bullet">-</span> <span class="attr">certificate-authority:</span> <span class="string">/Users/joe.huang/.minikube/ca.crt</span>  <span class="comment">#cluster</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="bullet">-</span> <span class="attr">client-certificate:</span> <span class="string">/Users/joe.huang/vagrant-cores/artifacts/tls/admin.pem</span> <span class="comment">#user</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="bullet">-</span> <span class="attr">client-key:</span> <span class="string">/Users/joe.huang/vagrant-cores/artifacts/tls/admin-key.pem</span>     <span class="comment">#user</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li><p>範例為連接GCP GKE kubeconfig檔</p>
+<ul>
+<li><p>其中連結二個GKE叢集，config也包含<code>cluster</code>, <code>certificate</code> 等資訊</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="Kubectx-解決了什麼"><a href="#Kubectx-解決了什麼" class="headerlink" title="Kubectx 解決了什麼"></a>Kubectx 解決了什麼</h1><ol>
+<li><strong>縮短指令長度：</strong>過去切換叢集，我們使用原生<code>[kubectl config use-context minikube](https://www.akiicat.com/2019/04/24/Kubernetes/setup-kubernetes-configuration/)</code>，現在使用更簡短的方式<code>kubectx minikube</code></li>
+<li><strong>懶人設定：</strong>像是查詢linux history，可以加上!編號，可以直接運行歷史指令。<code>kubectx -</code>是直接紀錄上次切換過的叢集</li>
+<li><code>**alias 支援**</code>：這點是因為在cluster naming時候，常用很多的代稱去命名cluster，可能有場景、地區、機房，到最後 cluster可能長這樣<code>gke_ahmetb-samples-playground_europe-west1-b_dubli</code>，如果有<code>kubectx</code>，就可以這樣用</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectx eu=gke_ahmetb-samples-playground_europe-west1-b_dublin</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectx eu <span class="comment">#最終只需這樣跑</span></span></pre></td></tr></table></figure>
+
+<h2 id="kubectx-用法"><a href="#kubectx-用法" class="headerlink" title="kubectx 用法"></a>kubectx 用法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">USAGE:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  kubectx                   : list the contexts</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  kubectx &lt;NAME&gt;            : switch to context &lt;NAME&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  kubectx -                 : switch to the previous context</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  kubectx -c, --current     : show the current context name</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  kubectx &lt;NEW_NAME&gt;=&lt;NAME&gt; : rename context &lt;NAME&gt; to &lt;NEW_NAME&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  kubectx &lt;NEW_NAME&gt;=.      : rename current-context to &lt;NEW_NAME&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  kubectx -d &lt;NAME&gt;         : delete context &lt;NAME&gt; (<span class="string">'.'</span> <span class="keyword">for</span> current-context)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">                              (this <span class="built_in">command</span> won<span class="string">'t delete the user/cluster entry</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="string">                              that is used by the context)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="string">  kubectx -u, --unset       : unset the current context</span></span></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="kubectx-切換叢集-使用別名"><a href="#kubectx-切換叢集-使用別名" class="headerlink" title="kubectx 切換叢集, 使用別名"></a>kubectx 切換叢集, 使用別名</h1><h3 id="step1-準備cluster"><a href="#step1-準備cluster" class="headerlink" title="step1. 準備cluster"></a>step1. 準備cluster</h3><ul>
+<li>這邊先準備二個 K8s叢集在GCP雲端上，分別為<code>gke</code>, <code>onprem-connect</code></li>
+<li>至於安kubectx，這邊就不說明，有興趣朋友請至<a href="https://github.com/ahmetb/kubectx" target="_blank" rel="noopener">Github.com/ahmetb/kubectx</a></li>
+</ul>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="step2-使用別名並切換叢集"><a href="#step2-使用別名並切換叢集" class="headerlink" title="step2. 使用別名並切換叢集"></a>step2. 使用別名並切換叢集</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># switch your context to the gke cluster</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">kubectx gke=gke_<span class="variable">$&#123;PROJECT_ID&#125;</span>_us-central1-b_gke <span class="comment"># 使用別名</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">kubectx gke <span class="comment"># 切換叢集</span></span></pre></td></tr></table></figure>
+
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://tonybai.com/2019/08/31/kubectl-productivity-part3/" target="_blank" rel="noopener">提高您的kubectl生产力（第三部分）：集群上下文切换、使用别名减少输入和插件扩展</a> by  Tony Bai</li>
+<li><a href="https://www.akiicat.com/2019/04/24/Kubernetes/setup-kubernetes-configuration/" target="_blank" rel="noopener">管理多個 Kubernetes Cluster：建立、切換、合併 context</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/27/BigQuery-Partition%E7%A5%9E%E5%99%A8-%E5%84%AA%E5%8C%96%E6%88%90%E6%9C%AC%E6%8F%90%E5%8D%87%E6%90%9C%E5%B0%8B%E6%95%88%E7%8E%87-Creating-Date-Partitioned-Tables-in-BigQuery/" rel="next" title="[BigQuery] Partition神器: 優化成本提升搜尋效率 | Creating Date-Partitioned Tables in BigQuery">
+                <i class="fa fa-chevron-left"></i> [BigQuery] Partition神器: 優化成本提升搜尋效率 | Creating Date-Partitioned Tables in BigQuery
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/10/04/K8S-kubectx%E5%A4%9A%E5%8F%A2%E9%9B%86%E9%96%93%E5%88%87%E6%8F%9B%E8%87%AA%E5%A6%82-Switching-between-K8s-contexts/" rel="prev" title="[K8S] kubectx多叢集間切換自如 | Switching between K8s contexts">
+                [K8S] kubectx多叢集間切換自如 | Switching between K8s contexts <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#K8S-kubectx多叢集間切換自如-A-tool-to-switch-between-Kubernetes-contexts"><span class="nav-number">1.</span> <span class="nav-text">[K8S] kubectx多叢集間切換自如 | A tool to switch between Kubernetes contexts</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agenda"><span class="nav-number">1.1.</span> <span class="nav-text">Agenda</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是Context"><span class="nav-number">3.</span> <span class="nav-text">什麼是Context</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什麼是kubeconfig"><span class="nav-number">4.</span> <span class="nav-text">什麼是kubeconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-切換叢集應用"><span class="nav-number">4.1.</span> <span class="nav-text">kubeconfig 切換叢集應用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-結構"><span class="nav-number">4.2.</span> <span class="nav-text">kubeconfig 結構</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kubectx-解決了什麼"><span class="nav-number">5.</span> <span class="nav-text">Kubectx 解決了什麼</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectx-用法"><span class="nav-number">5.1.</span> <span class="nav-text">kubectx 用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectx-切換叢集-使用別名"><span class="nav-number">6.</span> <span class="nav-text">kubectx 切換叢集, 使用別名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-準備cluster"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1. 準備cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-使用別名並切換叢集"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. 使用別名並切換叢集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
