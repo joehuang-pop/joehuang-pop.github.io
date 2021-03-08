@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GKE,Private Google Access,Authorized Networks,Alias IP,Secondary VPC," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言為什麼Google Cloud 延伸出一個Private Kubernetes Cluster[5]？如果你有建製GKE經驗，你會發現Worker Node其實就是用到GCE(instance)資源，這些VM預設時會使用到public IP，它的用意就是提供Node Port expose，好讓Pods可以對外溝通，亦或者是VM本身的patch update。 Public IP本意是就是為了">
+<meta name="keywords" content="GKE,Private Google Access,Authorized Networks,Alias IP,Secondary VPC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GKE 私有叢集建立：使用Private Google Access, Alias IP 實現 | Private Kubernetes Cluster Access by Authorized Networks">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="前言為什麼Google Cloud 延伸出一個Private Kubernetes Cluster[5]？如果你有建製GKE經驗，你會發現Worker Node其實就是用到GCE(instance)資源，這些VM預設時會使用到public IP，它的用意就是提供Node Port expose，好讓Pods可以對外溝通，亦或者是VM本身的patch update。 Public IP本意是就是為了">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled17.png">
+<meta property="og:updated_time" content="2021-03-08T12:28:20.740Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;02&#x2F;08&#x2F;GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2021/02/08/GKE-私有叢集建立：使用Private-Google-Access-Alias-IP-實現-Private-Kubernetes-Cluster-Access-by-Authorized-Networks/"/>
+
+
+
+
+
+  <title>GKE 私有叢集建立：使用Private Google Access, Alias IP 實現 | Private Kubernetes Cluster Access by Authorized Networks | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2021/02/08/GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GKE 私有叢集建立：使用Private Google Access, Alias IP 實現 | Private Kubernetes Cluster Access by Authorized Networks</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-08T20:23:21+08:00">
+                2021-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>為什麼Google Cloud 延伸出一個Private Kubernetes Cluster<a href="https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters" target="_blank" rel="noopener">[5]</a>？如果你有建製GKE經驗，你會發現Worker Node其實就是用到GCE(instance)資源，這些VM預設時會使用到public IP，它的用意就是提供Node Port expose，好讓Pods可以對外溝通，亦或者是VM本身的patch update。</p>
+<p>Public IP本意是就是為了跟外部溝通用，但Node Port的機制，會將主機一直曝露在外！嚴然也是一大風險，因此，Google Cloud提供一種沒有public IP Worker Node，減少主機公開的隱憂，透過VPC-native, Google Private Access[6]，具體作法是將群集(Cluster)中的節點(Worker Node)僅具有內部IP地址，這意味著，節點和Pod與Internet隔離。此外，節點內部IP地址包括(Pod, Service Subnet)，透過Alias IP(Secondary CIDR)[7] 是可以連結來自的GCP VPC IP地址範圍，最後構成Pod IP地址和Service IP地址來自同一處VPC(子網路)定義出的Subnet IP地址範圍。</p>
+<p>問題來了，當你沒有外部IP，Master Node API Server 我們要如何去溝通呢？我們知道GKE即然代管了Control plane，那麼它也是用public API 供access，現在缺了VM External IP，我們要如何與Master Node溝通？ 答案：就是啟用GKE 授信網路(Authorized networks)，僅讓特定的IP, CIDR操作kubectl命令。</p>
+<p>原文說明</p>
+<blockquote>
+<p>By default, when a Compute Engine VM lacks an external IP address assigned to its network interface, it can only send packets to other internal IP address destinations. You can allow these VMs to connect to the set of external IP addresses used by Google APIs and services by enabling Private Google Access on the subnet used by the VM’s network interface.<br>Private Google Access also allows access to the external IP addresses used by App Engine, including third-party App Engine-based services.<br>To view the eligible APIs and services that you can use with Private Google Access, see supported services in the Private Google Access overview.<br>See Private Access Options for Services for background information about Private Google Access and other private connectivity options offered by Google Cloud.</p>
+</blockquote>
+<h3 id="實作項目有"><a href="#實作項目有" class="headerlink" title="實作項目有"></a>實作項目有</h3><ol>
+<li>建立Private GKE 叢集，採用Alias IP</li>
+<li>GKE 叢集啟用 Authorized networks</li>
+<li>驗證kubectl：非授權網段、授權網段存取結</li>
+</ol>
+<hr>
+<h1 id="1-建立Private-GKE-叢集"><a href="#1-建立Private-GKE-叢集" class="headerlink" title="1. 建立Private GKE 叢集"></a>1. 建立Private GKE 叢集</h1><h3 id="step1-叢集建立"><a href="#step1-叢集建立" class="headerlink" title="step1. 叢集建立"></a>step1. 叢集建立</h3><p>透過參數指定，將叢集建立為一個內部VPC-native IP。同時也同定義master-ipv4-cidr</p>
+<ul>
+<li>–enable-private-nodes \</li>
+<li>master-ipv4-cidr 172.16.0.16/28 \</li>
+<li>–enable-ip-alias</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 Creating a private cluster</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">gcloud beta container clusters create private-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-private-nodes \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    --master-ipv4-cidr 172.16.0.16/28 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-ip-alias \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    --create-subnetwork <span class="string">""</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="step2-Private-subnet"><a href="#step2-Private-subnet" class="headerlink" title="step2. Private subnet"></a>step2. Private subnet</h3><p>當你建立Private cluster後，若沒有指定 <code>--secondary-range</code>, 上面的叢集使用的是 <code>--create-subnetwork &quot;&quot;</code>，因此GKE會自動於VPC建立屬於Pod, Service專用的Subnet IP Range</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 Viewing your subnet and secondary address ranges</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">gcloud compute networks subnets list --network default</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 get information about created subnet</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">gcloud compute networks subnets describe gke-private-cluster-subnet-4b330843 --region us-central1</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<h3 id="補充說明：Alias-IP-Secondary-VPC"><a href="#補充說明：Alias-IP-Secondary-VPC" class="headerlink" title="補充說明：Alias IP / Secondary VPC"></a>補充說明：Alias IP / Secondary VPC</h3><p>原本的k8s中，pod, service IP range皆是由k8s中自行定義，現在Alias IP可以讓你叢集得到GCP VPC 上的網路，使用VPC(內部的網路)直達Managed Master control plane。如圖中在原有VPC Subnet-A 定了二個新的subnet供GKE Pod(藍色部份), GKE service(紅色部份)作使用</p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<p>故設定為</p>
+<p>secondaryIpRanges</p>
+<ul>
+<li>ipCidrRange: <code>10.36.0.0</code>/14</li>
+<li>ipCidrRange: <code>10.33.176.0</code>/20</li>
+</ul>
+<p>這邊很重要的就是，我們透過  Private Google Access<a href="https://cloud.google.com/vpc/docs/configure-private-google-access" target="_blank" rel="noopener">[4]</a> 走向master node access</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="補充說明：檢視叢集設定"><a href="#補充說明：檢視叢集設定" class="headerlink" title="補充說明：檢視叢集設定"></a>補充說明：檢視叢集設定</h3><p><strong>Cluster IP</strong></p>
+<p>10.33.180.156</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<p>review NETWORKING</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<h3 id="補充說明：自動化建立Subnetwork-for-Pod-Service-Range"><a href="#補充說明：自動化建立Subnetwork-for-Pod-Service-Range" class="headerlink" title="補充說明：自動化建立Subnetwork for Pod, Service Range"></a>補充說明：自動化建立Subnetwork for Pod, Service Range</h3><p>當你建立Private cluster後，若沒有指定 <code>--secondary-range my-svc-range=10.0.32.0/20,my-pod-range=10.4.0.0/14</code>, GKE會自動於VPC建立屬於Pod, Service專用的Subnet IP Range</p>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<p>範例是手動補齊定義secondary range</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud compute networks subnets create my-subnet \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    --network default \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    --range 10.0.4.0/22 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-private-ip-google-access \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    --region us-central1 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    --secondary-range my-svc-range=10.0.32.0/20,my-pod-range=10.4.0.0/14</span></pre></td></tr></table></figure>
+
+<h1 id="2-啟用授信網路於跳板機-Master-authorized-networks-in-VM’s-public-IP"><a href="#2-啟用授信網路於跳板機-Master-authorized-networks-in-VM’s-public-IP" class="headerlink" title="2. 啟用授信網路於跳板機 | Master authorized networks in VM’s public IP"></a>2. 啟用授信網路於跳板機 | Master authorized networks in VM’s public IP</h1><h3 id="step1-建立跳板機"><a href="#step1-建立跳板機" class="headerlink" title="step1. 建立跳板機"></a>step1. 建立跳板機</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud compute instances create <span class="built_in">source</span>-instance --zone us-central1<span class="_">-a</span> --scopes <span class="string">'https://www.googleapis.com/auth/cloud-platform'</span></span></pre></td></tr></table></figure>
+
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="step2-設定叢集僅接受跳板機存取"><a href="#step2-設定叢集僅接受跳板機存取" class="headerlink" title="step2.  設定叢集僅接受跳板機存取"></a>step2.  設定叢集僅接受跳板機存取</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters update private-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-master-authorized-networks \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    --master-authorized-networks [MY_EXTERNAL_RANGE]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#104.197.15.146</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># * your CIDR range is natIP/32</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters update private-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-master-authorized-networks \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    --master-authorized-networks 104.197.15.146/32</span></pre></td></tr></table></figure>
+
+<p>確認authorized-networks 啟用</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step3-確認Authorize-your-external-address-range"><a href="#step3-確認Authorize-your-external-address-range" class="headerlink" title="step3. 確認Authorize your external address range"></a>step3. 確認Authorize your external address range</h3><p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h3 id="補充說明：GKE-被託管的Master-node"><a href="#補充說明：GKE-被託管的Master-node" class="headerlink" title="補充說明：GKE 被託管的Master node"></a>補充說明：GKE 被託管的Master node</h3><ul>
+<li>因為GKE 被託管的master node都是提供public endpoint[3]，供kubectl 呼叫</li>
+<li>現在pricate cluster部署，把worker node ip抽掉，所以我們改用Private Google Access去存取 master node</li>
+</ul>
+<blockquote>
+<p>Public endpoint<a href="https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept" target="_blank" rel="noopener">[3]</a><br>This is the external IP address of the control plane. By default, tools like kubectl communicate with the control plane on its public endpoint. You can control access to this endpoint using authorized networks or you can disable access to the public endpoint.</p>
+</blockquote>
+<p>下面中間虛線的部份即為 Private connectivity</p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<p>而文章開頭提到Alias IP, 與Private Google Access都是為了解決虛線的部份</p>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<h3 id="step4-檢視已加入的受信的網路"><a href="#step4-檢視已加入的受信的網路" class="headerlink" title="step4. 檢視已加入的受信的網路"></a>step4. 檢視已加入的受信的網路</h3><p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<h1 id="3-測試連線能力-by-kubectl"><a href="#3-測試連線能力-by-kubectl" class="headerlink" title="3. 測試連線能力 by kubectl"></a>3. 測試連線能力 by kubectl</h1><h3 id="step1-跳板機"><a href="#step1-跳板機" class="headerlink" title="step1. 跳板機"></a>step1. 跳板機</h3><ul>
+<li>開啟新的測試機</li>
+<li>安裝kubectl 指令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud compute ssh <span class="built_in">source</span>-instance --zone us-central1<span class="_">-a</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">gcloud components install kubectl</span></pre></td></tr></table></figure>
+
+<h3 id="step2-從測試機上存取GKE"><a href="#step2-從測試機上存取GKE" class="headerlink" title="step2. 從測試機上存取GKE"></a>step2. 從測試機上存取GKE</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters get-credentials private-cluster --zone us-central1<span class="_">-a</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">kubectl get nodes --output yaml | grep -A4 addresses</span></pre></td></tr></table></figure>
+
+<p>結果，可以看到正常提取worker node</p>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<h1 id="補充測試：master-authorized-networks-CIDR"><a href="#補充測試：master-authorized-networks-CIDR" class="headerlink" title="補充測試：master-authorized-networks $CIDR"></a>補充測試：master-authorized-networks $CIDR</h1><p>雖然，master-authorized-networks $CIDR參數上說明可設定自已的IP範圍，但這個CIDR不能套用在整個GCP VPC，也就是不能讓整段 IP range 一起存取master node</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">CIDR1=10.128.0.0/20</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters update private-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    --<span class="built_in">enable</span>-master-authorized-networks \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    --master-authorized-networks <span class="variable">$CIDR1</span>,<span class="variable">$CIDR2</span></span></pre></td></tr></table></figure>
+
+<h3 id="step1-取得VM-VPC-Range"><a href="#step1-取得VM-VPC-Range" class="headerlink" title="step1. 取得VM VPC Range"></a>step1. 取得VM VPC Range</h3><p>VM VPC</p>
+<ul>
+<li>10.128.0.0/20</li>
+</ul>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<p>IF no add Authorized NET(before adding)</p>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="step2-結果失敗，不能存取叢集"><a href="#step2-結果失敗，不能存取叢集" class="headerlink" title="step2. 結果失敗，不能存取叢集"></a>step2. 結果失敗，不能存取叢集</h3><p>VM-2 kubectl不行取得 managed <code>master control plane</code> 35.238.15.237</p>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<hr>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>[1] <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept" target="_blank" rel="noopener">https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept</a></p>
+<p>[2] <a href="https://developers.google.com/identity/protocols/oauth2/scopes" target="_blank" rel="noopener">https://developers.google.com/identity/protocols/oauth2/scopes</a></p>
+<p>[3] <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept" target="_blank" rel="noopener">https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept</a></p>
+<p>[4] <a href="https://cloud.google.com/vpc/docs/configure-private-google-access" target="_blank" rel="noopener">https://cloud.google.com/vpc/docs/configure-private-google-access</a></p>
+<p>[5] <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters" target="_blank" rel="noopener">https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters</a></p>
+<p>[6] <a href="https://cloud.google.com/vpc/docs/configure-private-google-access" target="_blank" rel="noopener">https://cloud.google.com/vpc/docs/configure-private-google-access</a></p>
+<p>[7] <a href="https://cloud.google.com/vpc/docs/alias-ip" target="_blank" rel="noopener">https://cloud.google.com/vpc/docs/alias-ip</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GKE/" rel="tag"># GKE</a>
+          
+            <a href="/tags/Private-Google-Access/" rel="tag"># Private Google Access</a>
+          
+            <a href="/tags/Authorized-Networks/" rel="tag"># Authorized Networks</a>
+          
+            <a href="/tags/Alias-IP/" rel="tag"># Alias IP</a>
+          
+            <a href="/tags/Secondary-VPC/" rel="tag"># Secondary VPC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/26/GCP-%E5%9B%9B%E5%80%8B%E6%83%85%E5%A2%83-%E4%B8%80%E6%AC%A1%E6%8E%8C%E6%8F%A1-GCP%E6%B5%81%E9%87%8F%E8%A8%88%E5%83%B9/" rel="next" title="[GCP] 四個情境 | 一次掌握 GCP流量計價">
+                <i class="fa fa-chevron-left"></i> [GCP] 四個情境 | 一次掌握 GCP流量計價
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#實作項目有"><span class="nav-number">1.0.1.</span> <span class="nav-text">實作項目有</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-建立Private-GKE-叢集"><span class="nav-number">2.</span> <span class="nav-text">1. 建立Private GKE 叢集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-叢集建立"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. 叢集建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Private-subnet"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. Private subnet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充說明：Alias-IP-Secondary-VPC"><span class="nav-number">2.0.3.</span> <span class="nav-text">補充說明：Alias IP / Secondary VPC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充說明：檢視叢集設定"><span class="nav-number">2.0.4.</span> <span class="nav-text">補充說明：檢視叢集設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充說明：自動化建立Subnetwork-for-Pod-Service-Range"><span class="nav-number">2.0.5.</span> <span class="nav-text">補充說明：自動化建立Subnetwork for Pod, Service Range</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-啟用授信網路於跳板機-Master-authorized-networks-in-VM’s-public-IP"><span class="nav-number">3.</span> <span class="nav-text">2. 啟用授信網路於跳板機 | Master authorized networks in VM’s public IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-建立跳板機"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. 建立跳板機</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-設定叢集僅接受跳板機存取"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2.  設定叢集僅接受跳板機存取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-確認Authorize-your-external-address-range"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. 確認Authorize your external address range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充說明：GKE-被託管的Master-node"><span class="nav-number">3.0.4.</span> <span class="nav-text">補充說明：GKE 被託管的Master node</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-檢視已加入的受信的網路"><span class="nav-number">3.0.5.</span> <span class="nav-text">step4. 檢視已加入的受信的網路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-測試連線能力-by-kubectl"><span class="nav-number">4.</span> <span class="nav-text">3. 測試連線能力 by kubectl</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-跳板機"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. 跳板機</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-從測試機上存取GKE"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. 從測試機上存取GKE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#補充測試：master-authorized-networks-CIDR"><span class="nav-number">5.</span> <span class="nav-text">補充測試：master-authorized-networks $CIDR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-取得VM-VPC-Range"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. 取得VM VPC Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-結果失敗，不能存取叢集"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. 結果失敗，不能存取叢集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
