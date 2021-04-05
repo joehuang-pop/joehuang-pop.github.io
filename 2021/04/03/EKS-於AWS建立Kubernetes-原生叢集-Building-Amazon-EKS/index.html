@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AWS,EKS,kubernetes,k8s,App Modernization,eksctl," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 部署機EC2 安裝相關工具要部署完整的EKS，需要整合一些相關工具集來滿足，其中動作包含 而各別對應的工具直接寫在後面  操作AWS operation → awscli 建立EKS → eksctl 以及操控Kubernetes → kubectl  step1. kubectl Kubernetes 使用名為kubectl 的命令列公用程式與叢集API 伺服器通訊(master node">
+<meta name="keywords" content="AWS,EKS,kubernetes,k8s,App Modernization,eksctl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[EKS] 於AWS建立Kubernetes 原生叢集 | Building Amazon EKS">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="1. 部署機EC2 安裝相關工具要部署完整的EKS，需要整合一些相關工具集來滿足，其中動作包含 而各別對應的工具直接寫在後面  操作AWS operation → awscli 建立EKS → eksctl 以及操控Kubernetes → kubectl  step1. kubectl Kubernetes 使用名為kubectl 的命令列公用程式與叢集API 伺服器通訊(master node">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled24.png">
+<meta property="og:updated_time" content="2021-04-05T07:40:38.339Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;04&#x2F;03&#x2F;EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2021/04/03/EKS-於AWS建立Kubernetes-原生叢集-Building-Amazon-EKS/"/>
+
+
+
+
+
+  <title>[EKS] 於AWS建立Kubernetes 原生叢集 | Building Amazon EKS | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2021/04/03/EKS-%E6%96%BCAWS%E5%BB%BA%E7%AB%8BKubernetes-%E5%8E%9F%E7%94%9F%E5%8F%A2%E9%9B%86-Building-Amazon-EKS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[EKS] 於AWS建立Kubernetes 原生叢集 | Building Amazon EKS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-04-03T15:37:22+08:00">
+                2021-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AWS/" itemprop="url" rel="index">
+                    <span itemprop="name">AWS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-部署機EC2-安裝相關工具"><a href="#1-部署機EC2-安裝相關工具" class="headerlink" title="1. 部署機EC2 安裝相關工具"></a>1. 部署機EC2 安裝相關工具</h1><p>要部署完整的EKS，需要整合一些相關工具集來滿足，其中動作包含</p>
+<p>而各別對應的工具直接寫在後面</p>
+<ul>
+<li>操作AWS operation → <code>awscli</code></li>
+<li>建立EKS → <code>eksctl</code></li>
+<li>以及操控Kubernetes → <code>kubectl</code></li>
+</ul>
+<h3 id="step1-kubectl"><a href="#step1-kubectl" class="headerlink" title="step1. kubectl"></a>step1. kubectl</h3><ul>
+<li>Kubernetes 使用名為kubectl 的命令列公用程式與叢集API 伺服器通訊(master node)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 download kubectl tool</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">sudo curl --location -o /usr/<span class="built_in">local</span>/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 使kubectl 成為可以執行檔</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">sudo chmod +x /usr/<span class="built_in">local</span>/bin/kubectl</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3 確認kubectl 已正確安裝</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">kubectl version --short --client</span></pre></td></tr></table></figure>
+
+<p>安裝訊息以及測試kubectl是否成功</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h3 id="step2-eksctl"><a href="#step2-eksctl" class="headerlink" title="step2. eksctl"></a>step2. eksctl</h3><ul>
+<li>Amazon EKS 世界中可以快速操控Kubernetes 叢集，eksctl 命令列公用程式提供最快且最簡單的方式，讓您使用的節點建立新的叢集Amazon EKS</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">curl --location <span class="string">"https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_<span class="variable">$(uname -s)</span>_amd64.tar.gz"</span> | tar xz -C /tmp</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">sudo mv -v /tmp/eksctl /usr/<span class="built_in">local</span>/bin</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">eksctl version</span></pre></td></tr></table></figure>
+
+<p>安裝結束訊息以及測試eksctl是否成功</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<blockquote>
+<p>以上的部驟皆是前置作業，我們準好了操作AWS operation 的<code>awscli</code>，建立EKS 的 <code>eksctl</code>，以及操控Kubernetes 的 <code>kubectl</code></p>
+</blockquote>
+<hr>
+<h1 id="2-部署-AWS-EKS-cluster"><a href="#2-部署-AWS-EKS-cluster" class="headerlink" title="2. 部署 AWS EKS cluster"></a>2. 部署 AWS EKS cluster</h1><h3 id="step1-透過eksctl-部署EKS-叢集"><a href="#step1-透過eksctl-部署EKS-叢集" class="headerlink" title="step1.  透過eksctl 部署EKS 叢集"></a>step1.  透過eksctl 部署EKS 叢集</h3><ul>
+<li>EKS 是很彈性的，你可以建立正規的3台EC2為基底的EKS，你也可以建立1台的EC2的EKS</li>
+</ul>
+<h3 id="參數說明"><a href="#參數說明" class="headerlink" title="參數說明"></a>參數說明</h3><ul>
+<li><strong><code>-name</code></strong> 可讓您指定 Amazon EKS 叢集的名稱</li>
+<li><strong><code>-nodegroup-name</code></strong> 可讓您指定 Amazon EKS 節點群組的名稱</li>
+<li><strong>`-node-type</strong>` 指定工作者節點使用的執行個體類型，而完整的EC2支援清單請見<a href="https://github.com/awslabs/amazon-eks-ami/blob/master/amazon-eks-nodegroup.yaml" target="_blank" rel="noopener">awslabs/amazon-eks-ami</a>[1]</li>
+<li><strong><code>-nodes</code></strong> 指定在所需的自動調整規模定義期間部署的節點數目</li>
+<li><strong><code>-nodes-min</code></strong>針對節點群組設定 Amazon EC2 Autoscaling 組態中的節點數目下限</li>
+<li><strong><code>-nodes-max</code></strong>針對節點群組設定 Amazon EC2 Autoscaling 組態中的節點數目上限</li>
+<li><strong><code>-managed</code></strong> 建立 Amazon EKS 受管節點群組</li>
+<li><strong><code>-version</code></strong> 指定要在 Amazon EKS 叢集上部署哪個版本的 Kubernetes</li>
+<li><strong><code>-region</code></strong> 指定要部署 Amazon EKS 叢集和節點群組的 AWS 區域。如果未包含arg旗標資訊，eksctl 公用程式會預設為 us-west-2 區域</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 EKS with 3 nodes</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> AWS_REGION=us-west-2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">eksctl create cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">--name dev-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">--nodegroup-name dev-nodes \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">--node-type t3.small \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">--nodes 3 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">--nodes-min 1 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">--nodes-max 4 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">--managed \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">--version 1.16 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">--region <span class="variable">$&#123;AWS_REGION&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Thin cluster with EKS</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">eksctl create cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    --name dev-cluster \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    --nodegroup-name dev-nodes \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    --node-type t3.micro \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    --nodes 1 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    --managed \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    --version 1.16 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">    --region ap-southeast-1</span></pre></td></tr></table></figure>
+
+<blockquote>
+<p>命令執行i 會在你的本機下 ~/.kube/config 建立組態檔案，也稱為 kubeconfig。kubeconfig 包含有關 Amazon EKS 叢集的詳細資訊，包括<code>叢集名稱</code>和<code>身分驗證</code>方法</p>
+</blockquote>
+<p>建立叢集的 IAM 角色或使用者會自動新增到 Kubernetes RBAC 組態中的 <code>system:masters</code> 群組，使其成為 <code>Kubernetes 叢集的全權管理員</code>。在授與其他許可之前，它也是<strong>唯一</strong>可以存取叢集的角色或使用者。本此實驗中，EC2堡壘主機擔任的 IAM 角色就是建立叢集的角色，所以我們把<code>system:masters</code>綁給K8s RBAC</p>
+<h3 id="部署觀察"><a href="#部署觀察" class="headerlink" title="部署觀察"></a>部署觀察</h3><p>時間</p>
+<ul>
+<li><p>開始時間07-39 →  結束時間08:00 一共花費 21分鐘</p>
+</li>
+<li><p>*官方說明叢集花費時間為15 - 20分鐘，依我自已的經驗不論是1個node或是3個node都要花費走過15分鐘</p>
+<ul>
+<li><p>1個node ECS 共花費 17分鐘</p>
+</li>
+<li><p>3個node ECS 共花費 21分鐘</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>參數執行</p>
+<ul>
+<li>其中3個node, EC2  平均分散在<code>us-west-2a</code>, <code>us-west-2b</code>, <code>us-west-2c</code>，此舉協助EKS提高HA保護</li>
+<li>每一個node 中都會使用一對網路，分別為<code>public subnet</code>, <code>private subnet</code></li>
+<li>接下來透過CloudFormation幫忙設定K8s和 <code>instance group</code></li>
+<li>透過AWS 代管的EKS Control Plane，也在此生成Kubernetes API Endpoint供你的worker node 管理，直到三個node 安裝所有kuberntes stack套件</li>
+<li>部署的尾聲 eksctl 會協助建立新的kubeconfig，它一個kubernetes登入檔，位置在 /home/ssm-user/.kube/config</li>
+<li>最後你可以用kubectl get nodes 來確認EKS 狀態</li>
+</ul>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h3 id="step2-測試EKS-cluster"><a href="#step2-測試EKS-cluster" class="headerlink" title="step2. 測試EKS cluster"></a>step2. 測試EKS cluster</h3><ul>
+<li>透過 kubectl get nodes 來確認EKS, 底層EC2 worker node狀態</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p>透過UI 檢視底層EC2 worker node狀態</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<hr>
+<h1 id="1-測試：部署Application-to-EKS-from-ECR"><a href="#1-測試：部署Application-to-EKS-from-ECR" class="headerlink" title="#1 測試：部署Application to EKS  from ECR"></a>#1 測試：部署Application to EKS  from ECR</h1><p>Amazon Elastic Container Registry (ECR) 是一個全受管的Docker 容器登錄檔，可讓開發人員輕鬆存放、管理以及部署Docker 容器映像。</p>
+<h3 id="step1-Image-URI"><a href="#step1-Image-URI" class="headerlink" title="step1. Image URI"></a>step1. Image URI</h3><ul>
+<li>我們先把可運行的docker image push to ECR</li>
+<li>image URI: <a href="http://199679544872.dkr.ecr.ap-southeast-1.amazonaws.com/demo-aws" target="_blank" rel="noopener"><code>199679544872.dkr.ecr.ap-southeast-1.amazonaws.com/demo-aws</code></a></li>
+</ul>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h3 id="step2-kubectl-run"><a href="#step2-kubectl-run" class="headerlink" title="step2. kubectl run"></a>step2. kubectl run</h3><ul>
+<li>最直接的測試方試就是使用kubectl run 指定你的docker image位置，也就是上面所述的 image URI</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl run demo-aws --image=[199679544872.dkr.ecr.ap-southeast-1.amazonaws.com/demo-aws](http://199679544872.dkr.ecr.ap-southeast-1.amazonaws.com/demo-aws)</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<h3 id="step3-透過AWS-Load-Balance-對外公開服務"><a href="#step3-透過AWS-Load-Balance-對外公開服務" class="headerlink" title="step3. 透過AWS Load Balance 對外公開服務"></a>step3. 透過AWS Load Balance 對外公開服務</h3><ul>
+<li>預設的kubernetes 生起service endpoint，只能是對內的服務更白話的說，就是只能在叢集內溝通。我們可以透過kubectl expose 結合AWS Load Balance 對外公開服務，指令可以自動配對Classic Load Balancer</li>
+<li>或許你會好奇，為什麼AWS可以如何簡單介接到AWS Load Balance？因為，EKS為代管的control plane，它本身就是API Endpoint，而AWS EKS在你一開始做授權的動作時，就可以讓EKS可以跟你的NLB溝通</li>
+<li>當然你的service，若是L7層級的，你也可以交換Load balance種類為ALB[7]</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl expose pod demo-aws --<span class="built_in">type</span>=LoadBalancer --name=demo-aws-service --port 80</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#Exposed:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">[http://a84693be9eb304dd1bb31dad9ab07e73-1331634835.ap-southeast-1.elb.amazonaws.com/](http://a84693be9eb304dd1bb31dad9ab07e73-1331634835.ap-southeast-1.elb.amazonaws.com/)</span></pre></td></tr></table></figure>
+
+<p>執行結果，並產生URL</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step4-驗證-demo-aws-網頁內容"><a href="#step4-驗證-demo-aws-網頁內容" class="headerlink" title="step4. 驗證 demo-aws 網頁內容"></a>step4. 驗證 demo-aws 網頁內容</h3><ul>
+<li>上面部驟準備的docker image是封裝 node.js 網頁服務</li>
+<li>因此，你可以在網頁上看到 “Hello World” 文字</li>
+</ul>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h1 id="網路相關設定"><a href="#網路相關設定" class="headerlink" title="網路相關設定"></a>網路相關設定</h1><h3 id="Load-Balancer-設計"><a href="#Load-Balancer-設計" class="headerlink" title="Load Balancer 設計"></a>Load Balancer 設計</h3><ul>
+<li>透過kubectl expose 產生的URL後，他會對應到在ap-southeast backend 的三台instance</li>
+<li>你必須確定backend它們的status為<code>InService</code>，以及<code>Heathly</code> 為Yes，代表為load balance的分流路徑走向是正確的</li>
+<li>筆者在之前實驗中，使用1個node EKS，造成Instance ID status 為OutofService，此情形即使LB 產生URL，但你依究無法讓request 導入backend</li>
+</ul>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="EKS-VPC-設計"><a href="#EKS-VPC-設計" class="headerlink" title="EKS VPC 設計"></a>EKS VPC 設計</h3><p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<p>eksctl 建立時 EKS時，每一個node 中都會使用一對網路，分別為<code>public subnet</code>, <code>private subnet</code>，因此預設會建立一個<code>新的 VPC</code>，其中包含</p>
+<ul>
+<li>三個公有(public)子網路和三個新的私有(private)子網路</li>
+<li>所以你能在EKS Networking看到Subnets 出現6組subnet</li>
+</ul>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<hr>
+<h1 id="2-測試：部署Application-to-EKS-by-yaml"><a href="#2-測試：部署Application-to-EKS-by-yaml" class="headerlink" title="#2 測試：部署Application to EKS by yaml"></a>#2 測試：部署Application to EKS by yaml</h1><p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<h3 id="step1-取得workload-service-sample"><a href="#step1-取得workload-service-sample" class="headerlink" title="step1. 取得workload, service sample"></a>step1. 取得workload, service sample</h3><ul>
+<li>從git 取得workload, service sample code</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/brentley/ecsdemo-frontend.git</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/brentley/ecsdemo-nodejs.git</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/brentley/ecsdemo-crystal.git</span></pre></td></tr></table></figure>
+
+<p>查看deployment，並且部署至EKS</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/ecsdemo-nodejs</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">cat kubernetes/deployment.yaml</span></pre></td></tr></table></figure>
+
+<h3 id="step2-檢視-deployment-workload"><a href="#step2-檢視-deployment-workload" class="headerlink" title="step2. 檢視 deployment workload"></a>step2. 檢視 deployment workload</h3><p>其中deployment yaml 中有以下資訊</p>
+<ul>
+<li><code>metadata</code>: 部署一個名個 ecsdemo-node.js</li>
+<li><code>replicas</code>: 僅運行一個pod</li>
+<li><code>container image</code>: 來從node.js:latest 一個網頁的docker</li>
+</ul>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<h3 id="step3-部署deployment-service"><a href="#step3-部署deployment-service" class="headerlink" title="step3. 部署deployment, service"></a>step3. 部署deployment, service</h3><ul>
+<li>執行 kubectl apply 對deployment.yaml 定義的workload 進行部署</li>
+<li>同時也對service.yaml 定義的endpoint  產生URL</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/deployment.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/service.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">kubectl get deployment ecsdemo-nodejs</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl get services</span></pre></td></tr></table></figure>
+
+<p>執行結果</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h3 id="step1-crystal-服務"><a href="#step1-crystal-服務" class="headerlink" title="step1. crystal 服務"></a>step1. crystal 服務</h3><ul>
+<li>另一隻名為crystal服務，我們必須切換至正確對應的目錄<code>(ecsdemo-crystal)</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/ecsdemo-crystal</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">cat kubernetes/deployment.yaml</span></pre></td></tr></table></figure>
+
+<p>其中deployment yaml 中有以下資訊</p>
+<ul>
+<li><code>metadata</code>: 部署一個名個 ecsdemo-crystal</li>
+<li><code>replicas</code>: 僅運行一個pod</li>
+<li><code>container image</code>: ecsdemo-crystal</li>
+<li><code>container port</code>: REST API 對外埠為TCP  3000</li>
+</ul>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h3 id="step2-部署deployment-service"><a href="#step2-部署deployment-service" class="headerlink" title="step2. 部署deployment, service"></a>step2. 部署deployment, service</h3><ul>
+<li>執行 kubectl apply 對deployment.yaml 定義的workload 進行部署</li>
+<li>同時也對service.yaml 定義的endpoint  產生URL</li>
+<li>deployment產生的workload 有時不會即時產出，你可以觀察deploy READY 狀態是否為 1/1</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/deployment.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/service.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 監控部署進度，並確認其成功完成</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl get deployment ecsdemo-crystal</span></pre></td></tr></table></figure>
+
+<p>執行結果</p>
+<p><img src="Untitled17.png" alt="Untitled17.png"></p>
+<h3 id="step3-部署-ecsdemo-frontend"><a href="#step3-部署-ecsdemo-frontend" class="headerlink" title="step3. 部署 ecsdemo-frontend"></a>step3. 部署 ecsdemo-frontend</h3><ul>
+<li>前端使用的是Ruby</li>
+<li>檢視一下 frontend yaml</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/ecsdemo-frontend</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">cat kubernetes/deployment.yaml</span></pre></td></tr></table></figure>
+
+<p>其中deployment yaml 中有以下資訊</p>
+<ul>
+<li><code>metadata</code>: 部署一個名個 ecsdemo-frontend</li>
+<li><code>replicas</code>: 僅運行一個pod</li>
+<li><code>container port</code>: REST API 對外埠為TCP  3000</li>
+<li>env: 定義二個環境變數，告知crystal_URL, ecsdemo-node.js 關系服務URL<ul>
+<li><code>ecsdemo-crystal.default.svc.cluster.local/crystal</code></li>
+<li><code>ecsdemo-nodejs.default.svc.cluster.local</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<p>其中service yaml 中有以下資訊</p>
+<ul>
+<li><code>metadata</code>: 部署一個名個 ecsdemo-frontend service</li>
+<li><code>label</code>: 篩選條件為 key-value = <code>app:frontend</code></li>
+<li><code>expose service type</code>: Load Balancer</li>
+</ul>
+<p>檢視service.yaml 內容</p>
+<p><img src="Untitled19.png" alt="Untitled19.png"></p>
+<h3 id="step4-部署ecsdemo-workload-services"><a href="#step4-部署ecsdemo-workload-services" class="headerlink" title="step4. 部署ecsdemo workload, services"></a>step4. 部署ecsdemo workload, services</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/deployment.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubernetes/service.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">kubectl get deployment ecsdemo-frontend</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl get service ecsdemo-frontend</span></pre></td></tr></table></figure>
+
+<p>執行結果</p>
+<ul>
+<li>正常的service 執行結果會一組聯合 AWS LB產生出的endpoint，它的值組成<code>.elb.amazonaws.com</code>結尾的DNS 名稱</li>
+<li>請用產生的endpoint a2ae2a36089184………….us-west-2<code>.elb.amazonaws.com</code> 進行連線測試</li>
+</ul>
+<blockquote>
+<p>*Load balance可能需要幾分鐘才能開始將流量傳送至前端</p>
+</blockquote>
+<p><img src="Untitled20.png" alt="Untitled20.png"></p>
+<h3 id="Load-Balancer-產生的設定"><a href="#Load-Balancer-產生的設定" class="headerlink" title="Load Balancer 產生的設定"></a>Load Balancer 產生的設定</h3><ul>
+<li>檢視的load balance type 為 Classic，為我自轉換L4 內容</li>
+<li>此load balance背後服務的特定VPC ID，服務的區域為特定的regional us-west-2a /b /c</li>
+</ul>
+<p><img src="Untitled21.png" alt="Untitled21.png"></p>
+<ul>
+<li>這邊顯示的instances，代表的就是EKS的底層三台workload ECS</li>
+</ul>
+<p><img src="Untitled22.png" alt="Untitled22.png"></p>
+<h3 id="step5-確認所有的workload-service"><a href="#step5-確認所有的workload-service" class="headerlink" title="step5.  確認所有的workload, service"></a>step5.  確認所有的workload, service</h3><ul>
+<li>透過kubectl get service 取得所以上述部署的services</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl get deployments</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">kubectl get service ecsdemo-frontend -o wide</span></pre></td></tr></table></figure>
+
+<p>你格以看到所有的services endpoint一共會有三組，分別為</p>
+<ul>
+<li>ecsdemo-crystal</li>
+<li>ecsdemo-frontend</li>
+<li>ecsdemo-nodjs</li>
+</ul>
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<p>於瀏灠器檢視 DNS Endpoiont</p>
+<ul>
+<li>可以正常顯示網頁內容</li>
+</ul>
+<p><img src="Untitled24.png" alt="Untitled24.png"></p>
+<hr>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p>[1] <a href="https://github.com/awslabs" target="_blank" rel="noopener">awslabs</a>/<strong><a href="https://github.com/awslabs/amazon-eks-ami" target="_blank" rel="noopener">amazon-eks-ami</a></strong></p>
+<p>[2] <a href="https://www.eksworkshop.com/" target="_blank" rel="noopener">https://www.eksworkshop.com/</a></p>
+<p>[3] <a href="https://docs.aws.amazon.com/index.html?nc2=h_ql_doc_do_v" target="_blank" rel="noopener">AWS Documentation whole products</a></p>
+<p>[4] <a href="https://aws.amazon.com/about-aws/global-infrastructure/?nc1=h_ls" target="_blank" rel="noopener">AWS Global Infrastructure</a></p>
+<p>[5] <a href="https://aws.amazon.com/getting-started/hands-on/?nc1=h_ls&getting-started-all.sort-by=item.additionalFields.sortOrder&getting-started-all.sort-order=asc" target="_blank" rel="noopener">Find the hands-on tutorials for your AWS needs</a></p>
+<p>[6] <a href="https://aws.amazon.com/tw/getting-started/hands-on/launch-a-virtual-machine/" target="_blank" rel="noopener">Amazon Lightsail</a></p>
+<p>[7] <a href="https://docs.aws.amazon.com/eks/latest/userguide/load-balancing.html" target="_blank" rel="noopener">Network load balancing on Amazon EKS</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AWS/" rel="tag"># AWS</a>
+          
+            <a href="/tags/EKS/" rel="tag"># EKS</a>
+          
+            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+            <a href="/tags/App-Modernization/" rel="tag"># App Modernization</a>
+          
+            <a href="/tags/eksctl/" rel="tag"># eksctl</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/08/GKE-%E7%A7%81%E6%9C%89%E5%8F%A2%E9%9B%86%E5%BB%BA%E7%AB%8B%EF%BC%9A%E4%BD%BF%E7%94%A8Private-Google-Access-Alias-IP-%E5%AF%A6%E7%8F%BE-Private-Kubernetes-Cluster-Access-by-Authorized-Networks/" rel="next" title="GKE 私有叢集建立：使用Private Google Access, Alias IP 實現 | Private Kubernetes Cluster Access by Authorized Networks">
+                <i class="fa fa-chevron-left"></i> GKE 私有叢集建立：使用Private Google Access, Alias IP 實現 | Private Kubernetes Cluster Access by Authorized Networks
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-部署機EC2-安裝相關工具"><span class="nav-number">1.</span> <span class="nav-text">1. 部署機EC2 安裝相關工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-kubectl"><span class="nav-number">1.0.1.</span> <span class="nav-text">step1. kubectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-eksctl"><span class="nav-number">1.0.2.</span> <span class="nav-text">step2. eksctl</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-部署-AWS-EKS-cluster"><span class="nav-number">2.</span> <span class="nav-text">2. 部署 AWS EKS cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-透過eksctl-部署EKS-叢集"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1.  透過eksctl 部署EKS 叢集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參數說明"><span class="nav-number">2.0.2.</span> <span class="nav-text">參數說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署觀察"><span class="nav-number">2.0.3.</span> <span class="nav-text">部署觀察</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-測試EKS-cluster"><span class="nav-number">2.0.4.</span> <span class="nav-text">step2. 測試EKS cluster</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-測試：部署Application-to-EKS-from-ECR"><span class="nav-number">3.</span> <span class="nav-text">#1 測試：部署Application to EKS  from ECR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Image-URI"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. Image URI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-kubectl-run"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. kubectl run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-透過AWS-Load-Balance-對外公開服務"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. 透過AWS Load Balance 對外公開服務</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-驗證-demo-aws-網頁內容"><span class="nav-number">3.0.4.</span> <span class="nav-text">step4. 驗證 demo-aws 網頁內容</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#網路相關設定"><span class="nav-number">4.</span> <span class="nav-text">網路相關設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-Balancer-設計"><span class="nav-number">4.0.1.</span> <span class="nav-text">Load Balancer 設計</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EKS-VPC-設計"><span class="nav-number">4.0.2.</span> <span class="nav-text">EKS VPC 設計</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-測試：部署Application-to-EKS-by-yaml"><span class="nav-number">5.</span> <span class="nav-text">#2 測試：部署Application to EKS by yaml</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-取得workload-service-sample"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. 取得workload, service sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-檢視-deployment-workload"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. 檢視 deployment workload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-部署deployment-service"><span class="nav-number">5.0.3.</span> <span class="nav-text">step3. 部署deployment, service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-crystal-服務"><span class="nav-number">5.0.4.</span> <span class="nav-text">step1. crystal 服務</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-部署deployment-service"><span class="nav-number">5.0.5.</span> <span class="nav-text">step2. 部署deployment, service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-部署-ecsdemo-frontend"><span class="nav-number">5.0.6.</span> <span class="nav-text">step3. 部署 ecsdemo-frontend</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-部署ecsdemo-workload-services"><span class="nav-number">5.0.7.</span> <span class="nav-text">step4. 部署ecsdemo workload, services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-Balancer-產生的設定"><span class="nav-number">5.0.8.</span> <span class="nav-text">Load Balancer 產生的設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step5-確認所有的workload-service"><span class="nav-number">5.0.9.</span> <span class="nav-text">step5.  確認所有的workload, service</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
