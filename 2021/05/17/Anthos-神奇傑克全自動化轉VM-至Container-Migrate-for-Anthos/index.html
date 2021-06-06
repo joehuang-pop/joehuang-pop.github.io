@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Anthos,Service Account,Kubernetes,dockerized,Microservice,Migration for Anthos,GKE," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言過去在做IaaS VM 轉換至Microservice，總是要花費許多的人事物力，要有多少部門協同參與，又要有相關的權限做部署，其中又有轉換上的風險，可能導致失敗。Google Anthos 為了減少這樣的人工錯誤風險，增加整體轉化的效率提供一項神奇的工具Migrate for Anthos 你可以想像在VM 轉換至Kubernetes 中運行的Pod，會有那些步驟 eg. decouple">
+<meta name="keywords" content="Anthos,Service Account,Kubernetes,dockerized,Microservice,Migration for Anthos,GKE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Anthos] 神奇傑克全自動化轉VM 至Container | Migrate for Anthos">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="前言過去在做IaaS VM 轉換至Microservice，總是要花費許多的人事物力，要有多少部門協同參與，又要有相關的權限做部署，其中又有轉換上的風險，可能導致失敗。Google Anthos 為了減少這樣的人工錯誤風險，增加整體轉化的效率提供一項神奇的工具Migrate for Anthos 你可以想像在VM 轉換至Kubernetes 中運行的Pod，會有那些步驟 eg. decouple">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled24.png">
+<meta property="og:updated_time" content="2021-06-06T09:55:38.573Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2021&#x2F;05&#x2F;17&#x2F;Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2021/05/17/Anthos-神奇傑克全自動化轉VM-至Container-Migrate-for-Anthos/"/>
+
+
+
+
+
+  <title>[Anthos] 神奇傑克全自動化轉VM 至Container | Migrate for Anthos | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2021/05/17/Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[Anthos] 神奇傑克全自動化轉VM 至Container | Migrate for Anthos</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-05-17T16:51:14+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GCP/" itemprop="url" rel="index">
+                    <span itemprop="name">GCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>過去在做IaaS VM 轉換至Microservice，總是要花費許多的人事物力，要有多少部門協同參與，又要有相關的權限做部署，其中又有轉換上的風險，可能導致失敗。Google Anthos 為了減少這樣的人工錯誤風險，增加整體轉化的效率提供一項神奇的工具Migrate for Anthos</p>
+<p>你可以想像在VM 轉換至Kubernetes 中運行的Pod，會有那些步驟 eg. decouple code, make dockerfile, build docker image, make kubernetes object: deployment, service etc. 以上是簡單羅列，相信還會有更多的流程，而Migrate for Anthos就是簡化上述的繁鎖的步驟，因應生成的</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h1 id="步驟說明："><a href="#步驟說明：" class="headerlink" title="步驟說明："></a>步驟說明：</h1><p>完整的實驗過程，我將簡化五大步驟</p>
+<ol>
+<li>建立GKE 平台，運行Web VM</li>
+<li>準備平台間的溝通金鑰</li>
+<li>安裝轉換工具migctl</li>
+<li>建立轉換計劃</li>
+<li>部署並測試microservice</li>
+</ol>
+<h1 id="▌1-準備環境-VM網頁-GKE平台"><a href="#▌1-準備環境-VM網頁-GKE平台" class="headerlink" title="▌1. 準備環境: VM網頁, GKE平台"></a>▌1. 準備環境: VM網頁, GKE平台</h1><h3 id="step1-轉換：Source-VM"><a href="#step1-轉換：Source-VM" class="headerlink" title="step1. 轉換：Source VM"></a>step1. 轉換：Source VM</h3><ul>
+<li>現正運行一個網頁伺服務名為<code>source-vm</code></li>
+<li>同時顯示網示網頁內容 <code>Hello World</code></li>
+</ul>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+<h3 id="step2-GKE-Cluster-部署"><a href="#step2-GKE-Cluster-部署" class="headerlink" title="step2. GKE Cluster 部署"></a>step2. GKE Cluster 部署</h3><ul>
+<li>透過指令$gcloud container clusters create，或是GKE UI 建立平台皆可，指令可以參考以下</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="string">gcloud</span> <span class="string">container</span> <span class="string">clusters</span> <span class="string">create</span> <span class="string">migration-processing</span>  <span class="string">/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--zone=us-central1-a</span> <span class="string">/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	<span class="string">--machine-type</span> <span class="string">n1-standard-4</span> <span class="string">/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	<span class="string">--image-type</span> <span class="string">ubuntu/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--num-nodes</span> <span class="number">3</span> <span class="string">/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	<span class="string">--enable-stackdriver-kubernetes</span></span></pre></td></tr></table></figure>
+
+<p>GKE 完成</p>
+<p><img src="Untitled2.png" alt="Untitled2.png"></p>
+<p><img src="Untitled3.png" alt="Untitled3.png"></p>
+<h1 id="▌2-準備-Service-Account"><a href="#▌2-準備-Service-Account" class="headerlink" title="▌2. 準備 Service Account"></a>▌2. 準備 Service Account</h1><p>此步驟是為了，讓Anthos Migration有權限可以拉動既有在GCP VM運行的VM</p>
+<ul>
+<li>帳戶命名：<code>m4a-ce-src</code> = Migration for Anthos</li>
+<li>角色授與：-role=”roles/compute.viewer”</li>
+</ul>
+<p>需要的權限有</p>
+<ul>
+<li>role: roles/bigquery.admin</li>
+<li>role: roles/cloudbuild.builds.builder</li>
+<li>role: roles/cloudbuild.serviceAgent</li>
+<li>role: roles/container.serviceAgent</li>
+<li>role: roles/storage.admin</li>
+</ul>
+<h3 id="step1-建立Service-account-並授與權限-quot-m4a-ce-src-quot"><a href="#step1-建立Service-account-並授與權限-quot-m4a-ce-src-quot" class="headerlink" title="step1. 建立Service account 並授與權限 &quot;m4a-ce-src&quot;"></a>step1. 建立Service account 並授與權限 <code>&quot;m4a-ce-src&quot;</code></h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 ENV</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="string">export</span> <span class="string">PROJECT_ID=$DEVSHELL_PROJECT_ID</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 建立平台間的溝通金鑰</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">gcloud</span> <span class="string">iam</span> <span class="string">service-accounts</span> <span class="string">create</span> <span class="string">m4a-ce-src</span> <span class="string">--project=$PROJECT_ID</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">gcloud</span> <span class="string">iam</span> <span class="string">service-accounts</span> <span class="string">create</span> <span class="string">m4a-install</span> <span class="string">\</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--project=$PROJECT_ID</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3 付於金鑰權限</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="string">gcloud</span> <span class="string">projects</span> <span class="string">add-iam-policy-binding</span> <span class="string">$PROJECT_ID</span>  <span class="string">\</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--member="serviceAccount:m4a-ce-src@$PROJECT_ID.iam.gserviceaccount.com"</span> <span class="string">\</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--role="roles/compute.storageAdmin"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#4 Download the key file for the service account:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="string">gcloud</span> <span class="string">iam</span> <span class="string">service-accounts</span> <span class="string">keys</span> <span class="string">create</span> <span class="string">m4a-ce-src.json</span> <span class="string">\</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--iam-account=m4a-ce-src@$PROJECT_ID.iam.gserviceaccount.com</span> <span class="string">\</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">  <span class="string">--project=$PROJECT_ID</span></span></pre></td></tr></table></figure>
+
+<p>執行畫面</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<p>建立完的Service account檢示</p>
+<p><img src="Untitled5.png" alt="Untitled5.png"></p>
+<h3 id="step2-生成JSON-key"><a href="#step2-生成JSON-key" class="headerlink" title="step2. 生成JSON key"></a>step2. 生成JSON key</h3><p>產出2 json 檔分別為以下，供安裝migctl，以偶轉換時所需的權限</p>
+<ul>
+<li>m4a-install.json</li>
+<li>m4a-ce-src.json</li>
+</ul>
+<p>m4a-install.json</p>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<p>m4a-ce-src.json</p>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h1 id="▌3-Install-Migrate-for-Anthos"><a href="#▌3-Install-Migrate-for-Anthos" class="headerlink" title="▌3. Install Migrate for Anthos"></a>▌3. Install Migrate for Anthos</h1><h3 id="step1-migctl-setup"><a href="#step1-migctl-setup" class="headerlink" title="step1. migctl setup"></a>step1. migctl setup</h3><p>migctl是Google Cloud Anthos 開發出來的自動化轉換工具，可以鎖定目標VM，並生成Artifacts與K8s object YAML，詳細說明mfa[1]</p>
+<ul>
+<li>透過指令<code>migctl setup install</code>，將 migctl安裝至GKE環境中</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 Get credential</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">gcloud container clusters get-credentials migration-processing   --zone us-central1<span class="_">-a</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 Install migctl</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">migctl setup install --json-key=m4a-install.json</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">applying resources to the cluster</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3 To make sure migctl</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">migctl doctor</span></pre></td></tr></table></figure>
+
+<p><code>migctl setup install</code>安裝過程</p>
+<p><img src="Untitled8.png" alt="Untitled8.png"></p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step2-確認v2k-controller"><a href="#step2-確認v2k-controller" class="headerlink" title="step2. 確認v2k controller"></a>step2. 確認v2k controller</h3><ul>
+<li>migctl 這個工具是透過google 開發的CSI(Container Storage Interface)，來介接GCP</li>
+<li>為了運行這個CSI也會額外建立<code>v2k-system</code> namespace，這些controller, daemonset皆運行於</li>
+</ul>
+<blockquote>
+<p>補充說明：Kubernetes CSI(Container Storage Interface)是用於將儲存系統與kubernetes這類容器編排系統接觸的標準介面。而使用CSI的第三方套件可以撰寫與部署自訂的儲存系統，而無需接觸Kubernetes原始碼，故Anthos 使用CNI來延伸其控制力</p>
+</blockquote>
+<p><img src="Untitled10.png" alt="Untitled10.png"></p>
+<h1 id="▌4-建立-migration-計劃"><a href="#▌4-建立-migration-計劃" class="headerlink" title="▌4. 建立 migration 計劃"></a>▌4. 建立 migration 計劃</h1><ul>
+<li>建立的 migration object是為CRD (Kubernetes Custom Resource Definition)</li>
+<li>CRD是為了串起所有的轉換步驟包括: source, migration-plan,  建立artifacts等</li>
+<li>Aritifact的產生包括K8s deployment object</li>
+</ul>
+<h3 id="step1-建立轉換來源位置：source-vm"><a href="#step1-建立轉換來源位置：source-vm" class="headerlink" title="step1. 建立轉換來源位置：source-vm"></a>step1. 建立轉換來源位置：source-vm</h3><p>先鎖定要轉換的vm，這次實驗為GCE，VM-ID 為<code>source-vm</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="variable">$PROJECT_ID</span>=<span class="string">'YOUR PROJECT'</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. Create the migration source:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">migctl <span class="built_in">source</span> create ce <span class="built_in">source</span>-vm --project <span class="variable">$PROJECT_ID</span> --json-key=m4a-ce-src.json</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2. Create migration Wave(plane)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">migctl migration create my-migration --<span class="built_in">source</span> <span class="built_in">source</span>-vm --vm-id <span class="built_in">source</span>-vm --intent Image</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">migctl migration get my-migration</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#3. Migrate the VM using the migration plan</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">migctl migration generate-artifacts my-migration</span></pre></td></tr></table></figure>
+
+<p>指令 <code>migctl migration create my-migration</code> 會去掃描你的VM，因此會有Discovery status，找到之後，會自動建立名為my-migration-yaml，裡面包含各項自動轉換的步驟</p>
+<p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="step2-確認migctl-狀態"><a href="#step2-確認migctl-狀態" class="headerlink" title="step2. 確認migctl 狀態"></a>step2. 確認migctl 狀態</h3><p>一旦source準備好後後，在執行<code>$migctl doctor</code> 就可以看到 source status 是勾勾的狀態，狀態有以下</p>
+<ul>
+<li>Deployment</li>
+<li>Docker registry: 準備放docker image 的家</li>
+<li>Artifacts repository: 估計是GCS 的權限，因為在上面有授於GCS權限</li>
+<li>Source status: 你指定的VM 是否正常</li>
+</ul>
+<p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<blockquote>
+<p>當然，你也可以透過Anthos UI Migrate to containers，來完成以上command動作，我將用另一篇文章說明</p>
+</blockquote>
+<h3 id="step3-生成Artifacts"><a href="#step3-生成Artifacts" class="headerlink" title="step3. 生成Artifacts"></a>step3. 生成Artifacts</h3><ul>
+<li>執行指令 <code>$migctl migration generate-artifacts my-migration</code></li>
+<li>執行時是請Anthos tool 協助產生Artifacts</li>
+</ul>
+<p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<p>執行指令<code>$migctl migration create my-migration</code> </p>
+<ul>
+<li>正式生成 dockerfile, build docker image, make kubernetes object: deployment, service 等等</li>
+<li>本次實驗僅小Web-server共”4”步驟，時間共花費4分鐘左右</li>
+<li>透過指令<code>$migctl status -v</code>，其中 -v是獲取細部資訊</li>
+</ul>
+<p>2/4 執行步驟，待4/4 全部部驟完成就能得到docker image, deployments etc.</p>
+<p><img src="Untitled14.png" alt="Untitled14.png"></p>
+<p>上面的<code>$migctl status</code>，的監控也可以換成GKE console 之下的Migrate to container UI</p>
+<p><img src="Untitled15.png" alt="Untitled15.png"></p>
+<h3 id="補充說明：migctl-migration-status-v-細看轉換步驟"><a href="#補充說明：migctl-migration-status-v-細看轉換步驟" class="headerlink" title="補充說明：migctl migration status -v 細看轉換步驟"></a>補充說明：migctl migration status -v 細看轉換步驟</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="string">migctl</span> <span class="string">migration</span> <span class="string">status</span> <span class="string">my-migration</span> <span class="string">-v</span></span></pre></td></tr></table></figure>
+
+<p>執行指令<code>$migctl status -v</code>，Events簡述如下，[3] 詳細說明</p>
+<ul>
+<li><p>建立pvc，Provisioning <code>PersistentVolumeClaim</code></p>
+</li>
+<li><p>起一個 Pod ，把剛才的PVC 掛載進來，我自可以看到<code>SuccessfulMountVolume</code>訊息</p>
+</li>
+<li><p>拉一個container image <code>anthos-migrate.gcr.io/vls-runimg:v1.7.0</code></p>
+</li>
+<li><p><code>aggregator</code></p>
+</li>
+<li><p>Logging configuration : 過程的LOG，皆寫入 Cloud Logging</p>
+<p>  <img src="Untitled16.png" alt="Untitled16.png"></p>
+<p>  <img src="Untitled17.png" alt="Untitled17.png"></p>
+</li>
+</ul>
+<h3 id="step4-確認生成好的-Artifiacts"><a href="#step4-確認生成好的-Artifiacts" class="headerlink" title="step4. 確認生成好的 Artifiacts"></a>step4. 確認生成好的 Artifiacts</h3><ul>
+<li>透過Monitoring tab 確認artifacts皆產出</li>
+</ul>
+<p><img src="Untitled18.png" alt="Untitled18.png"></p>
+<p>Artifacts 內容物</p>
+<ul>
+<li><strong><code>Dockerfile</code>:</strong> 從你 migrated VM轉換過來的docker 映像生成檔</li>
+<li><code>**Container image**</code>: 生成的docker 映像檔</li>
+<li><strong><code>deployment_spec.yaml</code>:</strong> YAML file 其中包含kind deployment, service，也是是我們要的workload, endpoint</li>
+<li><strong><code>migration.yaml</code></strong>: 本次轉換計劃的校本，這份是給Anthos migration tool使用的，K8s 不需要它</li>
+</ul>
+<p><img src="Untitled19.png" alt="Untitled19.png"></p>
+<p>檢視docker images</p>
+<ul>
+<li>dock image會放在Google docker registry</li>
+</ul>
+<p><img src="Untitled20.png" alt="Untitled20.png"></p>
+<p>檢視<strong><code>deployment_spec.yaml</code></strong>其中</p>
+<ul>
+<li>kind deployment，幫你寫好sepc 指名至你的docker image以及需要掛載的PV</li>
+<li>service: 在整個yaml下方，預設建你建立internal ClusterIP</li>
+</ul>
+<p><img src="Untitled21.png" alt="Untitled21.png"></p>
+<h1 id="▌5-部署Migrated-workload"><a href="#▌5-部署Migrated-workload" class="headerlink" title="▌5. 部署Migrated workload"></a>▌5. 部署Migrated workload</h1><ul>
+<li>取得<strong><code>deployment_spec.yaml</code>，</strong>撰寫yaml</li>
+<li>執行$kubectl apply, 生成workload, endpoint</li>
+</ul>
+<h3 id="step1-撰寫Object-YAML"><a href="#step1-撰寫Object-YAML" class="headerlink" title="step1. 撰寫Object YAML"></a>step1. 撰寫Object YAML</h3><ul>
+<li>透過上面migration job 產出的<strong>deployment_spec.yaml，將拿來部署至GKE</strong></li>
+<li>Deployment for source-vm 包含Deployment, Service，本實作直接採用但後面會修改service type</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 Edit YAML</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">vi anthos_deployment_spec.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 deploy workload </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f anthos_deployment_spec.yaml</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled22.png" alt="Untitled22.png"></p>
+<p>修訂Serice 為Load balance 種類</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#1 Original only CluserIP for internal</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">kind: Service</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">metadata:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  creationTimestamp: null</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  name: <span class="built_in">source</span>-vm</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">spec:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  clusterIP: None</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">  selector:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    app: <span class="built_in">source</span>-vm</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">  <span class="built_in">type</span>: ClusterIP</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">status:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">  loadBalancer: &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">---</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#2 + GLB</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">kind: Service</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">metadata:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">  name: my-service</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">spec:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">  selector:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    app: <span class="built_in">source</span>-vm</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">  ports:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    - protocol: TCP</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">      port: 80</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">      targetPort: 80</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">  <span class="built_in">type</span>: LoadBalancer</span></pre></td></tr></table></figure>
+
+<p><img src="Untitled23.png" alt="Untitled23.png"></p>
+<h3 id="step2-測試連線服務"><a href="#step2-測試連線服務" class="headerlink" title="step2. 測試連線服務"></a>step2. 測試連線服務</h3><ul>
+<li>打開browser 連線，Google Load Balace 產出來的public IP <code>&quot;35.223.224.224&quot;</code></li>
+<li>測試結跟原有的source-vm website內容一致，測試成功！</li>
+</ul>
+<p><img src="Untitled24.png" alt="Untitled24.png"></p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>看完所有的實作後，了解將容器的強大功能導入現有工作負載。Migrate for Anthos 讓ＰＮＳ以最少的人工作業，轉換現有的應用程式並移至容器中。有了 Migrate for Anthos，IT就能輕鬆翻新現有工作負載並遷移至容器；這類容器將於安全的代管 Kubernetes 服務中執行。除此microservice之外，將這些VM轉換搬遷到GKE上，享受更多雲原生 (Cloud Native)帶來的好處</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>[1] <a href="https://cloud.google.com/migrate/anthos/docs/installing-migrate-components#about_migctl" target="_blank" rel="noopener">https://cloud.google.com/migrate/anthos/docs/installing-migrate-components#about_migctl</a></p>
+<p>[2] <a href="https://cloud.google.com/migrate/anthos/docs/deploying-linux-workload-overview" target="_blank" rel="noopener">https://cloud.google.com/migrate/anthos/docs/deploying-linux-workload-overview</a></p>
+<p>[3] <a href="https://cloud.google.com/migrate/anthos/docs/review-deployment-files?hl=en-us&_ga=2.144221493.-1489360639.1577032681" target="_blank" rel="noopener">https://cloud.google.com/migrate/anthos/docs/review-deployment-files?hl=en-us&amp;_ga=2.144221493.-1489360639.1577032681</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Anthos/" rel="tag"># Anthos</a>
+          
+            <a href="/tags/Service-Account/" rel="tag"># Service Account</a>
+          
+            <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          
+            <a href="/tags/dockerized/" rel="tag"># dockerized</a>
+          
+            <a href="/tags/Microservice/" rel="tag"># Microservice</a>
+          
+            <a href="/tags/Migration-for-Anthos/" rel="tag"># Migration for Anthos</a>
+          
+            <a href="/tags/GKE/" rel="tag"># GKE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/06/Anthos-%E7%B5%B1%E4%B8%80%E5%A4%A9%E4%B8%8B%EF%BC%9A%E5%AF%A6%E7%8F%BE%E5%A4%96%E9%83%A8-Kubernetes-%E8%A8%BB%E5%86%8A%E8%87%B3-Anthos/" rel="next" title="[Anthos] 統一天下：實現外部 Kubernetes 註冊至 Anthos">
+                <i class="fa fa-chevron-left"></i> [Anthos] 統一天下：實現外部 Kubernetes 註冊至 Anthos
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#步驟說明："><span class="nav-number">2.</span> <span class="nav-text">步驟說明：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌1-準備環境-VM網頁-GKE平台"><span class="nav-number">3.</span> <span class="nav-text">▌1. 準備環境: VM網頁, GKE平台</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-轉換：Source-VM"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. 轉換：Source VM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-GKE-Cluster-部署"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. GKE Cluster 部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌2-準備-Service-Account"><span class="nav-number">4.</span> <span class="nav-text">▌2. 準備 Service Account</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-建立Service-account-並授與權限-quot-m4a-ce-src-quot"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. 建立Service account 並授與權限 &quot;m4a-ce-src&quot;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-生成JSON-key"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. 生成JSON key</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌3-Install-Migrate-for-Anthos"><span class="nav-number">5.</span> <span class="nav-text">▌3. Install Migrate for Anthos</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-migctl-setup"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. migctl setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-確認v2k-controller"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. 確認v2k controller</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌4-建立-migration-計劃"><span class="nav-number">6.</span> <span class="nav-text">▌4. 建立 migration 計劃</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-建立轉換來源位置：source-vm"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1. 建立轉換來源位置：source-vm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-確認migctl-狀態"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. 確認migctl 狀態</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-生成Artifacts"><span class="nav-number">6.0.3.</span> <span class="nav-text">step3. 生成Artifacts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充說明：migctl-migration-status-v-細看轉換步驟"><span class="nav-number">6.0.4.</span> <span class="nav-text">補充說明：migctl migration status -v 細看轉換步驟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-確認生成好的-Artifiacts"><span class="nav-number">6.0.5.</span> <span class="nav-text">step4. 確認生成好的 Artifiacts</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌5-部署Migrated-workload"><span class="nav-number">7.</span> <span class="nav-text">▌5. 部署Migrated workload</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-撰寫Object-YAML"><span class="nav-number">7.0.1.</span> <span class="nav-text">step1. 撰寫Object YAML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-測試連線服務"><span class="nav-number">7.0.2.</span> <span class="nav-text">step2. 測試連線服務</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">8.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">9.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
