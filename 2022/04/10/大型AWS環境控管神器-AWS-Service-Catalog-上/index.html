@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="大型AWS環境控管神器 | AWS Service Catalog (上)0%: Yes25%: Yes50%: Yes75%: YesDate: April 2, 2022No.: 0Status: Completed 前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源">
+<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大型AWS環境控管神器 | AWS Service Catalog (上)">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="大型AWS環境控管神器 | AWS Service Catalog (上)0%: Yes25%: Yes50%: Yes75%: YesDate: April 2, 2022No.: 0Status: Completed 前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2022-04-10T07:39:11.866Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2022/04/10/大型AWS環境控管神器-AWS-Service-Catalog-上/"/>
+
+
+
+
+
+  <title>大型AWS環境控管神器 | AWS Service Catalog (上) | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2022/04/10/%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">大型AWS環境控管神器 | AWS Service Catalog (上)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-10T15:39:11+08:00">
+                2022-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="大型AWS環境控管神器-AWS-Service-Catalog-上"><a href="#大型AWS環境控管神器-AWS-Service-Catalog-上" class="headerlink" title="大型AWS環境控管神器 | AWS Service Catalog (上)"></a>大型AWS環境控管神器 | AWS Service Catalog (上)</h1><p>0%: Yes<br>25%: Yes<br>50%: Yes<br>75%: Yes<br>Date: April 2, 2022<br>No.: 0<br>Status: Completed</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT <code>服務型錄</code>，簡單來說，透過包裝好的AWS 資源 eg. EC2, S3, RDS etc. 部署到你的account之中。為什麼要有AWS Service Catalog？常見問題的就是<strong><strong>確保符合企業標準，一般的account user通常只能使用，而不應控制</strong></strong>AWS 資源，因此我們只授與Account內可操作Service Catalog資源，你可以想像是，有安裝管理包或是自主式管理在帳戶之中，要使用到任何AWS 資源，只需要透過AWS Service Catalog，就部署你所需之資源，如此即能滿足集中管理 IT 服務。具體的優勢如下：</p>
+<p><code>1) 集中化：</code>集中化 IT 服務部署好處理是，控制可有效控管 IT 服務和版本、每個可用服務中設定的內容，以及誰取得個人、群組、部門或成本中心的許可存取權； <code>2)合規：</code>如果你的公司收到一個資安需求，來自於董事會，它的目標要實現一致性管理和滿足合規要求，同時讓使用者能夠快速地僅部署自己所需的已核准 IT 服務。我想使用 AWS Service Catalog AppRegistry，你可以定義和管理應用程式及其中繼資料，以追蹤應用程式層級的成本、效能、安全、合規和操作狀態。</p>
+<h1 id="▌1-實驗權則分離-AWS-Service-Catalog-User"><a href="#▌1-實驗權則分離-AWS-Service-Catalog-User" class="headerlink" title="▌1. 實驗權則分離 AWS  Service Catalog User"></a>▌1. 實驗權則分離 AWS  Service Catalog User</h1><p>實驗開始前先準備二個User</p>
+<ul>
+<li>第一個被控管的名為<code>ServiceCatalogUser</code><ul>
+<li>這個帳號沒有權力建立VPC資源，</li>
+</ul>
+</li>
+<li>第二個是管理員<code>superuser</code><ul>
+<li>有能力建立AWS Service Catalog products, portfolio</li>
+</ul>
+</li>
+</ul>
+<h3 id="step1-首先登入EndUserSignPage"><a href="#step1-首先登入EndUserSignPage" class="headerlink" title="step1. 首先登入EndUserSignPage"></a>step1. 首先登入<strong>EndUserSignPage</strong></h3><ul>
+<li><p>透過ID登入 URL<br><a href="https:772880908083.signin.aws.amazon.comconsole" target="_blank" rel="noopener">https:7—————-89.signin.aws.amazon.comconsole</a></p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled.png)</p>
+</li>
+</ul>
+<h3 id="step2-登入後確認帳戶"><a href="#step2-登入後確認帳戶" class="headerlink" title="step2. 登入後確認帳戶"></a>step2. 登入後確認帳戶</h3><ul>
+<li><p>右上角為名稱ServiceCatalogUser，代表為被控管的user</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled1.png)</p>
+</li>
+</ul>
+<h3 id="step3-權限測試"><a href="#step3-權限測試" class="headerlink" title="step3. 權限測試"></a>step3. 權限測試</h3><ul>
+<li><p>建立 VPC → 被擋</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled2.png)</p>
+</li>
+</ul>
+<h3 id="step4-IAM-測試"><a href="#step4-IAM-測試" class="headerlink" title="step4. IAM 測試"></a>step4. IAM 測試</h3><ul>
+<li><p>建立 IAM → 被擋</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled3.png)</p>
+</li>
+</ul>
+<h1 id="▌2-使用Service-Catalog-console部署VPC服務"><a href="#▌2-使用Service-Catalog-console部署VPC服務" class="headerlink" title="▌2. 使用Service Catalog console部署VPC服務"></a>▌2. 使用Service Catalog console部署VPC服務</h1><p>前言提到的集中管理 IT 服務，現在透過ServiceCatalogUser(被控管的user)，它可以利用 AWS Service Catalog，新增AWS 相關服務</p>
+<p> IT 服務版本並通知最終使用者，讓使用者可以及時了解最新的更新。利用 AWS Service Catalog，您可以透過指定限制條件 (例如，限制可以啟動產品的 AWS 區域) 控制對 IT 服務的使用。</p>
+<h3 id="step1-Service-Catalog"><a href="#step1-Service-Catalog" class="headerlink" title="step1. Service Catalog"></a>step1. Service Catalog</h3><ul>
+<li><p>先至 Service Catalog console</p>
+</li>
+<li><p>進去products頁面後，這邊顯示product 名為<code>Base-Networking</code> 是由Service Catalog管理員所分派可用的AWS 資源</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled4.png)</p>
+</li>
+</ul>
+<h3 id="step2-Product-details"><a href="#step2-Product-details" class="headerlink" title="step2. Product details"></a>step2. <strong><strong>Product details</strong></strong></h3><p>Service Catalog之中可以做到版控任何被派送的AWS 資源 </p>
+<ul>
+<li><p>Versions: <code>Base-Networking-v1.0</code></p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled5.png)</p>
+</li>
+</ul>
+<h3 id="step3-Launch-product"><a href="#step3-Launch-product" class="headerlink" title="step3. Launch product"></a>step3. Launch product</h3><ul>
+<li>假定user要選用Base-Networking這項資源</li>
+<li>填入相關參數 e.g version, subnet, tag etc.</li>
+</ul>
+<p>![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled6.png)</p>
+<h3 id="補充：底層說明-2"><a href="#補充：底層說明-2" class="headerlink" title="補充：底層說明[2]"></a>補充：底層說明[2]</h3><ul>
+<li>其實它的底層是靠CloudFormation 幫忙部建</li>
+<li>其中被派送的AWS 資源即是一個個的CloudFormation Templates</li>
+<li>另一個觀念是Portfolio，它是匯集多個Products所形成的目錄</li>
+</ul>
+<p>![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled7.png)</p>
+<h3 id="補充：中控層下的操刀者-CloudFormation"><a href="#補充：中控層下的操刀者-CloudFormation" class="headerlink" title="補充：中控層下的操刀者 | CloudFormation"></a>補充：中控層下的操刀者 | CloudFormation</h3><ul>
+<li><p>完成的products部署，同樣有output value</p>
+</li>
+<li><p>這個形同於CloudFormation output，我們能挑出重要的資源於完成部署後顯示</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled8.png)</p>
+</li>
+</ul>
+<h1 id="▌3-結論：驗證一般Account內的VPC"><a href="#▌3-結論：驗證一般Account內的VPC" class="headerlink" title="▌3. 結論：驗證一般Account內的VPC"></a>▌3. 結論：驗證一般Account內的VPC</h1><p>透過Service Catalog product幫你建立VPC 資源：</p>
+<ul>
+<li><p>剛剛account，還被鎖定的VPC 部署，但現在可以透Service Catalog正常部署</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled9.png)</p>
+</li>
+</ul>
+<p>驗證account 內的VPC項目：</p>
+<ul>
+<li><p>以下VPC item 皆由Service Catalog product所發行</p>
+</li>
+<li><p>如此，這個實驗場境滿足集中控管之需求</p>
+<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled10.png)</p>
+</li>
+</ul>
+<aside>
+💡 最後，本實驗demo了一般user無權建立VPC的權力，但可以從自助式的Service Catalog productportfolio建立VPC資源，因為Service Catalog 的封裝與版控有助於企業滿足合規與集中之需求：
+
+<aside>
+
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><p>[1] 什麼是 <strong><strong>AWS Service Catalog？</strong></strong><a href="https:aws.amazon.comtwservicecatalog" target="_blank" rel="noopener">https:aws.amazon.comtwservicecatalog</a></p>
+<p>[2] Manage AWS Service Catalog products in multiple AWS accounts and AWS Regions <a href="https:docs.aws.amazon.comprescriptive-guidancelatestpatternsmanage-aws-service-catalog-products-in-multiple-aws-accounts-and-aws-regions.html" target="_blank" rel="noopener">https:docs.aws.amazon.comprescriptive-guidancelatestpatternsmanage-aws-service-catalog-products-in-multiple-aws-accounts-and-aws-regions.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/Anthos-%E7%A5%9E%E5%A5%87%E5%82%91%E5%85%8B%E5%85%A8%E8%87%AA%E5%8B%95%E5%8C%96%E8%BD%89VM-%E8%87%B3Container-Migrate-for-Anthos/" rel="next" title="[Anthos] 神奇傑克全自動化轉VM 至Container | Migrate for Anthos">
+                <i class="fa fa-chevron-left"></i> [Anthos] 神奇傑克全自動化轉VM 至Container | Migrate for Anthos
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大型AWS環境控管神器-AWS-Service-Catalog-上"><span class="nav-number">1.</span> <span class="nav-text">大型AWS環境控管神器 | AWS Service Catalog (上)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌1-實驗權則分離-AWS-Service-Catalog-User"><span class="nav-number">3.</span> <span class="nav-text">▌1. 實驗權則分離 AWS  Service Catalog User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-首先登入EndUserSignPage"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. 首先登入EndUserSignPage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-登入後確認帳戶"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. 登入後確認帳戶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-權限測試"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. 權限測試</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-IAM-測試"><span class="nav-number">3.0.4.</span> <span class="nav-text">step4. IAM 測試</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌2-使用Service-Catalog-console部署VPC服務"><span class="nav-number">4.</span> <span class="nav-text">▌2. 使用Service Catalog console部署VPC服務</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Service-Catalog"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. Service Catalog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Product-details"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. Product details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Launch-product"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. Launch product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：底層說明-2"><span class="nav-number">4.0.4.</span> <span class="nav-text">補充：底層說明[2]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：中控層下的操刀者-CloudFormation"><span class="nav-number">4.0.5.</span> <span class="nav-text">補充：中控層下的操刀者 | CloudFormation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌3-結論：驗證一般Account內的VPC"><span class="nav-number">5.</span> <span class="nav-text">▌3. 結論：驗證一般Account內的VPC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#References"><span class="nav-number">5.0.1.</span> <span class="nav-text">References</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
