@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="AWS,Security,AWS Service Catalog products,Service Catalog Products,Service Catalog Portfolio,Compliance," />
 
 
 
@@ -86,16 +86,28 @@
 
 
 
-<meta name="description" content="大型AWS環境控管神器 | AWS Service Catalog (上)0%: Yes25%: Yes50%: Yes75%: YesDate: April 2, 2022No.: 0Status: Completed 前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源">
-<meta name="keywords" content="GCP, storage, SDS, VMware, Hybrid-cloud, trainer">
+<meta name="description" content="前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源 eg. EC2, S3, RDS etc. 部署到你的account之中。為什麼要有AWS Service Catalog？常見問題的就是確保符合企業標準，一般的account user通常只能使用，而不應控制AWS 資">
+<meta name="keywords" content="AWS,Security,AWS Service Catalog products,Service Catalog Products,Service Catalog Portfolio,Compliance">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大型AWS環境控管神器 | AWS Service Catalog (上)">
 <meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;index.html">
 <meta property="og:site_name" content="黃大仙的雲端修行室">
-<meta property="og:description" content="大型AWS環境控管神器 | AWS Service Catalog (上)0%: Yes25%: Yes50%: Yes75%: YesDate: April 2, 2022No.: 0Status: Completed 前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源">
+<meta property="og:description" content="前言首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT 服務型錄，簡單來說，透過包裝好的AWS 資源 eg. EC2, S3, RDS etc. 部署到你的account之中。為什麼要有AWS Service Catalog？常見問題的就是確保符合企業標準，一般的account user通常只能使用，而不應控制AWS 資">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2022-04-10T07:39:11.866Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled10.png">
+<meta property="og:updated_time" content="2022-04-10T08:44:05.346Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;10&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A&#x2F;Untitled.png">
 
 
 
@@ -287,7 +299,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-10T15:39:11+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-10T16:09:41+08:00">
                 2022-04-10
               </time>
             
@@ -297,6 +309,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AWS/" itemprop="url" rel="index">
+                    <span itemprop="name">AWS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -330,8 +364,7 @@
       
 
       
-        <h1 id="大型AWS環境控管神器-AWS-Service-Catalog-上"><a href="#大型AWS環境控管神器-AWS-Service-Catalog-上" class="headerlink" title="大型AWS環境控管神器 | AWS Service Catalog (上)"></a>大型AWS環境控管神器 | AWS Service Catalog (上)</h1><p>0%: Yes<br>25%: Yes<br>50%: Yes<br>75%: Yes<br>Date: April 2, 2022<br>No.: 0<br>Status: Completed</p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT <code>服務型錄</code>，簡單來說，透過包裝好的AWS 資源 eg. EC2, S3, RDS etc. 部署到你的account之中。為什麼要有AWS Service Catalog？常見問題的就是<strong><strong>確保符合企業標準，一般的account user通常只能使用，而不應控制</strong></strong>AWS 資源，因此我們只授與Account內可操作Service Catalog資源，你可以想像是，有安裝管理包或是自主式管理在帳戶之中，要使用到任何AWS 資源，只需要透過AWS Service Catalog，就部署你所需之資源，如此即能滿足集中管理 IT 服務。具體的優勢如下：</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首先什麼是AWS Service Catalog [1]，它可以利用在公司組織的管理，建立和管理已核准在 AWS 上使用的 IT <code>服務型錄</code>，簡單來說，透過包裝好的AWS 資源 eg. EC2, S3, RDS etc. 部署到你的account之中。為什麼要有AWS Service Catalog？常見問題的就是<strong><strong>確保符合企業標準，一般的account user通常只能使用，而不應控制</strong></strong>AWS 資源，因此我們只授與Account內可操作Service Catalog資源，你可以想像是，有安裝管理包或是自主式管理在帳戶之中，要使用到任何AWS 資源，只需要透過AWS Service Catalog，就部署你所需之資源，如此即能滿足集中管理 IT 服務。具體的優勢如下：</p>
 <p><code>1) 集中化：</code>集中化 IT 服務部署好處理是，控制可有效控管 IT 服務和版本、每個可用服務中設定的內容，以及誰取得個人、群組、部門或成本中心的許可存取權； <code>2)合規：</code>如果你的公司收到一個資安需求，來自於董事會，它的目標要實現一致性管理和滿足合規要求，同時讓使用者能夠快速地僅部署自己所需的已核准 IT 服務。我想使用 AWS Service Catalog AppRegistry，你可以定義和管理應用程式及其中繼資料，以追蹤應用程式層級的成本、效能、安全、合規和操作狀態。</p>
 <h1 id="▌1-實驗權則分離-AWS-Service-Catalog-User"><a href="#▌1-實驗權則分離-AWS-Service-Catalog-User" class="headerlink" title="▌1. 實驗權則分離 AWS  Service Catalog User"></a>▌1. 實驗權則分離 AWS  Service Catalog User</h1><p>實驗開始前先準備二個User</p>
 <ul>
@@ -346,22 +379,22 @@
 </ul>
 <h3 id="step1-首先登入EndUserSignPage"><a href="#step1-首先登入EndUserSignPage" class="headerlink" title="step1. 首先登入EndUserSignPage"></a>step1. 首先登入<strong>EndUserSignPage</strong></h3><ul>
 <li><p>透過ID登入 URL<br><a href="https:772880908083.signin.aws.amazon.comconsole" target="_blank" rel="noopener">https:7—————-89.signin.aws.amazon.comconsole</a></p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled.png)</p>
+<p>  <img src="Untitled.png" alt="Untitled"></p>
 </li>
 </ul>
 <h3 id="step2-登入後確認帳戶"><a href="#step2-登入後確認帳戶" class="headerlink" title="step2. 登入後確認帳戶"></a>step2. 登入後確認帳戶</h3><ul>
 <li><p>右上角為名稱ServiceCatalogUser，代表為被控管的user</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled1.png)</p>
+<p>  <img src="Untitled1.png" alt="Untitled"></p>
 </li>
 </ul>
 <h3 id="step3-權限測試"><a href="#step3-權限測試" class="headerlink" title="step3. 權限測試"></a>step3. 權限測試</h3><ul>
 <li><p>建立 VPC → 被擋</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled2.png)</p>
+<p>  <img src="Untitled2.png" alt="Untitled"></p>
 </li>
 </ul>
 <h3 id="step4-IAM-測試"><a href="#step4-IAM-測試" class="headerlink" title="step4. IAM 測試"></a>step4. IAM 測試</h3><ul>
 <li><p>建立 IAM → 被擋</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled3.png)</p>
+<p>  <img src="Untitled3.png" alt="Untitled"></p>
 </li>
 </ul>
 <h1 id="▌2-使用Service-Catalog-console部署VPC服務"><a href="#▌2-使用Service-Catalog-console部署VPC服務" class="headerlink" title="▌2. 使用Service Catalog console部署VPC服務"></a>▌2. 使用Service Catalog console部署VPC服務</h1><p>前言提到的集中管理 IT 服務，現在透過ServiceCatalogUser(被控管的user)，它可以利用 AWS Service Catalog，新增AWS 相關服務</p>
@@ -370,37 +403,37 @@
 <li><p>先至 Service Catalog console</p>
 </li>
 <li><p>進去products頁面後，這邊顯示product 名為<code>Base-Networking</code> 是由Service Catalog管理員所分派可用的AWS 資源</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled4.png)</p>
+<p>  <img src="Untitled4.png" alt="Untitled"></p>
 </li>
 </ul>
 <h3 id="step2-Product-details"><a href="#step2-Product-details" class="headerlink" title="step2. Product details"></a>step2. <strong><strong>Product details</strong></strong></h3><p>Service Catalog之中可以做到版控任何被派送的AWS 資源 </p>
 <ul>
 <li><p>Versions: <code>Base-Networking-v1.0</code></p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled5.png)</p>
+<p>  <img src="Untitled5.png" alt="Untitled"></p>
 </li>
 </ul>
 <h3 id="step3-Launch-product"><a href="#step3-Launch-product" class="headerlink" title="step3. Launch product"></a>step3. Launch product</h3><ul>
 <li>假定user要選用Base-Networking這項資源</li>
 <li>填入相關參數 e.g version, subnet, tag etc.</li>
 </ul>
-<p>![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled6.png)</p>
+<p><img src="Untitled6.png" alt="Untitled"></p>
 <h3 id="補充：底層說明-2"><a href="#補充：底層說明-2" class="headerlink" title="補充：底層說明[2]"></a>補充：底層說明[2]</h3><ul>
 <li>其實它的底層是靠CloudFormation 幫忙部建</li>
 <li>其中被派送的AWS 資源即是一個個的CloudFormation Templates</li>
 <li>另一個觀念是Portfolio，它是匯集多個Products所形成的目錄</li>
 </ul>
-<p>![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled7.png)</p>
+<p><img src="Untitled7.png" alt="Untitled"></p>
 <h3 id="補充：中控層下的操刀者-CloudFormation"><a href="#補充：中控層下的操刀者-CloudFormation" class="headerlink" title="補充：中控層下的操刀者 | CloudFormation"></a>補充：中控層下的操刀者 | CloudFormation</h3><ul>
 <li><p>完成的products部署，同樣有output value</p>
 </li>
 <li><p>這個形同於CloudFormation output，我們能挑出重要的資源於完成部署後顯示</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled8.png)</p>
+<p>  <img src="Untitled8.png" alt="Untitled"></p>
 </li>
 </ul>
 <h1 id="▌3-結論：驗證一般Account內的VPC"><a href="#▌3-結論：驗證一般Account內的VPC" class="headerlink" title="▌3. 結論：驗證一般Account內的VPC"></a>▌3. 結論：驗證一般Account內的VPC</h1><p>透過Service Catalog product幫你建立VPC 資源：</p>
 <ul>
 <li><p>剛剛account，還被鎖定的VPC 部署，但現在可以透Service Catalog正常部署</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled9.png)</p>
+<p>  <img src="Untitled9.png" alt="Untitled"></p>
 </li>
 </ul>
 <p>驗證account 內的VPC項目：</p>
@@ -408,7 +441,7 @@
 <li><p>以下VPC item 皆由Service Catalog product所發行</p>
 </li>
 <li><p>如此，這個實驗場境滿足集中控管之需求</p>
-<p>  ![Untitled](%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E ea7fcUntitled10.png)</p>
+<p>  <img src="Untitled10.png" alt="Untitled"></p>
 </li>
 </ul>
 <aside>
@@ -416,8 +449,8 @@
 
 <aside>
 
-<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><p>[1] 什麼是 <strong><strong>AWS Service Catalog？</strong></strong><a href="https:aws.amazon.comtwservicecatalog" target="_blank" rel="noopener">https:aws.amazon.comtwservicecatalog</a></p>
-<p>[2] Manage AWS Service Catalog products in multiple AWS accounts and AWS Regions <a href="https:docs.aws.amazon.comprescriptive-guidancelatestpatternsmanage-aws-service-catalog-products-in-multiple-aws-accounts-and-aws-regions.html" target="_blank" rel="noopener">https:docs.aws.amazon.comprescriptive-guidancelatestpatternsmanage-aws-service-catalog-products-in-multiple-aws-accounts-and-aws-regions.html</a></p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><p>[1] <a href="https://aws.amazon.com/tw/servicecatalog/" target="_blank" rel="noopener">什麼是 <strong><strong>AWS Service Catalog？</strong></strong></a></p>
+<p>[2] <a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/manage-aws-service-catalog-products-in-multiple-aws-accounts-and-aws-regions.html" target="_blank" rel="noopener">Manage AWS Service Catalog products in multiple AWS accounts and AWS Regions</a></p>
 
       
     </div>
@@ -432,6 +465,22 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AWS/" rel="tag"># AWS</a>
+          
+            <a href="/tags/Security/" rel="tag"># Security</a>
+          
+            <a href="/tags/AWS-Service-Catalog-products/" rel="tag"># AWS Service Catalog products</a>
+          
+            <a href="/tags/Service-Catalog-Products/" rel="tag"># Service Catalog Products</a>
+          
+            <a href="/tags/Service-Catalog-Portfolio/" rel="tag"># Service Catalog Portfolio</a>
+          
+            <a href="/tags/Compliance/" rel="tag"># Compliance</a>
+          
+        </div>
       
 
       
@@ -549,7 +598,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -582,7 +631,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大型AWS環境控管神器-AWS-Service-Catalog-上"><span class="nav-number">1.</span> <span class="nav-text">大型AWS環境控管神器 | AWS Service Catalog (上)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌1-實驗權則分離-AWS-Service-Catalog-User"><span class="nav-number">3.</span> <span class="nav-text">▌1. 實驗權則分離 AWS  Service Catalog User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-首先登入EndUserSignPage"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. 首先登入EndUserSignPage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-登入後確認帳戶"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. 登入後確認帳戶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-權限測試"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. 權限測試</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-IAM-測試"><span class="nav-number">3.0.4.</span> <span class="nav-text">step4. IAM 測試</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌2-使用Service-Catalog-console部署VPC服務"><span class="nav-number">4.</span> <span class="nav-text">▌2. 使用Service Catalog console部署VPC服務</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Service-Catalog"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. Service Catalog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Product-details"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. Product details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Launch-product"><span class="nav-number">4.0.3.</span> <span class="nav-text">step3. Launch product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：底層說明-2"><span class="nav-number">4.0.4.</span> <span class="nav-text">補充：底層說明[2]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：中控層下的操刀者-CloudFormation"><span class="nav-number">4.0.5.</span> <span class="nav-text">補充：中控層下的操刀者 | CloudFormation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌3-結論：驗證一般Account內的VPC"><span class="nav-number">5.</span> <span class="nav-text">▌3. 結論：驗證一般Account內的VPC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#References"><span class="nav-number">5.0.1.</span> <span class="nav-text">References</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌1-實驗權則分離-AWS-Service-Catalog-User"><span class="nav-number">2.</span> <span class="nav-text">▌1. 實驗權則分離 AWS  Service Catalog User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-首先登入EndUserSignPage"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. 首先登入EndUserSignPage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-登入後確認帳戶"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. 登入後確認帳戶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-權限測試"><span class="nav-number">2.0.3.</span> <span class="nav-text">step3. 權限測試</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-IAM-測試"><span class="nav-number">2.0.4.</span> <span class="nav-text">step4. IAM 測試</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌2-使用Service-Catalog-console部署VPC服務"><span class="nav-number">3.</span> <span class="nav-text">▌2. 使用Service Catalog console部署VPC服務</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Service-Catalog"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. Service Catalog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Product-details"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2. Product details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Launch-product"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. Launch product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：底層說明-2"><span class="nav-number">3.0.4.</span> <span class="nav-text">補充：底層說明[2]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#補充：中控層下的操刀者-CloudFormation"><span class="nav-number">3.0.5.</span> <span class="nav-text">補充：中控層下的操刀者 | CloudFormation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌3-結論：驗證一般Account內的VPC"><span class="nav-number">4.</span> <span class="nav-text">▌3. 結論：驗證一般Account內的VPC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#References"><span class="nav-number">4.0.1.</span> <span class="nav-text">References</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
