@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Security,AWS,AWS Service Catalog products,Service Catalog Products,Service Catalog Portfolio,Compliance," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言根據大型AWS環境控管神器 | AWS Service Catalog (上)集的說明[4]，我們知道自助式的Service Catalog product&#x2F;portfolio建立VPC資源，因為Service Catalog 的封裝與版控有助於企業滿足合規[3]與集中之需求，此篇實作如何封裝更多的AWS資源 我們設定一個情境是Game App 所需的環境，Developer 要有S3 buc">
+<meta name="keywords" content="Security,AWS,AWS Service Catalog products,Service Catalog Products,Service Catalog Portfolio,Compliance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大型AWS環境控管神器 | AWS Service Catalog (下) |  打包篇">
+<meta property="og:url" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;index.html">
+<meta property="og:site_name" content="黃大仙的雲端修行室">
+<meta property="og:description" content="前言根據大型AWS環境控管神器 | AWS Service Catalog (上)集的說明[4]，我們知道自助式的Service Catalog product&#x2F;portfolio建立VPC資源，因為Service Catalog 的封裝與版控有助於企業滿足合規[3]與集中之需求，此篇實作如何封裝更多的AWS資源 我們設定一個情境是Game App 所需的環境，Developer 要有S3 buc">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled10.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled11.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled12.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled13.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled14.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled15.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled16.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled19.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled21.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled22.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled24.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled25.png">
+<meta property="og:updated_time" content="2022-04-26T01:59:17.065Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;joehuang-pop.github.io&#x2F;archives&#x2F;2022&#x2F;04&#x2F;24&#x2F;%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87&#x2F;Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://joehuang-pop.github.io/archives/2022/04/24/大型AWS環境控管神器-AWS-Service-Catalog-下-打包篇/"/>
+
+
+
+
+
+  <title>大型AWS環境控管神器 | AWS Service Catalog (下) |  打包篇 | 黃大仙的雲端修行室</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黃大仙的雲端修行室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Where you Spent time where the Success Is | 時間花在那裡，成就就在那裡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://joehuang-pop.github.io/archives/2022/04/24/%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8B-%E6%89%93%E5%8C%85%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Joe Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黃大仙的雲端修行室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">大型AWS環境控管神器 | AWS Service Catalog (下) |  打包篇</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-24T22:07:23+08:00">
+                2022-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AWS/" itemprop="url" rel="index">
+                    <span itemprop="name">AWS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>根據大型AWS環境控管神器 | AWS Service Catalog (上)集的說明[4]，我們知道自助式的Service Catalog product/portfolio建立VPC資源，因為Service Catalog 的封裝與版控有助於企業滿足合規[3]與集中之需求，此篇<code>實作如何封裝更多的AWS資源</code></p>
+<p>我們設定一個情境是Game App 所需的環境，Developer 要有S3 bucket website來測試它的App。接下來的步驟是圖1所示步驟，為組織內的最終使用者(user)建立自訂的產品組合(portfolio)</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<p>前置作業：</p>
+<ul>
+<li>要建立這包portfolio，首先是要有Service Catalog 完整的權限</li>
+<li>故我們需切換至Service Catalog IT管理員</li>
+</ul>
+<p>步驟：</p>
+<ul>
+<li>step1: administrator先撰寫好template, 包含parameter</li>
+<li>step2: administrator 將選入aws services</li>
+<li>step3: 建立portfolio，將aws products 帶入portfolio</li>
+<li>step4: administrator設定IAM Role並加到products動作之中</li>
+<li>step5. <strong><strong>最終使用者即可以享受打包後的aws 資源</strong></strong></li>
+</ul>
+<h1 id="▌1-實際操作"><a href="#▌1-實際操作" class="headerlink" title="▌1. 實際操作"></a>▌1. 實際操作</h1><h3 id="step1-以管理員身份登入"><a href="#step1-以管理員身份登入" class="headerlink" title="step1. 以管理員身份登入"></a>step1. 以管理員身份登入</h3><p>實驗開始前先準備二個User</p>
+<ul>
+<li><p>第一個被控管的名為<code>ServiceCatalogUser</code> 等於是<strong><strong>最終使用者</strong></strong></p>
+<ul>
+<li>這個帳號沒有權力建立VPC資源，</li>
+</ul>
+</li>
+<li><p>第二個是IT管理員<code>superuser</code></p>
+<ul>
+<li><p>有能力建立AWS Service Catalog products, portfolio</p>
+</li>
+<li><p>因為要建立這包portfolio，首先是要有Service Catalog 完整的權限</p>
+<p><img src="Untitled1.png" alt="Untitled1.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="step2-Portfolio-封裝自助包"><a href="#step2-Portfolio-封裝自助包" class="headerlink" title="step2. Portfolio | 封裝自助包"></a>step2. Portfolio | 封裝自助包</h3><ul>
+<li><p>進入aws Service Catalog之後，點選Portfolio</p>
+</li>
+<li><p>一樣可以看到上集文件的 <a href="https://us-west-2.console.aws.amazon.com/servicecatalog/home?region=us-west-2#portfolios/port-5pa5xqxwpae6s" target="_blank" rel="noopener">Network Provisioning</a>，但我們這次要建立新的Portfolio，裡面要封裝Game App所需的環境 eg. S3 bucket website</p>
+</li>
+<li><p>點選Create portfolio</p>
+<p>  <img src="Untitled2.png" alt="Untitled2.png"></p>
+</li>
+</ul>
+<h3 id="step3-Portfolio設定"><a href="#step3-Portfolio設定" class="headerlink" title="step3. Portfolio設定"></a>step3. Portfolio設定</h3><ul>
+<li><p>命名 Portfolio name: Game Applications</p>
+</li>
+<li><p>自助包說明 Portfolio description: 此自助包是為Game App部署所需</p>
+</li>
+<li><p>所署人 Owner: Game Development Team</p>
+<p>  <img src="Untitled3.png" alt="Untitled3.png"></p>
+</li>
+</ul>
+<p>Portfolio 建立完成</p>
+<p><img src="Untitled4.png" alt="Untitled4.png"></p>
+<h3 id="step4-第二-Service-Catalog-Products"><a href="#step4-第二-Service-Catalog-Products" class="headerlink" title="step4. 第二 Service Catalog | Products"></a>step4. 第二 Service Catalog | Products</h3><ul>
+<li><p>Portfolio可以想像是一個箱子，當工程師出門時，一定要帶著他的工具箱，裡頭要放什麼工具和設備都需事前先準備</p>
+</li>
+<li><p>透過建立Product(工具) 將其置入於 Portfolio (箱子)</p>
+</li>
+<li><p>以下我們將建立二個products 分別為<code>Astray</code>，<code>Radius</code></p>
+<p>  <img src="Untitled5.png" alt="Untitled5.png"></p>
+</li>
+</ul>
+<h1 id="▌2-服務準備-Product"><a href="#▌2-服務準備-Product" class="headerlink" title="▌2. 服務準備 | Product"></a>▌2. 服務準備 | Product</h1><h3 id="step1-Create-product-1"><a href="#step1-Create-product-1" class="headerlink" title="step1. Create product#1"></a>step1. Create product#1</h3><ul>
+<li>進入Product頁面之後，輸入以下必要資訊</li>
+<li>Product name: <code>Astray</code></li>
+<li>Owner: <code>Game Development Team</code></li>
+<li>上傳Template: 資源包括 S3, Lambda</li>
+</ul>
+<p><img src="Untitled6.png" alt="Untitled6.png"></p>
+<p>建立完成done</p>
+<p><img src="Untitled7.png" alt="Untitled7.png"></p>
+<h3 id="step2-Create-product-2"><a href="#step2-Create-product-2" class="headerlink" title="step2.  Create product#2"></a>step2.  Create product#2</h3><ul>
+<li><p>進入Product頁面之後，輸入以下必要資訊</p>
+</li>
+<li><p>Product name: <code>Radius</code></p>
+</li>
+<li><p>Owner: <code>Game Development Team</code></p>
+</li>
+<li><p>上傳Template: Template 資源包括 S3, Lambda, 以及trigger 條件設定</p>
+<p>  <img src="Untitled8.png" alt="Untitled8.png"></p>
+</li>
+</ul>
+<p>done</p>
+<p><img src="Untitled9.png" alt="Untitled9.png"></p>
+<h3 id="step3-把Products-加入至Portfolio"><a href="#step3-把Products-加入至Portfolio" class="headerlink" title="step3. 把Products 加入至Portfolio"></a>step3. 把Products 加入至Portfolio</h3><ul>
+<li><p>回到portfolio頁面之下，以add product 方式加入剛才建立的<code>Astray</code>，<code>Radius</code></p>
+<p>  <img src="Untitled10.png" alt="Untitled10.png"></p>
+</li>
+</ul>
+<h3 id="step4-Astray-加入至-Game-Applications"><a href="#step4-Astray-加入至-Game-Applications" class="headerlink" title="step4.  *Astray 加入至 *Game Applications"></a>step4.  <strong>*<em>Astray 加入至 *</em>Game Applications</strong></h3><p><img src="Untitled11.png" alt="Untitled11.png"></p>
+<h3 id="step5-Radius-加入至-Game-Applications"><a href="#step5-Radius-加入至-Game-Applications" class="headerlink" title="step5.  *Radius 加入至 *Game Applications"></a>step5.  <strong>*<em>Radius 加入至 *</em>Game Applications</strong></h3><p><img src="Untitled12.png" alt="Untitled12.png"></p>
+<h3 id="step6-檢視全Products是否在Portfolio之中"><a href="#step6-檢視全Products是否在Portfolio之中" class="headerlink" title="step6. 檢視全Products是否在Portfolio之中"></a>step6. 檢視全Products是否在Portfolio之中</h3><p><img src="Untitled13.png" alt="Untitled13.png"></p>
+<h1 id="▌3-測試User-發行Portfolio"><a href="#▌3-測試User-發行Portfolio" class="headerlink" title="▌3. 測試User 發行Portfolio"></a>▌3. 測試User 發行Portfolio</h1><p>設定完product, portfolio之後，ServiceCatalogUser還缺一個步驟來完成部署aws的服務，這個東西就是IAM Role，因此portfolio之中的<code>constraints</code>[2]設定是讓ServiceCatalogUser取得特定的IAM Role ，使product順利發行</p>
+<h3 id="step1-Create-Constraint-in-Portfolio"><a href="#step1-Create-Constraint-in-Portfolio" class="headerlink" title="step1. Create Constraint in Portfolio"></a>step1. Create Constraint in Portfolio</h3><ul>
+<li><p>於Portfolio之中，有個Constraints的設定，目的在於設定給ServiceCatalogUser</p>
+<p>  <img src="Untitled14.png" alt="Untitled14.png"></p>
+</li>
+</ul>
+<h3 id="step2-讓指定的IAM-Role，能夠使用Astray-product"><a href="#step2-讓指定的IAM-Role，能夠使用Astray-product" class="headerlink" title="step2. 讓指定的IAM Role，能夠使用Astray product"></a>step2. 讓指定的IAM Role，能夠使用Astray product</h3><ul>
+<li><p>目的讓指定的IAM Role，能夠使用Astray product</p>
+</li>
+<li><p>IAM Role ARN: <code>arn:aws:iam::xxxxx:role/LaunchRole</code></p>
+</li>
+<li><p>完畢建立Create</p>
+<p>  <img src="Untitled15.png" alt="Untitled15.png"></p>
+</li>
+</ul>
+<p>設定完launch所需要的Role</p>
+<p><img src="Untitled16.png" alt="Untitled16.png"></p>
+<h1 id="▌4-授權給ServiceCatalogUser"><a href="#▌4-授權給ServiceCatalogUser" class="headerlink" title="▌4. 授權給ServiceCatalogUser"></a>▌4. 授權給ServiceCatalogUser</h1><p>最後一動，把權限指給Service CatalogUser</p>
+<h3 id="step1-Role設定"><a href="#step1-Role設定" class="headerlink" title="step1. Role設定"></a>step1. Role設定</h3><ul>
+<li><p>一樣在Service Catalog內操作，請切至Group, roles, and users (不用換到IAM)</p>
+<p>  <img src="Untitled17.png" alt="Untitled17.png"></p>
+</li>
+</ul>
+<h3 id="step2-Add-access"><a href="#step2-Add-access" class="headerlink" title="step2. Add access"></a>step2. Add access</h3><ul>
+<li><p>選擇ServiceCatalogUser(一般受管的user) 授權給它</p>
+<p>  <img src="Untitled18.png" alt="Untitled18.png"></p>
+</li>
+</ul>
+<h3 id="step3-完成授權"><a href="#step3-完成授權" class="headerlink" title="step3. 完成授權"></a>step3. 完成授權</h3><ul>
+<li><p>確認授權</p>
+<p>  <img src="Untitled19.png" alt="Untitled19.png"></p>
+</li>
+</ul>
+<h1 id="▌5-發行服務測試"><a href="#▌5-發行服務測試" class="headerlink" title="▌5. 發行服務測試"></a>▌5. 發行服務測試</h1><ul>
+<li><p>此時，注意要切換身份至ServiceCatalogUser(一般受管的user，或稱<strong><strong>最終使用者</strong></strong>)</p>
+<p>  <img src="Untitled20.png" alt="Untitled20.png"></p>
+</li>
+</ul>
+<h3 id="step1-看到2個新建的Products"><a href="#step1-看到2個新建的Products" class="headerlink" title="step1. 看到2個新建的Products"></a>step1. 看到2個新建的Products</h3><ul>
+<li><p>走到Products頁面之中，就可以看到剛剛管理角度分派的2products: <code>Radius</code>, <code>Astray</code></p>
+<p>  <img src="Untitled21.png" alt="Untitled21.png"></p>
+</li>
+</ul>
+<h3 id="step2-Launch-Astray-product-發行服務"><a href="#step2-Launch-Astray-product-發行服務" class="headerlink" title="step2. Launch Astray product | 發行服務"></a>step2. Launch Astray product | 發行服務</h3><ul>
+<li><p>這邊記得要帶 IAM Role ARN</p>
+</li>
+<li><p>因為在Template之中，有採用Lambda，故需要Role來完成滿足部署權限</p>
+<p>  <img src="Untitled22.png" alt="Untitled22.png"></p>
+</li>
+</ul>
+<p>部署中</p>
+<ul>
+<li><p>圖中可以看到右下status 灰字<code>CREATE_IN_PROGRESS</code>，代表目前正部署中</p>
+<p>  <img src="Untitled23.png" alt="Untitled23.png"></p>
+</li>
+</ul>
+<h3 id="step3-成功部署的Radius-Game-一起來大戰一場吧"><a href="#step3-成功部署的Radius-Game-一起來大戰一場吧" class="headerlink" title="step3. 成功部署的Radius Game 一起來大戰一場吧"></a>step3. 成功部署的Radius Game 一起來大戰一場吧</h3><ul>
+<li><p>取得<code>Output value</code> URL，進行遊戲測試吧！</p>
+<p>  <img src="Untitled24.png" alt="Untitled24.png"></p>
+</li>
+</ul>
+<h3 id="step4-戲戲測試"><a href="#step4-戲戲測試" class="headerlink" title="step4. 戲戲測試"></a>step4. 戲戲測試</h3><ul>
+<li><p>Developer雖然沒有實現AWS各種Resource權限，但透過ServiceCatelog一樣可以完全環境的部署，且滿足集中化與合規</p>
+<p>  <img src="Untitled25.png" alt="Untitled25.png"></p>
+</li>
+</ul>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>AWS Service Catalog 是針對需要集中化政策的組織、IT 團隊和受管服務提供者 (MSP) 所開發。它讓 IT 管理員可以發佈和管理 AWS 資源與服務。對於大型組織，它可以提供數以千計使用者佈建雲端資源的標準方法，以<strong><strong><code>確保符合企業標準</code></strong></strong>。</p>
+<p>同時也適合小型團隊，團隊中的一線開發管理員可以提供和維護一致的標準開發/測試環境，當然除了Microservice獲得App runtime校準之後，Cloud層面的一致性也同樣不能被忽略。</p>
+<hr>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p>[1] <a href="https://aws.amazon.com/tw/servicecatalog/" target="_blank" rel="noopener">https://aws.amazon.com/tw/servicecatalog/</a></p>
+<p>[2] <a href="https://docs.aws.amazon.com/servicecatalog/latest/adminguide/constraints-launch.html" target="_blank" rel="noopener">https://docs.aws.amazon.com/servicecatalog/latest/adminguide/constraints-launch.html</a></p>
+<p>[3] <a href="https://docs.aws.amazon.com/servicecatalog/latest/adminguide/service-catalog-compliance.html" target="_blank" rel="noopener">https://docs.aws.amazon.com/servicecatalog/latest/adminguide/service-catalog-compliance.html</a></p>
+<p>[4] <a href="https://joehuang-pop.github.io/2022/04/10/%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A/">https://joehuang-pop.github.io/2022/04/10/%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A/</a></p>
+<p>大型AWS環境控管神器 | AWS Service Catalog (下) |  打包篇</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Security/" rel="tag"># Security</a>
+          
+            <a href="/tags/AWS/" rel="tag"># AWS</a>
+          
+            <a href="/tags/AWS-Service-Catalog-products/" rel="tag"># AWS Service Catalog products</a>
+          
+            <a href="/tags/Service-Catalog-Products/" rel="tag"># Service Catalog Products</a>
+          
+            <a href="/tags/Service-Catalog-Portfolio/" rel="tag"># Service Catalog Portfolio</a>
+          
+            <a href="/tags/Compliance/" rel="tag"># Compliance</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/04/10/%E5%A4%A7%E5%9E%8BAWS%E7%92%B0%E5%A2%83%E6%8E%A7%E7%AE%A1%E7%A5%9E%E5%99%A8-AWS-Service-Catalog-%E4%B8%8A/" rel="next" title="大型AWS環境控管神器 | AWS Service Catalog (上)">
+                <i class="fa fa-chevron-left"></i> 大型AWS環境控管神器 | AWS Service Catalog (上)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Joe Huang</p>
+              <p class="site-description motion-element" itemprop="description">雲端架構師，年輕的軀殼裝著老靈魂，喜歡配著音樂閱讀，生活不能沒有思考和遊蕩 |                  Young body with sentimental and old soul. Can’t live without reading and music, and believe that life is full of thinking and warding.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌1-實際操作"><span class="nav-number">2.</span> <span class="nav-text">▌1. 實際操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-以管理員身份登入"><span class="nav-number">2.0.1.</span> <span class="nav-text">step1. 以管理員身份登入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Portfolio-封裝自助包"><span class="nav-number">2.0.2.</span> <span class="nav-text">step2. Portfolio | 封裝自助包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-Portfolio設定"><span class="nav-number">2.0.3.</span> <span class="nav-text">step3. Portfolio設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-第二-Service-Catalog-Products"><span class="nav-number">2.0.4.</span> <span class="nav-text">step4. 第二 Service Catalog | Products</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌2-服務準備-Product"><span class="nav-number">3.</span> <span class="nav-text">▌2. 服務準備 | Product</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Create-product-1"><span class="nav-number">3.0.1.</span> <span class="nav-text">step1. Create product#1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Create-product-2"><span class="nav-number">3.0.2.</span> <span class="nav-text">step2.  Create product#2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-把Products-加入至Portfolio"><span class="nav-number">3.0.3.</span> <span class="nav-text">step3. 把Products 加入至Portfolio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-Astray-加入至-Game-Applications"><span class="nav-number">3.0.4.</span> <span class="nav-text">step4.  *Astray 加入至 *Game Applications</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step5-Radius-加入至-Game-Applications"><span class="nav-number">3.0.5.</span> <span class="nav-text">step5.  *Radius 加入至 *Game Applications</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step6-檢視全Products是否在Portfolio之中"><span class="nav-number">3.0.6.</span> <span class="nav-text">step6. 檢視全Products是否在Portfolio之中</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌3-測試User-發行Portfolio"><span class="nav-number">4.</span> <span class="nav-text">▌3. 測試User 發行Portfolio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Create-Constraint-in-Portfolio"><span class="nav-number">4.0.1.</span> <span class="nav-text">step1. Create Constraint in Portfolio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-讓指定的IAM-Role，能夠使用Astray-product"><span class="nav-number">4.0.2.</span> <span class="nav-text">step2. 讓指定的IAM Role，能夠使用Astray product</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌4-授權給ServiceCatalogUser"><span class="nav-number">5.</span> <span class="nav-text">▌4. 授權給ServiceCatalogUser</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-Role設定"><span class="nav-number">5.0.1.</span> <span class="nav-text">step1. Role設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Add-access"><span class="nav-number">5.0.2.</span> <span class="nav-text">step2. Add access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-完成授權"><span class="nav-number">5.0.3.</span> <span class="nav-text">step3. 完成授權</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#▌5-發行服務測試"><span class="nav-number">6.</span> <span class="nav-text">▌5. 發行服務測試</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-看到2個新建的Products"><span class="nav-number">6.0.1.</span> <span class="nav-text">step1. 看到2個新建的Products</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-Launch-Astray-product-發行服務"><span class="nav-number">6.0.2.</span> <span class="nav-text">step2. Launch Astray product | 發行服務</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-成功部署的Radius-Game-一起來大戰一場吧"><span class="nav-number">6.0.3.</span> <span class="nav-text">step3. 成功部署的Radius Game 一起來大戰一場吧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step4-戲戲測試"><span class="nav-number">6.0.4.</span> <span class="nav-text">step4. 戲戲測試</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">7.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">8.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Huang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
